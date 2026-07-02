@@ -1,0 +1,37 @@
+<div class="inventory-container">
+  <h2>📋 Current Inventory Stock</h2>
+  
+  <table class="inventory-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Product Name</th>
+        <th>Quantity</th>
+        <th>Price per Unit</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- @for लूप के ज़रिए हम सिग्नल से डेटा निकाल कर टेबल में दिखा रहे हैं -->
+      @for (item of inventoryItems(); track item.id) {
+        <tr>
+          <td>{{ item.id }}</td>
+          <td><strong>{{ item.name }}</strong></td>
+          <td>{{ item.quantity }} units</td>
+          <!-- यहाँ हमने Currency Pipe का उपयोग किया है रूप बदलने के लिए -->
+          <td>{{ item.price | currency:'INR':'symbol':'1.0-0' }}</td>
+          <td>
+            <!-- डायनामिक स्टाइलिंग: अगर क्वांटिटी 5 या उससे कम है तो लाल (Low Stock), वरना हरा -->
+            <span [style.color]="item.quantity <= 5 ? 'red' : 'green'" style="font-weight: bold;">
+              {{ item.quantity <= 5 ? '⚠️ Low Stock' : '✅ In Stock' }}
+            </span>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="5" style="text-align: center; color: #999;">No items found in inventory.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
