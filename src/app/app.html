@@ -1,12 +1,9 @@
-<nav style="background-color: #333; padding: 15px; font-family: Arial, sans-serif;">
-  <!-- /items बिल्कुल सही है -->
-  <a routerLink="/items" style="color: white; margin-right: 20px; text-decoration: none; font-weight: bold;">📦 Inventory List</a>
-  
-  <!-- यहाँ /add-items की जगह सिर्फ /add करेंगे क्योंकि app.routes.ts में path: 'add' रखा था -->
-  <a routerLink="/add" style="color: white; text-decoration: none; font-weight: bold;">➕ Add New Item</a>
-</nav>
+<div class="d-flex flex-column min-vh-100">
+  <app-navbar></app-navbar>
 
-<div style="padding: 20px; font-family: Arial, sans-serif;">
-  <!-- यह वह जादुई फ्रेम है जहाँ दोनों कंपोनेंट्स लोड होंगे -->
-  <router-outlet></router-outlet>
+  <main class="flex-grow-1 container py-4">
+    <router-outlet></router-outlet>
+  </main>
+
+  <app-footer></app-footer>
 </div>

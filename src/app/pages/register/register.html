@@ -1,0 +1,76 @@
+<div class="row justify-content-center my-4">
+    <div class="col-md-7 col-lg-6">
+      <div class="card shadow border-0 rounded-3">
+        <div class="card-body p-4">
+          <h3 class="text-center fw-bold text-dark mb-4">Create an Account</h3>
+  
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <!-- Name -->
+            <div class="mb-3">
+              <label class="form-label font-weight-bold">Full Name</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                <input type="text" formControlName="name" class="form-control" 
+                  [ngClass]="{'is-invalid': isSubmitted && registerForm.get('name')?.errors}" placeholder="John Doe">
+              </div>
+              <div *ngIf="isSubmitted && registerForm.get('name')?.errors" class="text-danger small mt-1">
+                <span *ngIf="registerForm.get('name')?.errors?.['required']">Name is required.</span>
+                <span *ngIf="registerForm.get('name')?.errors?.['minlength']">Minimum 3 characters required.</span>
+              </div>
+            </div>
+          
+            <!-- Email -->
+            <div class="mb-3">
+              <label class="form-label font-weight-bold">Email Address</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                <input type="email" formControlName="email" class="form-control"
+                  [ngClass]="{'is-invalid': isSubmitted && registerForm.get('email')?.errors}" placeholder="name@example.com">
+              </div>
+              <div *ngIf="isSubmitted && registerForm.get('email')?.errors" class="text-danger small mt-1">
+                <span *ngIf="registerForm.get('email')?.errors?.['required']">Email is required.</span>
+                <span *ngIf="registerForm.get('email')?.errors?.['email']">Enter a valid email.</span>
+              </div>
+            </div>
+          
+            <!-- Password -->
+            <div class="mb-3">
+              <label class="form-label font-weight-bold">Password</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                <input type="password" formControlName="password" class="form-control"
+                  [ngClass]="{'is-invalid': isSubmitted && registerForm.get('password')?.errors}" placeholder="••••••••">
+              </div>
+              <div *ngIf="isSubmitted && registerForm.get('password')?.errors" class="text-danger small mt-1">
+                <span *ngIf="registerForm.get('password')?.errors?.['required']">Password is required.</span>
+                <span *ngIf="registerForm.get('password')?.errors?.['minlength']">Minimum 6 characters.</span>
+              </div>
+            </div>
+          
+            <!-- Confirm Password -->
+            <div class="mb-3">
+              <label class="form-label font-weight-bold">Confirm Password</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-shield-lock"></i></span>
+                <input type="password" formControlName="confirmPassword" class="form-control"
+                  [ngClass]="{'is-invalid': isSubmitted && (registerForm.get('confirmPassword')?.errors || registerForm.errors?.['mismatch'])}" placeholder="••••••••">
+              </div>
+              <div *ngIf="isSubmitted && registerForm.errors?.['mismatch']" class="text-danger small mt-1">
+                Passwords do not match.
+              </div>
+            </div>
+          
+            <button type="submit" class="btn btn-warning w-100 fw-bold py-2 mt-2">
+              Register
+            </button>
+          </form>
+          
+  
+          <div class="text-center mt-4">
+            <span class="small text-muted">Already have an account? </span>
+            <a routerLink="/login" class="small fw-bold text-decoration-none">Login Here</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
