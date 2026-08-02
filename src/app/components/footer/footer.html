@@ -1,31 +1,76 @@
-<footer class="bg-dark text-white pt-4 pb-3 mt-auto">
-    <div class="container text-center text-md-start">
-      <div class="row">
-        <div class="col-md-4 col-lg-4 col-xl-3 mx-auto mb-4">
-          <h6 class="text-uppercase fw-bold text-warning">E-Shop</h6>
-          <hr class="mb-2 mt-0 d-inline-block mx-auto bg-warning" style="width: 60px; height: 2px"/>
-          <p class="small text-muted">
-            Your one-stop destination for best deals on electronics, fashion, and lifestyle products.
-          </p>
-        </div>
-  
-        <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
-          <h6 class="text-uppercase fw-bold text-warning">Quick Links</h6>
-          <hr class="mb-2 mt-0 d-inline-block mx-auto bg-warning" style="width: 60px; height: 2px"/>
-          <p class="mb-1"><a href="#" class="text-white-50 text-decoration-none small">Products</a></p>
-          <p class="mb-1"><a href="#" class="text-white-50 text-decoration-none small">Categories</a></p>
-          <p class="mb-1"><a href="#" class="text-white-50 text-decoration-none small">Contact Us</a></p>
-        </div>
-  
-        <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
-          <h6 class="text-uppercase fw-bold text-warning">Contact</h6>
-          <hr class="mb-2 mt-0 d-inline-block mx-auto bg-warning" style="width: 60px; height: 2px"/>
-          <p class="small text-white-50 mb-1"><i class="bi bi-envelope me-2"></i> support&#64;eshop.com</p>
-          <p class="small text-white-50"><i class="bi bi-phone me-2"></i> +91 98765 43210</p>
+<footer class="footer-theme mt-auto pt-5 pb-3 border-top border-light-subtle">
+  <div class="container">
+    <div class="row g-4">
+      
+      <!-- Brand Info -->
+      <div class="col-lg-4 col-md-6">
+        <a class="d-flex align-items-center fw-bold text-brand-primary fs-4 text-decoration-none mb-3" routerLink="/">
+          <i class="bi bi-bag-heart-fill me-2 fs-3"></i>
+          <span>Ankur<span class="fw-light text-dark">Cart</span></span>
+        </a>
+        <p class="text-muted small pe-lg-4">
+          Handpicked artisanal items, organic essentials, and curated lifestyle products delivered right to your doorstep.
+        </p>
+        <div class="d-flex gap-3 text-brand-primary fs-5 mt-3">
+          <a href="#" class="text-brand-primary"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="text-brand-primary"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="text-brand-primary"><i class="bi bi-whatsapp"></i></a>
+          <a href="#" class="text-brand-primary"><i class="bi bi-pinterest"></i></a>
         </div>
       </div>
+
+      <!-- Quick Links -->
+      <div class="col-lg-2 col-md-6 col-6">
+        <h6 class="fw-bold text-dark mb-3 text-uppercase small tracking-wider">Quick Links</h6>
+        <ul class="list-unstyled mb-0 small">
+          <li class="mb-2"><a routerLink="/" class="text-muted text-decoration-none hover-link">Home</a></li>
+          <li class="mb-2"><a href="#" class="text-muted text-decoration-none hover-link">Shop Categories</a></li>
+          <li class="mb-2"><a href="#" class="text-muted text-decoration-none hover-link">Featured Products</a></li>
+          <li class="mb-2"><a href="#" class="text-muted text-decoration-none hover-link">WhatsApp Order</a></li>
+        </ul>
+      </div>
+
+      <!-- Customer Care -->
+      <div class="col-lg-2 col-md-6 col-6">
+        <h6 class="fw-bold text-dark mb-3 text-uppercase small tracking-wider">Help & Support</h6>
+        <ul class="list-unstyled mb-0 small">
+          <li class="mb-2"><a href="#" class="text-muted text-decoration-none hover-link">Track Order</a></li>
+          <li class="mb-2"><a href="#" class="text-muted text-decoration-none hover-link">Shipping Policy</a></li>
+          <li class="mb-2"><a href="#" class="text-muted text-decoration-none hover-link">Returns & Refunds</a></li>
+          <li class="mb-2"><a href="#" class="text-muted text-decoration-none hover-link">FAQs</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="col-lg-4 col-md-6">
+        <h6 class="fw-bold text-dark mb-3 text-uppercase small tracking-wider">Contact Us</h6>
+        <ul class="list-unstyled mb-0 small text-muted">
+          <li class="d-flex align-items-center mb-2">
+            <i class="bi bi-geo-alt me-2 text-brand-primary"></i>
+            <span>Muzaffarnagar, Uttar Pradesh, India</span>
+          </li>
+          <li class="d-flex align-items-center mb-2">
+            <i class="bi bi-envelope me-2 text-brand-primary"></i>
+            <span>support&#64;ankurcart.com</span>
+          </li>
+          <li class="d-flex align-items-center">
+            <i class="bi bi-telephone me-2 text-brand-primary"></i>
+            <span>+91 98765 43210</span>
+          </li>
+        </ul>
+      </div>
+
     </div>
-    <div class="text-center p-2 bg-secondary bg-opacity-10 text-white-50 small">
-      <!-- © {{ new Date().getFullYear() }} E-Shop. All rights reserved. -->
+
+    <hr class="my-4 text-muted opacity-25">
+
+    <!-- Bottom Bar -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center small text-muted">
+      <p class="mb-0">&copy; {{ currentYear }} AnkurCart. All rights reserved.</p>
+      <div class="d-flex gap-3">
+        <a href="#" class="text-muted text-decoration-none">Privacy Policy</a>
+        <a href="#" class="text-muted text-decoration-none">Terms of Service</a>
+      </div>
     </div>
-  </footer>
+  </div>
+</footer>

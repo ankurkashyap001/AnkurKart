@@ -14,19 +14,19 @@ export class Auth {
     return this.http.post(`${this.apiUrl}/register`, userData);
   }
 
-  login(credentials: any): Observable<any> {
+  login(credentials: { email: string; password: string }) {
     return this.http.post(`${this.apiUrl}/login`, credentials);
   }
-
+  
   // Store Token in LocalStorage
   setToken(token: string): void {
     localStorage.setItem('auth_token', token);
   }
-
+  
   getToken(): string | null {
     return localStorage.getItem('auth_token');
   }
-
+  
   isLoggedIn(): boolean {
     return !!this.getToken();
   }

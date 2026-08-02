@@ -1,0 +1,23 @@
+.category-card {
+    background-color: var(--card-bg, #F5EFEB);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+  }
+  
+  .category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08) !important;
+  }
+  
+  .category-img {
+    height: 110px;
+    object-fit: contain;
+  }
+  
+  .btn-teal {
+    background-color: var(--brand-secondary, #5EA8A1);
+  }
+  
+  .btn-teal:hover {
+    background-color: #4e8e88;
+  }

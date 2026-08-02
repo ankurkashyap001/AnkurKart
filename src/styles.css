@@ -1,1 +1,31 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+    --bg-cream: #FFF9F3;
+    --card-bg: #F5EFEB;
+    --brand-primary: #D96A53; /* Terracotta Red */
+    --brand-secondary: #5EA8A1; /* Teal Accent */
+    --text-dark: #2B211E;
+    --text-muted: #82756E;
+  }
+  
+  body {
+    background-color: var(--bg-cream) !important;
+    color: var(--text-dark);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+  
+  /* Custom Utilities for Theme */
+  .bg-cream { background-color: var(--bg-cream) !important; }
+  .bg-brand-primary { background-color: var(--brand-primary) !important; }
+  .bg-brand-secondary { background-color: var(--brand-secondary) !important; }
+  .text-brand-primary { color: var(--brand-primary) !important; }
+  .btn-brand {
+    background-color: var(--brand-primary);
+    color: #fff;
+    border-radius: 50px;
+    border: none;
+  }
+  .btn-brand:hover {
+    background-color: #c25943;
+    color: #fff;
+  }

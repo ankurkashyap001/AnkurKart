@@ -8,6 +8,7 @@ import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { Footer } from './components/footer/footer';
 import { Navbar } from './components/navbar/navbar';
+import { Home } from './pages/home/home';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -21,5 +22,6 @@ export const routes: Routes = [
   { path: 'login', component: Login },
   { path: 'register', component: Register },
   { path: 'footer', component: Footer },
-  { path: 'navbar', component: Navbar }
-];
+  { path: 'navbar', component: Navbar },
+  { path: 'home', component: Home}
+]; 
