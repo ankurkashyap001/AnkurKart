@@ -1,0 +1,25 @@
+.hero-side-bg {
+    min-height: 520px;
+  }
+  
+  .gradient-overlay {
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.75) 100%);
+  }
+  
+  .form-control:focus {
+    border-color: var(--brand-primary, #D96A53) !important;
+    box-shadow: 0 0 0 0.2rem rgba(217, 106, 83, 0.15) !important;
+  }
+  
+  .btn-brand {
+    background-color: var(--brand-primary, #D96A53);
+    color: #ffffff;
+    border: none;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .btn-brand:hover {
+    background-color: #c25943;
+    color: #ffffff;
+    transform: translateY(-1px);
+  }

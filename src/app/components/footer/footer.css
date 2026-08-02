@@ -1,0 +1,12 @@
+.footer-theme {
+    background-color: #F5EFEB; /* Soft Warm Background */
+  }
+  
+  .hover-link:hover {
+    color: var(--brand-primary) !important;
+    transition: color 0.2s ease-in-out;
+  }
+  
+  .tracking-wider {
+    letter-spacing: 0.5px;
+  }

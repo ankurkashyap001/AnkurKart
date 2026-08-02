@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Auth } from '../../services/auth'; // Path verify karein
-import { Modal } from '../../services/modal'; // Path verify karein
+import { Auth } from '../../services/auth';
+import { Modal } from '../../services/modal';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +16,7 @@ export class Login {
   loginForm: FormGroup;
   isSubmitted = false;
   errorMessage = '';
+  showPassword = false; // Toggle password state
 
   constructor(
     private fb: FormBuilder,
@@ -31,6 +32,10 @@ export class Login {
 
   get f() {
     return this.loginForm.controls;
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 
   onSubmit() {
