@@ -1,0 +1,55 @@
+@if (modalData) {
+    <!-- Backdrop -->
+    <div class="modal-backdrop fade show"></div>
+  
+    <!-- Modal Dialog -->
+    <div class="modal d-block fade show" tabindex="-1" role="dialog" (click)="close()">
+      <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
+        <div class="modal-content text-center p-4 rounded-4 shadow-lg border-0">
+          
+          <!-- Modal Icon Header -->
+          <div class="mb-3">
+            @if (modalData.type === 'success') {
+              <div class="icon-box bg-success-subtle text-success rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+                <i class="bi bi-check-circle-fill display-4"></i>
+              </div>
+            }
+            @if (modalData.type === 'error') {
+              <div class="icon-box bg-danger-subtle text-danger rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+                <i class="bi bi-x-circle-fill display-4"></i>
+              </div>
+            }
+            @if (modalData.type === 'confirm') {
+              <div class="icon-box bg-warning-subtle text-warning rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+                <i class="bi bi-exclamation-triangle-fill display-4"></i>
+              </div>
+            }
+          </div>
+  
+          <!-- Title & Message -->
+          <h4 class="fw-bold mb-2">{{ modalData.title }}</h4>
+          <p class="text-muted mb-4">{{ modalData.message }}</p>
+  
+          <!-- Actions -->
+          <div class="d-flex justify-content-center gap-2">
+            @if (modalData.type === 'confirm') {
+              <button type="button" class="btn btn-light px-4 py-2 rounded-pill fw-semibold" (click)="onCancel()">
+                {{ modalData.cancelText || 'Cancel' }}
+              </button>
+              <button type="button" class="btn btn-danger px-4 py-2 rounded-pill fw-semibold" (click)="onConfirm()">
+                {{ modalData.confirmText || 'Confirm' }}
+              </button>
+            } @else {
+              <button type="button" 
+                      class="btn px-5 py-2 rounded-pill fw-semibold text-white"
+                      [ngClass]="{'btn-success': modalData.type === 'success', 'btn-danger': modalData.type === 'error', 'btn-primary': modalData.type === 'info'}"
+                      (click)="onConfirm()">
+                {{ modalData.confirmText || 'OK' }}
+              </button>
+            }
+          </div>
+  
+        </div>
+      </div>
+    </div>
+  }
