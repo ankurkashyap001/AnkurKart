@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { CategoryService } from '../../services/category.service'; // Updated Path
+import { SalesCategory } from '../../models/category.model';       // Updated Path
 
 @Component({
   selector: 'app-home',
@@ -8,13 +10,36 @@ import { CommonModule } from '@angular/common';
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
-export class Home {
-  categories = [
-    { id: 1, name: 'Handcrafted Decor', discount: 'Up to 35% off', image: 'assets/images/decor.png' },
-    { id: 2, name: 'Organic Spices', discount: 'Up to 20% off', image: 'assets/images/spices.png' },
-    { id: 3, name: 'Herbal Wellness', discount: 'Up to 25% off', image: 'assets/images/wellness.png' },
-    { id: 4, name: 'Artisanal Fabrics', discount: 'Up to 15% off', image: 'assets/images/fabrics.png' },
-    { id: 5, name: 'Premium Tea', discount: 'Up to 30% off', image: 'assets/images/tea.png' },
-    { id: 6, name: 'Gourmet Gifts', discount: 'Up to 40% off', image: 'assets/images/gifts.png' },
-  ];
+export class Home implements OnInit {
+  private categoryService = inject(CategoryService);
+
+  categories = signal<SalesCategory[]>([]);
+  isLoading = signal<boolean>(true);
+  errorMessage = signal<string | null>(null);
+
+  defaultCategoryImage = 'assets/images/category-placeholder.png';
+
+  ngOnInit(): void {
+    this.fetchCategories();
+  }
+
+  fetchCategories(): void {
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+
+    this.categoryService.getCategories().subscribe({
+      next: (data) => {
+        this.categories.set(data);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        this.errorMessage.set(err.message || 'Categories fetch karne me dikkat aayi.');
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  onImageError(event: Event): void {
+    (event.target as HTMLImageElement).src = this.defaultCategoryImage;
+  }
 }

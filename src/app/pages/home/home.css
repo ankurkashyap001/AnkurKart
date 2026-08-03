@@ -21,3 +21,76 @@
   .btn-teal:hover {
     background-color: #4e8e88;
   }
+
+  /* View All Button Styling */
+.view-all-btn {
+  color: #6f42c1;
+  border-color: #6f42c1;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.view-all-btn:hover {
+  background-color: #6f42c1;
+  color: #ffffff;
+}
+
+/* Category Tile & Image Box */
+.category-tile {
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.category-tile:hover {
+  transform: translateY(-4px);
+}
+
+.category-img-box {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: #eef2ff; /* Soft Light Purple/Blue Pastel BG */
+  border-radius: 20px !important;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+
+.category-tile:hover .category-img-box {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.category-img {
+  max-width: 85%;
+  max-height: 85%;
+  object-fit: contain;
+}
+
+/* Category Name & Discount Styling */
+.category-title {
+  font-size: 0.825rem;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.discount-text {
+  color: #e86a43; /* Terracotta / Soft Orange Discount Color */
+  font-size: 0.75rem;
+  display: block;
+}
+
+/* Font Size helper for small category names */
+.fs-7 {
+  font-size: 0.825rem;
+}
+
+/* Responsive Grid adjustment for tight spacing */
+@media (min-width: 1200px) {
+  .row-cols-lg-9 > * {
+    flex: 0 0 auto;
+    width: 11.111111%; /* 9 columns per row for wide screens */
+  }
+}
