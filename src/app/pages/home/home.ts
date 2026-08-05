@@ -1,7 +1,11 @@
+// src/app/pages/home/home.ts
+
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CategoryService } from '../../services/category.service'; // Updated Path
-import { SalesCategory } from '../../models/category.model';       // Updated Path
+import { CategoryService } from '../../services/category.service';
+import { ProductService } from '../../services/product.service';
+import { SalesCategory } from '../../models/category.model';
+import { Product } from '../../models/product.model';
 
 @Component({
   selector: 'app-home',
@@ -12,34 +16,60 @@ import { SalesCategory } from '../../models/category.model';       // Updated Pa
 })
 export class Home implements OnInit {
   private categoryService = inject(CategoryService);
+  private productService = inject(ProductService);
 
+  // Category Signals
   categories = signal<SalesCategory[]>([]);
-  isLoading = signal<boolean>(true);
-  errorMessage = signal<string | null>(null);
+  isCategoriesLoading = signal<boolean>(true);
+  categoriesError = signal<string | null>(null);
 
-  defaultCategoryImage = 'assets/images/category-placeholder.png';
+  // Product Signals
+  products = signal<Product[]>([]);
+  isProductsLoading = signal<boolean>(true);
+  productsError = signal<string | null>(null);
+
+  // Fallback image path
+  // defaultImage = 'assets/images/category-placeholder.png';
+  defaultImage = 'https://placehold.co/150x150/eef2ff/6f42c1?text=AnkurCart';
 
   ngOnInit(): void {
     this.fetchCategories();
+    this.fetchProducts();
   }
 
   fetchCategories(): void {
-    this.isLoading.set(true);
-    this.errorMessage.set(null);
+    this.isCategoriesLoading.set(true);
+    this.categoriesError.set(null);
 
     this.categoryService.getCategories().subscribe({
-      next: (data) => {
+      next: (data: SalesCategory[]) => {
         this.categories.set(data);
-        this.isLoading.set(false);
+        this.isCategoriesLoading.set(false);
       },
-      error: (err) => {
-        this.errorMessage.set(err.message || 'Categories fetch karne me dikkat aayi.');
-        this.isLoading.set(false);
+      error: (err: Error) => {
+        this.categoriesError.set(err.message || 'Categories fetch nahi ho saki.');
+        this.isCategoriesLoading.set(false);
+      }
+    });
+  }
+
+  fetchProducts(): void {
+    this.isProductsLoading.set(true);
+    this.productsError.set(null);
+
+    this.productService.getProducts().subscribe({
+      next: (data: Product[]) => {
+        this.products.set(data);
+        this.isProductsLoading.set(false);
+      },
+      error: (err: Error) => {
+        this.productsError.set(err.message || 'Products fetch nahi ho sake.');
+        this.isProductsLoading.set(false);
       }
     });
   }
 
   onImageError(event: Event): void {
-    (event.target as HTMLImageElement).src = this.defaultCategoryImage;
+    (event.target as HTMLImageElement).src = this.defaultImage;
   }
 }
