@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "angular-inventory-app": {
+    "ankur-kart": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -67,10 +67,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "angular-inventory-app:build:production"
+              "buildTarget": "ankur-kart:build:production"
             },
             "development": {
-              "buildTarget": "angular-inventory-app:build:development"
+              "buildTarget": "ankur-kart:build:development"
             }
           },
           "defaultConfiguration": "development"

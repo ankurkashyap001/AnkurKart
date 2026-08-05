@@ -23,5 +23,5 @@ import { Home } from './pages/home/home';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('angular-inventory-app');
+  protected readonly title = signal('ankur-kart');
 }

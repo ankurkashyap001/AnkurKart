@@ -1,5 +1,5 @@
 {
-  "name": "angular-inventory-app",
+  "name": "ankur-kart",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:angular-inventory-app": "node dist/angular-inventory-app/server/server.mjs"
+    "serve:ssr:ankur-kart": "node dist/ankur-kart/server/server.mjs"
   },
   "prettier": {
     "printWidth": 100,
