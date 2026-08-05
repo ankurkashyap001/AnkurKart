@@ -1,53 +1,89 @@
-<nav class="navbar navbar-expand-lg bg-cream py-3 border-bottom border-light-subtle">
-  <div class="container">
+<nav class="navbar navbar-expand-lg bg-white py-2 border-bottom shadow-sm sticky-top">
+  <div class="container-fluid px-lg-4">
     
-    <!-- Brand Logo -->
-    <a class="navbar-brand d-flex align-items-center fw-bold text-brand-primary fs-3" routerLink="/">
-      <i class="bi bi-bag-heart-fill me-2 fs-2"></i>
-      <span>Ankur<span class="fw-light text-dark">Cart</span></span>
+    <!-- 1. Brand Logo + Tagline -->
+    <a class="navbar-brand d-flex flex-column text-decoration-none me-4" routerLink="/">
+      <span class="fw-bold text-brand-dark fs-3 lh-1">
+        Ankur<span class="text-brand-orange">Kart</span>
+      </span>
+      <small class="text-muted fs-8 fw-semibold tracking-wide">Fresh. Fast. For You.</small>
     </a>
 
-    <!-- Center Search Bar -->
-    <div class="d-none d-md-flex mx-auto col-lg-5 col-md-4">
-      <div class="input-group search-box">
-        <span class="input-group-text bg-white border-end-0 rounded-start-pill ps-3 text-muted">
-          <i class="bi bi-search"></i>
-        </span>
-        <input 
-          type="text" 
-          class="form-control border-start-0 rounded-end-pill py-2 shadow-none" 
-          placeholder="Enter a query..."
-        />
+    <!-- 2. Location Selector -->
+    <div class="d-none d-lg-flex align-items-center me-4 cursor-pointer text-start">
+      <i class="bi bi-geo-alt-fill text-brand-orange fs-4 me-2"></i>
+      <div class="d-flex flex-column">
+        <span class="text-muted fs-8 fw-medium lh-1">Deliver to</span>
+        <div class="dropdown">
+          <button class="btn btn-sm p-0 fw-semibold text-dark dropdown-toggle fs-7 border-0 shadow-none" type="button" data-bs-toggle="dropdown">
+            Tower C, Nirvana Country, Sec 50
+          </button>
+          <ul class="dropdown-menu shadow border-0 fs-7">
+            <li><a class="dropdown-item" href="#">Tower C, Nirvana Country, Sec 50</a></li>
+            <li><a class="dropdown-item" href="#">Home - Sector 62, Noida</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-brand-orange fw-bold" href="#">+ Add New Address</a></li>
+          </ul>
+        </div>
       </div>
     </div>
 
-    <!-- Right Side Controls -->
-    <div class="d-flex align-items-center gap-3">
+    <!-- 3. Center Search Bar with Integrated Orange Button -->
+    <div class="flex-grow-1 my-2 my-lg-0 me-lg-4" style="max-width: 550px;">
+      <div class="input-group">
+        <input 
+          type="text" 
+          class="form-control bg-light border-end-0 py-2 ps-3 shadow-none fs-7" 
+          placeholder="Search for &quot;milk, eggs, bread...&quot;"
+          style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;"
+        />
+        <button 
+          class="btn btn-brand-orange px-3 d-flex align-items-center justify-content-center" 
+          type="button"
+          style="border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 8px; border-bottom-right-radius: 8px;">
+          <i class="bi bi-search fs-6"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- 4. Right Controls (Auth, Wishlist, Cart) -->
+    <div class="d-flex align-items-center gap-3 ms-auto">
       
       @if (authService.isLoggedIn()) {
-        <!-- User Profile / Logout Dropdown -->
+        <!-- Logged In State -->
         <div class="dropdown">
-          <button class="btn btn-outline-dark rounded-pill dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
-            <i class="bi bi-person-circle fs-5"></i> My Account
+          <button class="btn btn-light rounded-pill border dropdown-toggle d-flex align-items-center gap-2 fs-7 fw-medium" type="button" data-bs-toggle="dropdown">
+            <i class="bi bi-person-circle fs-5 text-brand-orange"></i> My Account
           </button>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+          <ul class="dropdown-menu dropdown-menu-end shadow border-0 fs-7">
             <li><a class="dropdown-item" routerLink="/orders"><i class="bi bi-box-seam me-2"></i>My Orders</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><button class="dropdown-item text-danger" (click)="logout()"><i class="bi bi-box-arrow-right me-2"></i>Logout</button></li>
           </ul>
         </div>
       } @else {
-        <!-- Auth Actions -->
-        <a routerLink="/login" class="btn btn-link text-dark text-decoration-none fw-medium">Login</a>
-        <a routerLink="/register" class="btn btn-brand px-4 py-2 fw-semibold">Sign-Up</a>
+        <!-- Logged Out State -->
+        <a routerLink="/login" class="text-dark text-decoration-none fw-semibold fs-7 d-flex flex-column align-items-center">
+          <i class="bi bi-person fs-5"></i>
+          <span>Login</span>
+        </a>
       }
 
-      <!-- Cart Icon with Counter -->
-      <a routerLink="/cart" class="position-relative btn text-brand-primary p-2 fs-4">
-        <i class="bi bi-basket3-fill"></i>
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-brand-primary fs-7">
-          0
-        </span>
+      <!-- Wishlist -->
+      <a routerLink="/wishlist" class="text-dark text-decoration-none fw-semibold fs-7 d-flex flex-column align-items-center position-relative px-2">
+        <i class="bi bi-heart fs-5"></i>
+        <span>Wishlist</span>
+      </a>
+
+      <!-- My Cart Button -->
+      <a routerLink="/cart" class="btn btn-brand-orange d-flex align-items-center gap-2 px-3 py-2 text-decoration-none shadow-sm">
+        <div class="position-relative">
+          <i class="bi bi-cart3 fs-5"></i>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-dark fs-8">
+            2
+          </span>
+        </div>
+        <span class="fw-bold fs-7 d-none d-sm-inline">My Cart</span>
       </a>
 
     </div>

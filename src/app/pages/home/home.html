@@ -1,136 +1,147 @@
-<div class="container py-4">
+<div class="container py-3">
 
-  <!-- Banner 1: Hero Banner -->
-  <div class="hero-banner p-4 p-md-5 rounded-4 mb-4 text-white d-flex align-items-center justify-content-between position-relative overflow-hidden" 
-       style="background: linear-gradient(135deg, #D96A53 0%, #C85942 100%);">
-    <div class="d-flex align-items-center gap-4 z-1">
-      <div class="banner-icon d-none d-sm-block">
-        <i class="bi bi-bag-check fs-1 bg-white text-brand-primary p-3 rounded-4 shadow-sm"></i>
-      </div>
-      <div>
-        <h1 class="font-serif fw-bold display-6 mb-1">Grow Your World with Us</h1>
-        <p class="mb-0 opacity-90 fs-6">Connect with a world of curated products for your growth.</p>
-      </div>
-    </div>
-
-    <a href="#" class="btn btn-teal rounded-pill px-4 py-2 text-white fw-semibold shadow-sm d-none d-md-flex align-items-center gap-2 z-1">
-      Connect <i class="bi bi-arrow-right-circle-fill"></i>
-    </a>
-  </div>
-
-  <!-- Banner 2: WhatsApp / Quick Order Banner -->
-  <div class="whatsapp-banner p-4 rounded-4 mb-5 text-white d-flex flex-wrap align-items-center justify-content-between" 
-       style="background-color: #5EA8A1;">
-    <div class="d-flex align-items-center gap-3">
-      <i class="bi bi-whatsapp display-5"></i>
-      <div>
-        <h4 class="fw-bold mb-0">Order Curated Collections via WhatsApp!</h4>
-        <small class="opacity-75">Fast & easy direct shopping assistant</small>
-      </div>
-    </div>
-
-    <div class="d-flex align-items-center gap-4 my-2 my-md-0">
-      <div class="text-center d-flex align-items-center gap-2">
-        <i class="bi bi-clock-history fs-3"></i>
-        <div class="text-start">
-          <span class="d-block fw-bold fs-4 leading-none">24/7</span>
-          <small class="opacity-75">Handpicked Items</small>
+  <!-- 1. HERO BANNER -->
+  <div class="hero-banner p-4 p-md-5 rounded-4 mb-4 text-white position-relative overflow-hidden shadow-sm" 
+       style="background: linear-gradient(135deg, #00A88F 0%, #0C2329 100%);">
+    <div class="row align-items-center">
+      <div class="col-lg-7 col-md-8 z-1">
+        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold fs-8 mb-3">
+          <i class="bi bi-lightning-charge-fill me-1"></i> Delivery in 10 Minutes
+        </span>
+        <h1 class="fw-bold display-5 mb-2 lh-sm">
+          Fresh Groceries <br class="d-none d-sm-inline"/>Delivered in 10 Minutes
+        </h1>
+        <p class="mb-4 text-white-50 fs-6">
+          Fruits, Vegetables, Dairy, Snacks & more — everything you need, in a blink!
+        </p>
+        <div class="d-flex align-items-center gap-3">
+          <a href="#" class="btn btn-brand-orange px-4 py-2 rounded-pill fw-bold shadow-sm d-inline-flex align-items-center gap-2">
+            Shop Now <i class="bi bi-arrow-right"></i>
+          </a>
         </div>
       </div>
     </div>
+  </div>
 
-    <a href="#" class="btn btn-light rounded-pill px-4 py-2 fw-bold text-dark shadow-sm">
-      ORDER NOW
+  <!-- 2. QUICK PROMO CATEGORIES GRID -->
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3 mb-4">
+    <div class="col">
+      <div class="promo-card bg-teal-subtle p-3 rounded-4 d-flex justify-content-between align-items-center h-100">
+        <div>
+          <h6 class="fw-bold mb-1">Grocery Essentials</h6>
+          <small class="text-muted d-block mb-2 fs-8">Daily needs at your doorstep</small>
+          <button class="btn btn-dark btn-sm rounded-pill px-3 fs-8 fw-semibold">Order Now</button>
+        </div>
+        <i class="bi bi-basket2 fs-1 text-success opacity-75"></i>
+      </div>
+    </div>
+    
+    <div class="col">
+      <div class="promo-card bg-orange-subtle p-3 rounded-4 d-flex justify-content-between align-items-center h-100">
+        <div>
+          <h6 class="fw-bold mb-1">Pharmacy Delivered</h6>
+          <small class="text-muted d-block mb-2 fs-8">Medicines & health care</small>
+          <button class="btn btn-brand-orange btn-sm rounded-pill px-3 fs-8 fw-semibold">Order Now</button>
+        </div>
+        <i class="bi bi-capsule fs-1 text-brand-orange opacity-75"></i>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="promo-card bg-purple-subtle p-3 rounded-4 d-flex justify-content-between align-items-center h-100">
+        <div>
+          <h6 class="fw-bold mb-1">Pet Care Supplies</h6>
+          <small class="text-muted d-block mb-2 fs-8">Food, toys & more</small>
+          <button class="btn btn-primary btn-sm rounded-pill px-3 fs-8 fw-semibold">Order Now</button>
+        </div>
+        <i class="bi bi-heart-pulse fs-1 text-primary opacity-75"></i>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="promo-card bg-blue-subtle p-3 rounded-4 d-flex justify-content-between align-items-center h-100">
+        <div>
+          <h6 class="fw-bold mb-1">Baby Care Essentials</h6>
+          <small class="text-muted d-block mb-2 fs-8">Everything for your baby</small>
+          <button class="btn btn-info btn-sm text-white rounded-pill px-3 fs-8 fw-semibold">Order Now</button>
+        </div>
+        <i class="bi bi-emoji-smile fs-1 text-info opacity-75"></i>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 3. SHOP BY CATEGORY SECTION (SS1 Exact Match) -->
+<div class="mb-5">
+  
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="fw-bold text-dark mb-0">Shop by Category</h5>
+    <a href="#" class="text-success fw-semibold fs-7 text-decoration-none">
+      View All <i class="bi bi-arrow-right ms-1"></i>
     </a>
   </div>
 
-  <!-- ================= SECTION: SHOP BY CATEGORY ================= -->
-  <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-    <h5 class="fw-bold text-uppercase tracking-wider mb-0 text-dark opacity-75" style="letter-spacing: 0.5px;">
-      Shop By Category
-    </h5>
-    <a href="#" class="btn btn-outline-primary btn-sm rounded-pill px-3 view-all-btn">
-      View All <i class="bi bi-chevron-right ms-1"></i>
-    </a>
-  </div>
-
-  <!-- 1. Category Skeleton Loading -->
+  <!-- Category Skeleton Loading -->
   @if (isCategoriesLoading()) {
-    <div class="row row-cols-3 row-cols-sm-4 row-cols-md-6 row-cols-lg-9 g-3">
+    <div class="category-grid-9">
       @for (item of [1,2,3,4,5,6,7,8,9]; track $index) {
-        <div class="col text-center">
-          <div class="placeholder-glow">
-            <div class="placeholder rounded-4 mb-2 w-100" style="height: 100px;"></div>
-            <div class="placeholder col-8 py-1 rounded mb-1"></div>
-            <div class="placeholder col-5 py-1 rounded"></div>
-          </div>
+        <div class="placeholder-glow">
+          <div class="placeholder rounded-4 w-100" style="height: 180px;"></div>
         </div>
       }
     </div>
   }
 
-  <!-- 2. Category Error Message -->
+  <!-- Category Error -->
   @if (categoriesError() && !isCategoriesLoading()) {
-    <div class="alert alert-danger d-flex align-items-center justify-content-between rounded-4 shadow-sm p-3 mb-4">
-      <div>
-        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-        <span>{{ categoriesError() }}</span>
-      </div>
+    <div class="alert alert-danger d-flex align-items-center justify-content-between rounded-4 p-3 mb-4">
+      <div><i class="bi bi-exclamation-triangle-fill me-2"></i> {{ categoriesError() }}</div>
       <button class="btn btn-outline-danger btn-sm rounded-pill px-3" (click)="fetchCategories()">Retry</button>
     </div>
   }
 
-  <!-- 3. Dynamic Categories -->
+  <!-- Dynamic Categories (SS1 Layout) -->
   @if (!isCategoriesLoading() && !categoriesError()) {
-    <div class="row row-cols-3 row-cols-sm-4 row-cols-md-6 row-cols-lg-9 g-3 g-md-4">
+    <div class="category-grid-9">
       @for (cat of categories(); track cat.category_id) {
-        <div class="col">
-          <div class="category-tile text-center h-100 d-flex flex-column align-items-center cursor-pointer">
-            <div class="category-img-box mb-2 d-flex align-items-center justify-content-center p-2 rounded-4">
-              <img 
-                [src]="cat.category_logo_url_web || cat.category_logo_url || defaultImage" 
-                [alt]="cat.category_name"
-                (error)="onImageError($event)"
-                class="img-fluid category-img"
-              />
-            </div>
-            <h6 class="category-title fw-bold text-dark mb-1 fs-7">
-              {{ cat.category_name }}
-            </h6>
-            <small class="discount-text fw-medium">
-              Up to {{ cat.max_discount || '0' }}% off
-            </small>
+        <div class="ss1-category-card">
+          <div class="ss1-category-img-wrapper">
+            <img 
+              [src]="cat.category_logo_url_web || cat.category_logo_url || defaultImage" 
+              [alt]="cat.category_name"
+              (error)="onImageError($event)"
+            />
           </div>
+          <span class="ss1-category-label">{{ cat.category_name }}</span>
         </div>
       } @empty {
-        <div class="col-12 text-center py-5">
+        <div class="col-12 text-center py-4">
           <p class="text-muted mb-0">No categories found.</p>
         </div>
       }
     </div>
   }
 
+</div>
 
-  <!-- ================= SECTION: SHOP BY FEATURED PRODUCTS ================= -->
-  <div class="mt-5 pt-3">
+
+  <!-- 4. BEST SELLING PRODUCTS SECTION -->
+  <div class="mb-5">
     
-    <!-- Section Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-      <h5 class="fw-bold text-uppercase tracking-wider mb-0 text-dark opacity-75" style="letter-spacing: 0.5px;">
-        Shop by Featured Products
-      </h5>
-      <a href="#" class="btn btn-outline-primary btn-sm rounded-pill px-3 view-all-btn">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="fw-bold text-dark mb-0">Best Selling Products</h5>
+      <a href="#" class="text-brand-orange fw-bold fs-7 text-decoration-none">
         View All <i class="bi bi-chevron-right ms-1"></i>
       </a>
     </div>
 
-    <!-- 1. Products Skeleton Loading -->
+    <!-- Products Skeleton Loading -->
     @if (isProductsLoading()) {
       <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3">
         @for (item of [1,2,3,4,5,6]; track $index) {
           <div class="col">
             <div class="card h-100 border-0 rounded-4 p-3 shadow-sm placeholder-glow">
-              <div class="placeholder rounded-3 mb-3 w-100" style="height: 140px;"></div>
+              <div class="placeholder rounded-3 mb-3 w-100" style="height: 120px;"></div>
               <div class="placeholder col-10 py-1 rounded mb-2"></div>
               <div class="placeholder col-6 py-1 rounded"></div>
             </div>
@@ -139,72 +150,55 @@
       </div>
     }
 
-    <!-- 2. Products Error State -->
+    <!-- Products Error State -->
     @if (productsError() && !isProductsLoading()) {
-      <div class="alert alert-danger d-flex align-items-center justify-content-between rounded-4 shadow-sm p-3">
-        <div>
-          <i class="bi bi-exclamation-triangle-fill me-2"></i>
-          <span>{{ productsError() }}</span>
-        </div>
+      <div class="alert alert-danger d-flex align-items-center justify-content-between rounded-4 p-3">
+        <div><i class="bi bi-exclamation-triangle-fill me-2"></i> {{ productsError() }}</div>
         <button class="btn btn-outline-danger btn-sm rounded-pill px-3" (click)="fetchProducts()">Retry</button>
       </div>
     }
 
-    <!-- 3. Dynamic Products Grid -->
+    <!-- Dynamic Products Grid -->
     @if (!isProductsLoading() && !productsError()) {
       <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3">
         @for (prod of products(); track prod.id) {
           <div class="col">
-            <div class="product-card card h-100 border-0 rounded-4 p-3 shadow-sm bg-white position-relative">
+            <div class="product-card-fixed">
               
-              <!-- Discount Badge -->
-              @if (prod.discount_percentage > 0) {
-                <span class="badge position-absolute top-0 start-0 m-3 rounded-pill text-white" style="background-color: #D96A53; font-size: 0.7rem;">
-                  {{ prod.discount_percentage }}% OFF
-                </span>
-              }
-
-              <!-- Image Box -->
-              <div class="product-img-box mb-3 d-flex align-items-center justify-content-center bg-light rounded-3 p-2 overflow-hidden" style="height: 140px;">
+              <div class="product-img-wrapper">
+                @if (prod.discount_percentage > 0) {
+                  <span class="badge position-absolute top-0 start-0 m-2 bg-discount fs-8">
+                    {{ prod.discount_percentage }}% OFF
+                  </span>
+                }
                 <img 
                   [src]="prod.primary_image || defaultImage" 
                   [alt]="prod.title"
                   (error)="onImageError($event)"
-                  class="img-fluid object-fit-contain h-100"
                 />
               </div>
 
-              <!-- Product Details -->
-              <div class="d-flex flex-column justify-content-between flex-grow-1">
-                <div>
-                  <h6 class="product-title fw-bold text-dark mb-1 fs-7" [title]="prod.title">
-                    {{ prod.title }}
-                  </h6>
-                  <p class="product-desc text-muted mb-2" [title]="prod.description">
-                    {{ prod.description }}
-                  </p>
+              <div class="product-name" [title]="prod.title">{{ prod.title }}</div>
+              <div class="product-unit">500 g</div>
+
+              <div class="product-action-row">
+                <div class="price-box">
+                  <span class="sale-price">₹{{ prod.sale_price }}</span>
+                  @if (prod.price > prod.sale_price) {
+                    <span class="original-price">₹{{ prod.price }}</span>
+                  }
                 </div>
 
-                <!-- Price & Button -->
-                <div>
-                  <div class="d-flex align-items-baseline gap-2 mb-2">
-                    <span class="fw-bold text-dark fs-6">₹{{ prod.sale_price }}</span>
-                    @if (prod.price > prod.sale_price) {
-                      <span class="text-muted text-decoration-line-through fs-7">₹{{ prod.price }}</span>
-                    }
-                  </div>
-
-                  <button class="btn btn-primary-theme btn-sm w-100 rounded-pill fw-semibold">
-                    Add to Cart
-                  </button>
-                </div>
+                <button class="btn-add-cart">
+                  ADD +
+                </button>
               </div>
 
             </div>
           </div>
         } @empty {
-          <div class="col-12 text-center py-5">
-            <p class="text-muted mb-0">Koi products nahi mile.</p>
+          <div class="col-12 text-center py-4">
+            <p class="text-muted mb-0">No products available.</p>
           </div>
         }
       </div>

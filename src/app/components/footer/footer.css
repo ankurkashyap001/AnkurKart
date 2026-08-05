@@ -1,12 +1,42 @@
-.footer-theme {
-    background-color: #F5EFEB; /* Soft Warm Background */
-  }
-  
-  .hover-link:hover {
-    color: var(--brand-primary) !important;
-    transition: color 0.2s ease-in-out;
-  }
-  
-  .tracking-wider {
-    letter-spacing: 0.5px;
-  }
+/* Deep Slate / Dark Teal Theme from Design Mockup */
+.footer-dark {
+  background-color: var(--brand-dark, #0C2329);
+}
+
+.feature-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hover-link {
+  transition: color 0.2s ease-in-out;
+}
+
+.hover-link:hover {
+  color: var(--brand-orange, #FF5E00) !important;
+}
+
+.social-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.social-btn:hover {
+  background-color: var(--brand-orange, #FF5E00);
+  color: #ffffff;
+}
+
+.tracking-wide {
+  letter-spacing: 0.5px;
+}

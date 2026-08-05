@@ -1,31 +1,40 @@
-/* You can add global styles to this file, and also import other style files */
 :root {
-    --bg-cream: #FFF9F3;
-    --card-bg: #F5EFEB;
-    --brand-primary: #D96A53; /* Terracotta Red */
-    --brand-secondary: #5EA8A1; /* Teal Accent */
-    --text-dark: #2B211E;
-    --text-muted: #82756E;
-  }
-  
-  body {
-    background-color: var(--bg-cream) !important;
-    color: var(--text-dark);
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  }
-  
-  /* Custom Utilities for Theme */
-  .bg-cream { background-color: var(--bg-cream) !important; }
-  .bg-brand-primary { background-color: var(--brand-primary) !important; }
-  .bg-brand-secondary { background-color: var(--brand-secondary) !important; }
-  .text-brand-primary { color: var(--brand-primary) !important; }
-  .btn-brand {
-    background-color: var(--brand-primary);
-    color: #fff;
-    border-radius: 50px;
-    border: none;
-  }
-  .btn-brand:hover {
-    background-color: #c25943;
-    color: #fff;
-  }
+  /* AnkurKart Brand Colors (From Mockup) */
+  --bg-light: #FFFFFF;
+  --bg-page: #F8F9FA;
+  --brand-orange: #FF5E00;
+  --brand-orange-hover: #E05300;
+  --brand-dark: #0C2329;
+  --text-dark: #1C242B;
+  --text-muted: #6C757D;
+  --border-color: #E2E8F0;
+}
+
+body {
+  background-color: var(--bg-page);
+  color: var(--text-dark);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Custom Color Utility Classes */
+.bg-brand-orange { background-color: var(--brand-orange) !important; }
+.text-brand-orange { color: var(--brand-orange) !important; }
+.text-brand-dark { color: var(--brand-dark) !important; }
+
+/* Custom Buttons */
+.btn-brand-orange {
+  background-color: var(--brand-orange);
+  color: #fff;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.btn-brand-orange:hover {
+  background-color: var(--brand-orange-hover);
+  color: #fff;
+}
+
+.fs-7 { font-size: 0.75rem; }
+.fs-8 { font-size: 0.68rem; }
