@@ -1,0 +1,115 @@
+@if (cartService.isDrawerOpen()) {
+    <div class="cart-backdrop" (click)="cartService.closeDrawer()"></div>
+  }
+  
+  <div class="cart-drawer-panel" [class.open]="cartService.isDrawerOpen()">
+    
+    <!-- Header -->
+    <div class="drawer-header d-flex justify-content-between align-items-center p-3 border-bottom bg-white">
+      <div class="d-flex align-items-center gap-2">
+        <h6 class="fw-bold mb-0 text-dark fs-6">My Cart</h6>
+        <span class="badge bg-brand-orange text-white rounded-pill fs-8">
+          {{ cartService.cartCount() }} items
+        </span>
+      </div>
+      <button class="btn-close-drawer btn-sm border-0 bg-transparent text-muted fs-5" (click)="cartService.closeDrawer()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+  
+    <!-- Body -->
+    <div class="drawer-body p-3">
+      @if (cartService.cart().items.length === 0) {
+        <div class="empty-cart-box text-center py-5">
+          <i class="bi bi-basket3 text-brand-orange display-3 opacity-50"></i>
+          <h6 class="fw-bold text-dark mb-1 mt-3">Your cart is empty</h6>
+          <p class="text-muted fs-8 mb-4">Add items to start shopping.</p>
+          <button class="btn btn-brand-orange px-4 py-2 rounded-pill fw-bold fs-7" (click)="cartService.closeDrawer()">
+            Start Shopping
+          </button>
+        </div>
+      } @else {
+  
+        <div class="eta-banner bg-warning-subtle p-2 rounded-3 d-flex align-items-center gap-2 mb-3">
+          <i class="bi bi-lightning-charge-fill text-warning fs-5"></i>
+          <span class="fs-8 fw-semibold text-dark">Delivery in <strong>10-15 mins</strong></span>
+        </div>
+  
+        <!-- Item List -->
+        <div class="cart-items-list d-flex flex-column gap-2.5 mb-4">
+          @for (item of cartService.cart().items; track item.id) {
+            <div class="cart-item-card bg-white p-2.5 rounded-3 border d-flex gap-3 align-items-center">
+              
+              <div class="item-img-box rounded-2 bg-light p-1" style="width: 50px; height: 50px;">
+                <img [src]="item.primary_image" [alt]="item.title" class="w-100 h-100 object-fit-contain" />
+              </div>
+  
+              <div class="flex-grow-1">
+                <h6 class="item-title fw-bold text-dark fs-8 mb-0">{{ item.title }}</h6>
+                <small class="text-muted fs-8 d-block mb-1">{{ item.unit || '1 unit' }}</small>
+                <div class="item-price fw-bold text-dark fs-7">
+                  ₹{{ item.sale_price * item.quantity }}
+                </div>
+              </div>
+  
+              <!-- Controller -->
+              <div class="counter-box d-flex align-items-center border rounded-2 bg-brand-orange text-white">
+                <button class="btn btn-sm text-white px-2 py-0 fs-7 fw-bold" 
+                        (click)="cartService.updateQuantity(item.id, item.quantity - 1, item.stock_limit)">-</button>
+                <span class="px-2 fs-8 fw-bold">{{ item.quantity }}</span>
+                <button class="btn btn-sm text-white px-2 py-0 fs-7 fw-bold" 
+                        (click)="cartService.updateQuantity(item.id, item.quantity + 1, item.stock_limit)">+</button>
+              </div>
+  
+            </div>
+          }
+        </div>
+  
+        <!-- Bill Details -->
+        <div class="bill-details-box bg-white p-3 rounded-3 border mb-3 fs-7">
+          <h6 class="fw-bold text-dark mb-2 fs-7">Bill Details</h6>
+          
+          <div class="d-flex justify-content-between mb-1 text-muted">
+            <span>Items total</span>
+            <span>₹{{ cartService.subtotal() }}</span>
+          </div>
+  
+          <div class="d-flex justify-content-between mb-2 text-muted">
+            <span>Delivery partner fee</span>
+            <span>
+              @if (cartService.deliveryFee() === 0) {
+                <span class="text-success fw-bold">FREE</span>
+              } @else {
+                ₹{{ cartService.deliveryFee() }}
+              }
+            </span>
+          </div>
+  
+          <hr class="my-2" />
+  
+          <div class="d-flex justify-content-between fw-bold text-dark fs-6">
+            <span>To Pay</span>
+            <span>₹{{ cartService.grandTotal() }}</span>
+          </div>
+        </div>
+  
+      }
+    </div>
+  
+    <!-- Footer -->
+    @if (cartService.cart().items.length > 0) {
+      <div class="drawer-footer p-3 bg-white border-top">
+        <button class="btn btn-brand-orange w-100 py-2.5 rounded-3 fw-bold d-flex align-items-center justify-content-between">
+          <div class="d-flex flex-column text-start">
+            <span class="fs-7 lh-1">₹{{ cartService.grandTotal() }}</span>
+            <small class="fs-8 text-white-50 fw-normal">TOTAL</small>
+          </div>
+          <div class="d-flex align-items-center gap-1 fs-7">
+            <span>Proceed to Checkout</span>
+            <i class="bi bi-chevron-right"></i>
+          </div>
+        </button>
+      </div>
+    }
+  
+  </div>

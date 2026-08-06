@@ -1,0 +1,52 @@
+.cart-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(2px);
+    z-index: 1040;
+  }
+  
+  .cart-drawer-panel {
+    position: fixed;
+    top: 0;
+    right: -420px;
+    width: 100%;
+    max-width: 400px;
+    height: 100vh;
+    background-color: #F4F6FB;
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    transition: right 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .cart-drawer-panel.open {
+    right: 0;
+  }
+  
+  .drawer-body {
+    flex: 1;
+    overflow-y: auto;
+  }
+  
+  .counter-box {
+    background-color: #D96A53;
+    height: 30px;
+  }
+  
+  .bg-brand-orange, .btn-brand-orange {
+    background-color: #D96A53;
+    color: #ffffff;
+  }
+  
+  .btn-brand-orange:hover {
+    background-color: #c25741;
+    color: #ffffff;
+  }
+  
+  .fs-8 { font-size: 0.725rem; }
+  .fs-7 { font-size: 0.825rem; }

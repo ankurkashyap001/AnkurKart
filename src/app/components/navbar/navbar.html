@@ -76,15 +76,29 @@
       </a>
 
       <!-- My Cart Button -->
-      <a routerLink="/cart" class="btn btn-brand-orange d-flex align-items-center gap-2 px-3 py-2 text-decoration-none shadow-sm">
-        <div class="position-relative">
-          <i class="bi bi-cart3 fs-5"></i>
-          <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-dark fs-8">
-            2
+      <!-- Cart Button with Dynamic Badge -->
+      <button 
+      (click)="cartService.openDrawer()" 
+      class="btn btn-brand-orange text-white d-flex align-items-center gap-2 px-3 py-2 rounded-3 border-0 shadow-sm position-relative">
+
+      <div class="position-relative">
+        <i class="bi bi-cart3 fs-5"></i>
+        
+        <!-- Active Cart Items Badge Count -->
+        @if (cartService.cartCount() > 0) {
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-dark text-white fs-8">
+            {{ cartService.cartCount() }}
           </span>
-        </div>
-        <span class="fw-bold fs-7 d-none d-sm-inline">My Cart</span>
-      </a>
+        }
+      </div>
+
+      <div class="d-none d-sm-flex flex-column text-start lh-1">
+        <span class="fw-bold fs-7">My Cart</span>
+        @if (cartService.cartCount() > 0) {
+          <small class="fs-8 text-white-50">₹{{ cartService.grandTotal() }}</small>
+        }
+      </div>
+      </button>
 
     </div>
   </div>

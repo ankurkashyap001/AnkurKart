@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../services/auth'; // Auth service path verify karein
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-navbar',
@@ -11,6 +12,8 @@ import { Auth } from '../../services/auth'; // Auth service path verify karein
   styleUrl: './navbar.css'
 })
 export class Navbar {
+  // CartService inject karke template mein access karenge
+  cartService = inject(CartService);
   constructor(
     public authService: Auth,
     private router: Router

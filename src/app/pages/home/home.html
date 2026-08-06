@@ -70,64 +70,59 @@
     </div>
   </div>
 
-
-  <!-- 3. SHOP BY CATEGORY SECTION (SS1 Exact Match) -->
-<div class="mb-5">
-  
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h5 class="fw-bold text-dark mb-0">Shop by Category</h5>
-    <a href="#" class="text-success fw-semibold fs-7 text-decoration-none">
-      View All <i class="bi bi-arrow-right ms-1"></i>
-    </a>
-  </div>
-
-  <!-- Category Skeleton Loading -->
-  @if (isCategoriesLoading()) {
-    <div class="category-grid-9">
-      @for (item of [1,2,3,4,5,6,7,8,9]; track $index) {
-        <div class="placeholder-glow">
-          <div class="placeholder rounded-4 w-100" style="height: 180px;"></div>
-        </div>
-      }
+  <!-- 3. SHOP BY CATEGORY SECTION -->
+  <div class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="fw-bold text-dark mb-0">Shop by Category</h5>
+      <a href="#" class="text-success fw-semibold fs-7 text-decoration-none">
+        View All <i class="bi bi-arrow-right ms-1"></i>
+      </a>
     </div>
-  }
 
-  <!-- Category Error -->
-  @if (categoriesError() && !isCategoriesLoading()) {
-    <div class="alert alert-danger d-flex align-items-center justify-content-between rounded-4 p-3 mb-4">
-      <div><i class="bi bi-exclamation-triangle-fill me-2"></i> {{ categoriesError() }}</div>
-      <button class="btn btn-outline-danger btn-sm rounded-pill px-3" (click)="fetchCategories()">Retry</button>
-    </div>
-  }
-
-  <!-- Dynamic Categories (SS1 Layout) -->
-  @if (!isCategoriesLoading() && !categoriesError()) {
-    <div class="category-grid-9">
-      @for (cat of categories(); track cat.category_id) {
-        <div class="ss1-category-card">
-          <div class="ss1-category-img-wrapper">
-            <img 
-              [src]="cat.category_logo_url_web || cat.category_logo_url || defaultImage" 
-              [alt]="cat.category_name"
-              (error)="onImageError($event)"
-            />
+    <!-- Category Skeleton Loading -->
+    @if (isCategoriesLoading()) {
+      <div class="category-grid-9">
+        @for (item of [1,2,3,4,5,6,7,8,9]; track $index) {
+          <div class="placeholder-glow">
+            <div class="placeholder rounded-4 w-100" style="height: 180px;"></div>
           </div>
-          <span class="ss1-category-label">{{ cat.category_name }}</span>
-        </div>
-      } @empty {
-        <div class="col-12 text-center py-4">
-          <p class="text-muted mb-0">No categories found.</p>
-        </div>
-      }
-    </div>
-  }
+        }
+      </div>
+    }
 
-</div>
+    <!-- Category Error -->
+    @if (categoriesError() && !isCategoriesLoading()) {
+      <div class="alert alert-danger d-flex align-items-center justify-content-between rounded-4 p-3 mb-4">
+        <div><i class="bi bi-exclamation-triangle-fill me-2"></i> {{ categoriesError() }}</div>
+        <button class="btn btn-outline-danger btn-sm rounded-pill px-3" (click)="fetchCategories()">Retry</button>
+      </div>
+    }
 
+    <!-- Dynamic Categories -->
+    @if (!isCategoriesLoading() && !categoriesError()) {
+      <div class="category-grid-9">
+        @for (cat of categories(); track cat.category_id) {
+          <div class="ss1-category-card">
+            <div class="ss1-category-img-wrapper">
+              <img 
+                [src]="cat.category_logo_url_web || cat.category_logo_url || defaultImage" 
+                [alt]="cat.category_name"
+                (error)="onImageError($event)"
+              />
+            </div>
+            <span class="ss1-category-label">{{ cat.category_name }}</span>
+          </div>
+        } @empty {
+          <div class="col-12 text-center py-4">
+            <p class="text-muted mb-0">No categories found.</p>
+          </div>
+        }
+      </div>
+    }
+  </div>
 
   <!-- 4. BEST SELLING PRODUCTS SECTION -->
   <div class="mb-5">
-    
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h5 class="fw-bold text-dark mb-0">Best Selling Products</h5>
       <a href="#" class="text-brand-orange fw-bold fs-7 text-decoration-none">
@@ -189,8 +184,11 @@
                   }
                 </div>
 
-                <button class="btn-add-cart">
-                  ADD +
+                <!-- Product Add Button (Fixed parameter binding) -->
+                <button 
+                  (click)="cartService.addToCart(prod)" 
+                  class="btn btn-outline-brand-orange btn-sm fw-bold px-3 py-1 rounded-2">
+                  ADD
                 </button>
               </div>
 
@@ -203,7 +201,6 @@
         }
       </div>
     }
-
   </div>
 
 </div>

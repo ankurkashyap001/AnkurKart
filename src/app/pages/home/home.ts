@@ -6,6 +6,7 @@ import { CategoryService } from '../../services/category.service';
 import { ProductService } from '../../services/product.service';
 import { SalesCategory } from '../../models/category.model';
 import { Product } from '../../models/product.model';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-home',
@@ -17,6 +18,8 @@ import { Product } from '../../models/product.model';
 export class Home implements OnInit {
   private categoryService = inject(CategoryService);
   private productService = inject(ProductService);
+  // CartService Inject yahan karein
+  cartService = inject(CartService);
 
   // Category Signals
   categories = signal<SalesCategory[]>([]);

@@ -10,6 +10,7 @@ import { Navbar } from './components/navbar/navbar';
 import { HttpClientModule } from '@angular/common/http';
 import { GlobalModal } from './components/global-modal/global-modal';
 import { Home } from './pages/home/home';
+import { CartDrawer } from './components/cart-drawer/cart-drawer';
 // import { Header } from './header/header';
 // import { Footer } from './footer/footer';
 // import { Sidebar } from './sidebar/sidebar';
@@ -18,7 +19,7 @@ import { Home } from './pages/home/home';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, Counter, Computed, Cart, Login, Register, Footer, Navbar, Home, HttpClientModule, GlobalModal],
+  imports: [RouterOutlet, RouterLink, Counter, Computed, Cart, Login, Register, Footer, Navbar, Home, CartDrawer, HttpClientModule, GlobalModal],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
