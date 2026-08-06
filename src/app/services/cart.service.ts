@@ -63,25 +63,37 @@ export class CartService {
   // 1. Updated formatCartResponse (ID Normalize karega)
   private formatCartResponse(res: any): Cart {
     if (!res) return this.defaultCart;
-    
-    const rawItems = res?.items ?? res?.cart?.items ?? res?.data?.items ?? [];
-    
+  
+    // Support direct object or res.data wrapper from backend
+    const cartData = res.data || res;
+    const rawItems = cartData?.items || [];
+  
     const formattedItems = Array.isArray(rawItems) ? rawItems.map((item: any) => ({
-      ...item,
-      // Backend id, cart_item_id ya product_id me se valid Number extract karein
-      id: Number(item.id || item.cart_item_id || item.item_id || item.product_id),
-      product_id: Number(item.product_id || item.id),
-      sale_price: Number(item.sale_price || item.price || 0),
-      price: Number(item.price || item.sale_price || 0),
+      // 1. item_id ko frontend id mein normalize karo
+      id: Number(item.item_id || item.id),
+      product_id: Number(item.product_id),
+      title: item.title || '',
+      
+      // 2. image_url ko primary_image mein bind karo (FIX for broken image)
+      primary_image: item.image_url || item.primary_image || '',
+      
+      // 3. price ko sale_price mein map karo
+      sale_price: Number(item.price || item.sale_price || 0),
+      price: Number(item.price || 0),
       quantity: Number(item.quantity || 1),
-      stock_limit: Number(item.stock_limit || item.stock || 10)
+      
+      // 4. stock_available ko stock_limit mein map karo
+      stock_limit: Number(item.stock_available || item.stock_limit || 10),
+      unit: item.unit || '1 unit'
     })) : [];
-
+  
+    const calculatedSubtotal = cartData?.total_amount ?? cartData?.subtotal ?? 0;
+  
     return {
       items: formattedItems,
-      subtotal: res?.subtotal ?? 0,
-      delivery_fee: res?.delivery_fee ?? 0,
-      total: res?.total ?? 0
+      subtotal: calculatedSubtotal,
+      delivery_fee: 0,
+      total: calculatedSubtotal
     };
   }
 
