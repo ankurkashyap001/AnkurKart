@@ -41,7 +41,8 @@
             <div class="cart-item-card bg-white p-2.5 rounded-3 border d-flex gap-3 align-items-center">
               
               <div class="item-img-box rounded-2 bg-light p-1" style="width: 50px; height: 50px;">
-                <img [src]="item.primary_image || item.image_url" [alt]="item.title" class="w-100 h-100 object-fit-contain" />
+                <img [src]="item.primary_image || item.image_url || item.product?.primary_image || 'assets/placeholder.png'" 
+                [alt]="item.title || item.product_name || 'Product Image'" class="w-100 h-100 object-fit-contain" />
               </div>
   
               <div class="flex-grow-1">
@@ -99,7 +100,8 @@
     <!-- Footer -->
     @if (cartService.cart().items.length > 0) {
       <div class="drawer-footer p-3 bg-white border-top">
-        <button class="btn btn-brand-orange w-100 py-2.5 rounded-3 fw-bold d-flex align-items-center justify-content-between">
+        <button class="btn btn-brand-orange w-100 py-2.5 rounded-3 fw-bold d-flex align-items-center justify-content-between" [routerLink]="['/checkout']"
+        (click)="cartService.closeDrawer()">
           <div class="d-flex flex-column text-start">
             <span class="fs-7 lh-1">₹{{ cartService.grandTotal() }}</span>
             <small class="fs-8 text-white-50 fw-normal">TOTAL</small>

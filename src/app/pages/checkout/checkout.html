@@ -1,0 +1,386 @@
+<div class="container py-4 my-2">
+
+  <!-- 1. CHECKOUT TOP STEPPER -->
+  <div class="checkout-stepper-container mb-5 py-3 bg-white rounded-4 shadow-sm border px-3 px-md-5">
+    <div class="d-flex justify-content-between align-items-center position-relative">
+      
+      <!-- Step 1: Cart (Done) -->
+      <div class="step-item completed text-center z-1">
+        <div class="step-icon-box bg-success text-white mx-auto rounded-circle mb-1">
+          <i class="bi bi-check-lg"></i>
+        </div>
+        <span class="step-title fw-bold fs-8 d-block">Cart</span>
+        <small class="text-muted fs-8 d-none d-sm-block">Review items</small>
+      </div>
+
+      <div class="step-line flex-grow-1 mx-2 border-top border-2 border-success"></div>
+
+      <!-- Step 2: Address (Active) -->
+      <div class="step-item active text-center z-1">
+        <div class="step-icon-box bg-brand-green text-white mx-auto rounded-circle mb-1 fw-bold">
+          2
+        </div>
+        <span class="step-title fw-bold fs-8 d-block text-dark">Address</span>
+        <small class="text-muted fs-8 d-none d-sm-block">Delivery details</small>
+      </div>
+
+      <div class="step-line flex-grow-1 mx-2 border-top border-2 border-200"></div>
+
+      <!-- Step 3: Payment -->
+      <div class="step-item text-center z-1">
+        <div class="step-icon-box bg-light text-muted border mx-auto rounded-circle mb-1 fw-bold">
+          3
+        </div>
+        <span class="step-title fw-semibold fs-8 d-block text-muted">Payment</span>
+        <small class="text-muted fs-8 d-none d-sm-block">Choose method</small>
+      </div>
+
+      <div class="step-line flex-grow-1 mx-2 border-top border-2 border-200"></div>
+
+      <!-- Step 4: Confirm -->
+      <div class="step-item text-center z-1">
+        <div class="step-icon-box bg-light text-muted border mx-auto rounded-circle mb-1 fw-bold">
+          4
+        </div>
+        <span class="step-title fw-semibold fs-8 d-block text-muted">Confirm</span>
+        <small class="text-muted fs-8 d-none d-sm-block">Place your order</small>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="row g-4">
+    <!-- LEFT COLUMN: ADDRESS, INSTRUCTIONS & PAYMENT -->
+    <div class="col-lg-8">
+      
+      <!-- 2. DELIVERY ADDRESS SECTION -->
+      <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+        <div class="d-flex align-items-center mb-3">
+          <i class="bi bi-geo-alt-fill text-brand-orange fs-5 me-2"></i>
+          <h5 class="fw-bold m-0 text-dark">Delivery Address</h5>
+        </div>
+
+        <!-- Saved Addresses Grid -->
+        <div class="row g-3 mb-3">
+          @for (addr of addressService.addresses(); track (addr.id || $index)) {
+            <div class="col-md-6 col-lg-5">
+              <div 
+                class="address-card p-3 rounded-4 cursor-pointer position-relative h-100 transition-all border" 
+                [class.border-success]="selectedAddressId() === addr.id"
+                [class.bg-light-subtle]="selectedAddressId() === addr.id"
+                (click)="selectAddress(addr.id!)"
+              >
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <div class="d-flex align-items-center gap-2">
+                    <input 
+                      type="radio" 
+                      name="address" 
+                      [checked]="selectedAddressId() === addr.id" 
+                      class="form-check-input shadow-none cursor-pointer custom-radio"
+                    >
+                    <span class="fw-bold text-dark fs-7">
+                      {{ addr.is_default ? 'Home' : 'Address' }}
+                    </span>
+                    @if (addr.is_default || $first) {
+                      <span class="badge bg-success-subtle text-success fs-8 px-2 py-0.5">DEFAULT</span>
+                    }
+                  </div>
+                </div>
+
+                <div class="ps-4">
+                  <h6 class="fw-bold text-dark fs-7 mb-1">{{ addr.full_name }}</h6>
+                  <p class="fs-8 text-muted mb-2 lh-sm">
+                    {{ addr.address_line }}, {{ addr.city }}, {{ addr.state }} - {{ addr.postal_code }}
+                  </p>
+                  <span class="fs-8 text-muted d-block">Phone: {{ addr.phone }}</span>
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- Add New Address Dotted Box -->
+          <div class="col-md-6 col-lg-5">
+            <div 
+              class="add-address-box p-3 rounded-4 cursor-pointer h-100 d-flex flex-column align-items-center justify-content-center text-center border-dashed"
+              (click)="toggleAddressForm()"
+              style="min-height: 120px;"
+            >
+              <i class="bi bi-plus-circle text-brand-green fs-4 mb-1"></i>
+              <span class="fw-bold text-brand-green fs-7">+ Add New Address</span>
+              <small class="text-muted fs-8">Save new delivery address</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toggle Add Address Form -->
+        @if (showAddressForm()) {
+          <form [formGroup]="addressForm" (ngSubmit)="onSaveAddress()" class="mt-3 p-3.5 bg-light rounded-4 border">
+            <h6 class="fw-bold text-dark mb-3 fs-7">Add New Delivery Address</h6>
+            <div class="row g-3">
+              
+              <div class="col-md-6">
+                <input type="text" formControlName="full_name" class="form-control form-control-sm shadow-none" placeholder="Full Name">
+                @if (addressForm.get('full_name')?.touched && addressForm.get('full_name')?.invalid) {
+                  <small class="text-danger fs-8">Full Name is required</small>
+                }
+              </div>
+
+              <div class="col-md-6">
+                <input type="text" formControlName="phone" class="form-control form-control-sm shadow-none" placeholder="10-digit Phone Number" maxlength="10">
+                @if (addressForm.get('phone')?.touched && addressForm.get('phone')?.invalid) {
+                  <small class="text-danger fs-8">Valid 10-digit phone number is required</small>
+                }
+              </div>
+
+              <div class="col-12">
+                <input type="text" formControlName="address_line" class="form-control form-control-sm shadow-none" placeholder="House No, Street / Area">
+                @if (addressForm.get('address_line')?.touched && addressForm.get('address_line')?.invalid) {
+                  <small class="text-danger fs-8">Address line is required</small>
+                }
+              </div>
+
+              <div class="col-md-4">
+                <input type="text" formControlName="city" class="form-control form-control-sm shadow-none" placeholder="City">
+                @if (addressForm.get('city')?.touched && addressForm.get('city')?.invalid) {
+                  <small class="text-danger fs-8">City is required</small>
+                }
+              </div>
+
+              <div class="col-md-4">
+                <input type="text" formControlName="state" class="form-control form-control-sm shadow-none" placeholder="State">
+                @if (addressForm.get('state')?.touched && addressForm.get('state')?.invalid) {
+                  <small class="text-danger fs-8">State is required</small>
+                }
+              </div>
+
+              <div class="col-md-4">
+                <input type="text" formControlName="postal_code" class="form-control form-control-sm shadow-none" placeholder="Pincode" maxlength="6">
+                @if (addressForm.get('postal_code')?.touched && addressForm.get('postal_code')?.invalid) {
+                  <small class="text-danger fs-8">Valid 6-digit pincode is required</small>
+                }
+              </div>
+
+            </div>
+
+            <div class="d-flex gap-2 mt-3">
+              <button type="submit" class="btn btn-brand-green btn-sm rounded-pill px-4 fw-bold" [disabled]="isSavingAddress()">
+                {{ isSavingAddress() ? 'Saving...' : 'Save Address' }}
+              </button>
+              <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" (click)="toggleAddressForm()">
+                Cancel
+              </button>
+            </div>
+          </form>
+        }
+
+        <!-- Green Delivery ETA Banner -->
+        <div class="eta-alert bg-success-subtle p-2.5 rounded-3 d-flex align-items-center gap-2 mt-2">
+          <i class="bi bi-truck text-success fs-5"></i>
+          <span class="fs-8 text-dark">
+            Delivery in <strong class="text-success fw-bold">10-15 mins</strong> to your selected address
+          </span>
+        </div>
+      </div>
+
+
+      <!-- 3. DELIVERY INSTRUCTIONS (OPTIONAL) -->
+      <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+        <div class="d-flex align-items-center mb-2">
+          <i class="bi bi-card-text text-muted fs-5 me-2"></i>
+          <h6 class="fw-bold m-0 text-dark">Delivery Instructions <span class="text-muted fw-normal fs-8">(Optional)</span></h6>
+        </div>
+        <div class="position-relative">
+          <input 
+            type="text" 
+            class="form-control shadow-none border rounded-3 py-2 fs-7 pe-5" 
+            placeholder="E.g. Please ring the bell, Leave at the door, etc."
+            maxLength="120"
+          >
+          <span class="position-absolute end-0 top-50 translate-middle-y me-3 fs-8 text-muted">0/120</span>
+        </div>
+      </div>
+
+
+      <!-- 4. PAYMENT OPTIONS SECTION -->
+      <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+        <div class="d-flex align-items-center mb-3">
+          <i class="bi bi-wallet2 text-dark fs-5 me-2"></i>
+          <h5 class="fw-bold m-0 text-dark">Payment Options</h5>
+        </div>
+
+        <div class="d-flex flex-column gap-2.5">
+          
+          <!-- UPI Option -->
+          <label 
+            class="payment-option-card border p-3 rounded-3 d-flex align-items-center justify-content-between cursor-pointer"
+            [class.selected]="paymentMethod() === 'UPI'"
+            (click)="paymentMethod.set('UPI')"
+          >
+            <div class="d-flex align-items-center gap-3">
+              <input 
+                type="radio" 
+                name="payment" 
+                value="UPI" 
+                [checked]="paymentMethod() === 'UPI'" 
+                class="form-check-input shadow-none m-0 custom-radio"
+              >
+              <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-light text-dark border fw-bold fs-8">UPI</span>
+                <span class="fw-bold text-dark fs-7">Pay using any UPI app</span>
+              </div>
+            </div>
+            <span class="badge bg-success-subtle text-success fs-8 px-2 py-1 fw-bold">Recommended</span>
+          </label>
+
+          <!-- Cards Option -->
+          <!-- <label 
+            class="payment-option-card border p-3 rounded-3 d-flex align-items-center justify-content-between cursor-pointer"
+            [class.selected]="paymentMethod() === 'CARD'"
+            (click)="paymentMethod.set('CARD')"
+          >
+            <div class="d-flex align-items-center gap-3">
+              <input 
+                type="radio" 
+                name="payment" 
+                value="CARD" 
+                [checked]="paymentMethod() === 'CARD'" 
+                class="form-check-input shadow-none m-0 custom-radio"
+              >
+              <span class="fw-bold text-dark fs-7">Credit / Debit Card</span>
+            </div>
+            <div class="d-flex gap-1 align-items-center">
+              <span class="badge bg-primary text-white fs-8">VISA</span>
+              <span class="badge bg-danger text-white fs-8">MasterCard</span>
+              <span class="badge bg-warning text-dark fs-8">RuPay</span>
+            </div>
+          </label> -->
+
+          <!-- Cash on Delivery Option -->
+          <label 
+            class="payment-option-card border p-3 rounded-3 d-flex align-items-center justify-content-between cursor-pointer"
+            [class.selected]="paymentMethod() === 'COD'"
+            (click)="paymentMethod.set('COD')"
+          >
+            <div class="d-flex align-items-center gap-3">
+              <input 
+                type="radio" 
+                name="payment" 
+                value="COD" 
+                [checked]="paymentMethod() === 'COD'" 
+                class="form-check-input shadow-none m-0 custom-radio"
+              >
+              <div>
+                <span class="fw-bold text-dark fs-7 d-block">Cash on Delivery</span>
+                <small class="text-muted fs-8">Pay in cash when order is delivered</small>
+              </div>
+            </div>
+          </label>
+
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- RIGHT COLUMN: ORDER SUMMARY -->
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top bg-white" style="top: 90px;">
+        <h5 class="fw-bold mb-3 text-dark">Order Summary</h5>
+
+        <!-- Yellow Delivery ETA Banner -->
+        <div class="eta-yellow-banner bg-warning-subtle p-2.5 rounded-3 d-flex align-items-center gap-2 mb-3">
+          <i class="bi bi-lightning-charge-fill text-warning fs-5"></i>
+          <span class="fs-8 fw-semibold text-dark">Delivery in <strong>10-15 mins</strong></span>
+        </div>
+
+        <!-- Items List with Compact Counters -->
+        <div class="checkout-items-list d-flex flex-column gap-2 mb-3 max-h-250 overflow-y-auto pe-1">
+          @for (item of cartService.cart().items; track item.id) {
+            <div class="d-flex align-items-center justify-content-between p-2 rounded-3 bg-light-subtle border-bottom">
+              
+              <div class="d-flex align-items-center gap-2">
+                <div class="item-thumb bg-white rounded-2 p-1 border" style="width: 40px; height: 40px;">
+                  <img [src]="item.primary_image || item.image_url" [alt]="item.title" class="w-100 h-100 object-fit-contain" />
+                </div>
+                <div>
+                  <h6 class="fw-bold text-dark fs-8 mb-0 text-truncate" style="max-width: 140px;">
+                    {{ item.title }}
+                  </h6>
+                  <small class="text-muted fs-8">1 unit</small>
+                  <div class="fw-bold text-dark fs-8">₹{{ item.sale_price * item.quantity }}</div>
+                </div>
+              </div>
+
+              <!-- Counter -->
+              <div class="counter-badge bg-brand-orange text-white rounded-2 d-flex align-items-center px-2 py-0.5 fs-8 fw-bold">
+                <span class="me-1" (click)="cartService.updateQuantity(item.id, item.quantity - 1, item.stock_limit)">-</span>
+                <span>{{ item.quantity }}</span>
+                <span class="ms-1" (click)="cartService.updateQuantity(item.id, item.quantity + 1, item.stock_limit)">+</span>
+              </div>
+
+            </div>
+          }
+        </div>
+
+        <!-- Bill Details Breakdown -->
+        <div class="bill-breakdown fs-7 d-flex flex-column gap-2 mb-3">
+          <div class="d-flex justify-content-between text-muted">
+            <span>Item Total</span>
+            <span class="text-dark">₹{{ cartService.subtotal() }}</span>
+          </div>
+
+          <div class="d-flex justify-content-between text-muted">
+            <span>Delivery Fee</span>
+            <span class="text-dark">
+              @if (cartService.deliveryFee() === 0) {
+                <span class="text-success fw-bold">FREE</span>
+              } @else {
+                ₹{{ cartService.deliveryFee() }}
+              }
+            </span>
+          </div>
+
+          <div class="d-flex justify-content-between text-muted">
+            <span>Handling Fee</span>
+            <span class="text-dark">₹10</span>
+          </div>
+
+          <div class="d-flex justify-content-between text-success fw-semibold bg-success-subtle p-2 rounded-2">
+            <span>Savings</span>
+            <span>-₹10</span>
+          </div>
+        </div>
+
+        <hr class="my-2 border-secondary opacity-25">
+
+        <!-- To Pay Total -->
+        <div class="d-flex justify-content-between align-items-center mb-3 fw-bold fs-5">
+          <span class="text-dark">To Pay</span>
+          <span class="text-dark fs-4">₹{{ cartService.grandTotal() }}</span>
+        </div>
+
+        <!-- Safe & Secure Payments Badge -->
+        <div class="bg-light p-2 rounded-3 text-center mb-3 border">
+          <small class="text-success fw-semibold fs-8">
+            <i class="bi bi-shield-lock-fill me-1"></i> Safe & Secure Payments
+          </small>
+        </div>
+
+        <!-- Confirm Order Button -->
+        <button 
+          class="btn btn-brand-orange w-100 py-3 rounded-3 fw-bold text-white shadow-sm fs-6" 
+          [disabled]="isPlacingOrder() || !selectedAddressId()"
+          (click)="onPlaceOrder()"
+        >
+          {{ isPlacingOrder() ? 'Placing Order...' : 'Proceed to Payment' }}
+        </button>
+
+        <small class="text-muted fs-8 text-center d-block mt-2">
+          You will be able to review your order in the next step
+        </small>
+      </div>
+    </div>
+
+  </div>
+</div>
