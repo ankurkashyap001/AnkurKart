@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { AddressService } from '../../services/address.service';
 import { OrderService } from '../../services/order.service';
-import { Modal } from '../../services/modal';
 
 export type PaymentMethod = 'COD' | 'Online' | 'UPI' | 'CARD';
 
@@ -20,7 +19,6 @@ export class Checkout implements OnInit {
   cartService = inject(CartService);
   addressService = inject(AddressService);
   orderService = inject(OrderService);
-  modalService = inject(Modal);
   router = inject(Router);
   fb = inject(FormBuilder);
 
@@ -29,6 +27,10 @@ export class Checkout implements OnInit {
   isPlacingOrder = signal<boolean>(false);
   showAddressForm = signal<boolean>(false);
   isSavingAddress = signal<boolean>(false);
+
+  // Success Modal State
+  showSuccessModal = signal<boolean>(false);
+  createdOrderId = signal<string | number>('');
 
   addressForm: FormGroup = this.fb.group({
     full_name: ['', [Validators.required, Validators.minLength(2)]],
@@ -83,8 +85,7 @@ export class Checkout implements OnInit {
       },
       error: (err: any) => {
         this.isSavingAddress.set(false);
-        const errorMsg = err.error?.message || 'Failed to save address. Please check input data.';
-        this.modalService.showError('Address Error', errorMsg);
+        alert(err.error?.message || 'Failed to save address.');
       }
     });
   }
@@ -114,18 +115,27 @@ export class Checkout implements OnInit {
       next: (res: any) => {
         this.isPlacingOrder.set(false);
         this.cartService.clearCart();
-        this.modalService.showSuccess(
-          'Order Placed Successfully!',
-          `Order #${res.order_number || res.id || ''} has been created.`,
-          () => {
-            this.router.navigate(['/']);
-          }
-        );
+        
+        // Save created order ID & trigger Angular success modal instantly
+        const orderId = res?.data?.id || res?.data?.order_number || '';
+        this.createdOrderId.set(orderId);
+        this.showSuccessModal.set(true);
       },
       error: (err: any) => {
         this.isPlacingOrder.set(false);
-        this.modalService.showError('Order Failed', err.error?.message || 'Something went wrong.');
+        alert(err.error?.message || 'Order failed. Please try again.');
       }
     });
+  }
+
+  goToOrderTracking() {
+    console.log(this.createdOrderId());
+    this.showSuccessModal.set(false);
+    this.router.navigate(['/orders', this.createdOrderId()]);
+  }
+
+  goToHome() {
+    this.showSuccessModal.set(false);
+    this.router.navigate(['/']);
   }
 }

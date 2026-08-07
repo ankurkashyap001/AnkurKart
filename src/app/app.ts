@@ -12,6 +12,7 @@ import { GlobalModal } from './components/global-modal/global-modal';
 import { Home } from './pages/home/home';
 import { CartDrawer } from './components/cart-drawer/cart-drawer';
 import { Checkout } from './pages/checkout/checkout';
+import { OrderDetail } from './pages/order-detail/order-detail';
 // import { Header } from './header/header';
 // import { Footer } from './footer/footer';
 // import { Sidebar } from './sidebar/sidebar';
@@ -20,7 +21,7 @@ import { Checkout } from './pages/checkout/checkout';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, Counter, Computed, Cart, Login, Register, Footer, Navbar, Home, CartDrawer, Checkout, HttpClientModule, GlobalModal],
+  imports: [RouterOutlet, RouterLink, Counter, Computed, Cart, Login, Register, Footer, Navbar, Home, CartDrawer, Checkout, OrderDetail, HttpClientModule, GlobalModal],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

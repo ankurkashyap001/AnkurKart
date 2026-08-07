@@ -8,6 +8,7 @@ import { InventoryList } from './components/inventory-list/inventory-list';
 import { AddItem } from './components/add-item/add-item';
 import { Counter } from './counter/counter';
 import { Computed } from './computed/computed';
+import { OrderDetail } from './pages/order-detail/order-detail';
 
 // 1. Missing AuthGuard import fixed (apne exact path ke according adjust kar lein)
 import { authGuard } from './guards/auth-guard'; 
@@ -24,6 +25,9 @@ export const routes: Routes = [
 
   // Protected Routes (Login required)
   { path: 'checkout', component: Checkout, canActivate: [authGuard] },
+
+  //Order-Detail
+  { path: 'orders/:id',loadComponent: () => import('./pages/order-detail/order-detail').then(m => m.OrderDetail)},
 
   // Practice / Admin Inventory Routes
   { path: 'items', component: InventoryList },

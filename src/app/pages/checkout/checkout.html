@@ -384,3 +384,35 @@
 
   </div>
 </div>
+
+<!-- Single Click Reliable Success Modal -->
+@if (showSuccessModal()) {
+  <div class="custom-modal-backdrop d-flex align-items-center justify-content-center">
+    <div class="custom-modal-card bg-white rounded-4 p-4 p-md-5 text-center shadow-lg mx-3">
+      
+      <!-- Check Animation Icon -->
+      <div class="success-icon-wrapper bg-success-subtle text-success rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center">
+        <i class="bi bi-check-circle-fill display-4"></i>
+      </div>
+
+      <h4 class="fw-bold text-dark mb-2">Order Placed Successfully! 🎉</h4>
+      <p class="text-muted fs-7 mb-1">
+        Your order <strong>#{{ createdOrderId() }}</strong> has been confirmed.
+      </p>
+      <p class="text-success fw-bold fs-8 mb-4">
+        <i class="bi bi-truck me-1"></i> Delivery estimated in 10-15 mins
+      </p>
+
+      <!-- Action Buttons -->
+      <div class="d-flex flex-column flex-sm-row gap-2 justify-content-center">
+        <button class="btn btn-brand-green py-2.5 px-4 rounded-pill fw-bold fs-7 shadow-sm" (click)="goToOrderTracking()">
+          <i class="bi bi-geo-alt-fill me-1"></i> Track Order
+        </button>
+        <button class="btn btn-outline-secondary py-2.5 px-4 rounded-pill fw-bold fs-7" (click)="goToHome()">
+          Continue Shopping
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

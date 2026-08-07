@@ -1,0 +1,120 @@
+<div class="container py-4 my-3 max-w-800">
+  
+    @if (isLoading()) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-brand-green" role="status"></div>
+        <p class="mt-2 text-muted fs-7">Loading your order tracking details...</p>
+      </div>
+    } @else if (order()) {
+  
+      <!-- Top Banner: Order Placed Success -->
+      <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-success-subtle border-start border-4 border-success">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <span class="badge bg-success text-white mb-2 fs-8">ORDER CONFIRMED</span>
+            <h4 class="fw-bold text-dark m-0">Order #{{ order().order_number || order().id }}</h4>
+            <p class="text-muted fs-8 m-0 mt-1">
+              Arriving in <strong class="text-success fw-bold">10-15 Mins</strong>
+            </p>
+          </div>
+          <div class="display-6 text-success">
+            <i class="bi bi-bag-check-fill"></i>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Live Order Status Tracker (Blinkit Style) -->
+      <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+        <h6 class="fw-bold text-dark mb-4 fs-7">Order Status</h6>
+  
+        <div class="d-flex justify-content-between align-items-center position-relative">
+          
+          <!-- Step 1: Placed -->
+          <div class="text-center z-1">
+            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-1" style="width: 36px; height: 36px;">
+              <i class="bi bi-check-lg"></i>
+            </div>
+            <span class="fs-8 fw-bold d-block text-dark">Placed</span>
+          </div>
+  
+          <!-- Step 2: Packing -->
+          <div class="text-center z-1">
+            <div class="bg-brand-green text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-1 fw-bold" style="width: 36px; height: 36px;">
+              2
+            </div>
+            <span class="fs-8 fw-bold d-block text-dark">Packing</span>
+          </div>
+  
+          <!-- Step 3: On The Way -->
+          <div class="text-center z-1">
+            <div class="bg-light text-muted border rounded-circle d-flex align-items-center justify-content-center mx-auto mb-1 fw-bold" style="width: 36px; height: 36px;">
+              3
+            </div>
+            <span class="fs-8 fw-semibold d-block text-muted">On the way</span>
+          </div>
+  
+          <!-- Step 4: Delivered -->
+          <div class="text-center z-1">
+            <div class="bg-light text-muted border rounded-circle d-flex align-items-center justify-content-center mx-auto mb-1 fw-bold" style="width: 36px; height: 36px;">
+              4
+            </div>
+            <span class="fs-8 fw-semibold d-block text-muted">Delivered</span>
+          </div>
+  
+        </div>
+      </div>
+  
+      <!-- Order Items & Address Summary -->
+      <div class="row g-4">
+        <!-- Items -->
+        <div class="col-md-7">
+          <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+            <h6 class="fw-bold text-dark mb-3 fs-7">Items Ordered</h6>
+            
+            <div class="d-flex flex-column gap-3">
+              @for (item of order().items || order().order_items; track item.id) {
+                <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                  <div>
+                    <h6 class="fw-bold fs-8 m-0">{{ item.product_name || item.product?.name || 'Product' }}</h6>
+                    <small class="text-muted fs-8">Qty: {{ item.quantity }} × ₹{{ item.unit_price || item.price }}</small>
+                  </div>
+                  <span class="fw-bold fs-7">₹{{ (item.unit_price || item.price) * item.quantity }}</span>
+                </div>
+              }
+            </div>
+  
+            <div class="d-flex justify-content-between align-items-center mt-3 pt-2 fw-bold fs-6">
+              <span>Total Paid ({{ order().payment_method }})</span>
+              <span class="text-brand-orange">₹{{ order().total_amount }}</span>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Address & Actions -->
+        <div class="col-md-5">
+          <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100 d-flex flex-column justify-content-between">
+            <div>
+              <h6 class="fw-bold text-dark mb-2 fs-7">Delivery Address</h6>
+              <p class="fs-8 text-muted mb-0">
+                {{ order().shipping_address?.full_name || 'Home' }}<br>
+                {{ order().shipping_address?.address_line }}, {{ order().shipping_address?.city }} - {{ order().shipping_address?.postal_code }}
+              </p>
+            </div>
+  
+            <div class="mt-4">
+              <button routerLink="/" class="btn btn-brand-green w-100 rounded-pill py-2.5 fw-bold fs-7">
+                <i class="bi bi-arrow-left me-1"></i> Continue Shopping
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+    } @else {
+      <div class="text-center py-5">
+        <h5>Order details not found.</h5>
+        <button routerLink="/" class="btn btn-dark rounded-pill mt-3 px-4">Back to Home</button>
+      </div>
+    }
+  
+  </div>
