@@ -1,120 +1,359 @@
-<div class="container py-4 my-3 max-w-800">
-  
-    @if (isLoading()) {
-      <div class="text-center py-5">
-        <div class="spinner-border text-brand-green" role="status"></div>
-        <p class="mt-2 text-muted fs-7">Loading your order tracking details...</p>
-      </div>
-    } @else if (order()) {
-  
-      <!-- Top Banner: Order Placed Success -->
-      <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-success-subtle border-start border-4 border-success">
-        <div class="d-flex align-items-center justify-content-between">
+<div class="container py-4 my-2">
+
+  @if (isLoading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-brand-green" role="status"></div>
+      <p class="mt-2 text-muted fs-7">Loading your order details...</p>
+    </div>
+  } @else if (order()) {
+
+    <!-- 1. TOP CELEBRATION BANNER -->
+    <div class="thank-you-card p-4 p-md-5 rounded-4 mb-4 position-relative overflow-hidden shadow-sm">
+      <div class="row align-items-center g-3">
+        
+        <!-- Left Celebration Content -->
+        <div class="col-lg-8 d-flex align-items-center gap-3">
+          <div class="check-circle-icon rounded-circle flex-shrink-0 d-flex align-items-center justify-content-center shadow-sm">
+            <i class="bi bi-check-lg fs-1 fw-bold"></i>
+          </div>
           <div>
-            <span class="badge bg-success text-white mb-2 fs-8">ORDER CONFIRMED</span>
-            <h4 class="fw-bold text-dark m-0">Order #{{ order().order_number || order().id }}</h4>
-            <p class="text-muted fs-8 m-0 mt-1">
-              Arriving in <strong class="text-success fw-bold">10-15 Mins</strong>
-            </p>
-          </div>
-          <div class="display-6 text-success">
-            <i class="bi bi-bag-check-fill"></i>
-          </div>
-        </div>
-      </div>
-  
-      <!-- Live Order Status Tracker (Blinkit Style) -->
-      <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
-        <h6 class="fw-bold text-dark mb-4 fs-7">Order Status</h6>
-  
-        <div class="d-flex justify-content-between align-items-center position-relative">
-          
-          <!-- Step 1: Placed -->
-          <div class="text-center z-1">
-            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-1" style="width: 36px; height: 36px;">
-              <i class="bi bi-check-lg"></i>
-            </div>
-            <span class="fs-8 fw-bold d-block text-dark">Placed</span>
-          </div>
-  
-          <!-- Step 2: Packing -->
-          <div class="text-center z-1">
-            <div class="bg-brand-green text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-1 fw-bold" style="width: 36px; height: 36px;">
-              2
-            </div>
-            <span class="fs-8 fw-bold d-block text-dark">Packing</span>
-          </div>
-  
-          <!-- Step 3: On The Way -->
-          <div class="text-center z-1">
-            <div class="bg-light text-muted border rounded-circle d-flex align-items-center justify-content-center mx-auto mb-1 fw-bold" style="width: 36px; height: 36px;">
-              3
-            </div>
-            <span class="fs-8 fw-semibold d-block text-muted">On the way</span>
-          </div>
-  
-          <!-- Step 4: Delivered -->
-          <div class="text-center z-1">
-            <div class="bg-light text-muted border rounded-circle d-flex align-items-center justify-content-center mx-auto mb-1 fw-bold" style="width: 36px; height: 36px;">
-              4
-            </div>
-            <span class="fs-8 fw-semibold d-block text-muted">Delivered</span>
-          </div>
-  
-        </div>
-      </div>
-  
-      <!-- Order Items & Address Summary -->
-      <div class="row g-4">
-        <!-- Items -->
-        <div class="col-md-7">
-          <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
-            <h6 class="fw-bold text-dark mb-3 fs-7">Items Ordered</h6>
+            <h3 class="fw-bold mb-1 text-dark">
+              Thank you, {{ order().shipping_address?.full_name || 'Ankur' }}! 🎉
+            </h3>
+            <h5 class="fw-bold mb-2 text-brand-green">Your order has been placed successfully!</h5>
+            <p class="mb-3 fs-8 text-secondary">We've received your order and it is now being processed.</p>
             
-            <div class="d-flex flex-column gap-3">
-              @for (item of order().items || order().order_items; track item.id) {
-                <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
-                  <div>
-                    <h6 class="fw-bold fs-8 m-0">{{ item.product_name || item.product?.name || 'Product' }}</h6>
-                    <small class="text-muted fs-8">Qty: {{ item.quantity }} × ₹{{ item.unit_price || item.price }}</small>
-                  </div>
-                  <span class="fw-bold fs-7">₹{{ (item.unit_price || item.price) * item.quantity }}</span>
-                </div>
-              }
-            </div>
-  
-            <div class="d-flex justify-content-between align-items-center mt-3 pt-2 fw-bold fs-6">
-              <span>Total Paid ({{ order().payment_method }})</span>
-              <span class="text-brand-orange">₹{{ order().total_amount }}</span>
-            </div>
-          </div>
-        </div>
-  
-        <!-- Address & Actions -->
-        <div class="col-md-5">
-          <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100 d-flex flex-column justify-content-between">
-            <div>
-              <h6 class="fw-bold text-dark mb-2 fs-7">Delivery Address</h6>
-              <p class="fs-8 text-muted mb-0">
-                {{ order().shipping_address?.full_name || 'Home' }}<br>
-                {{ order().shipping_address?.address_line }}, {{ order().shipping_address?.city }} - {{ order().shipping_address?.postal_code }}
-              </p>
-            </div>
-  
-            <div class="mt-4">
-              <button routerLink="/" class="btn btn-brand-green w-100 rounded-pill py-2.5 fw-bold fs-7">
-                <i class="bi bi-arrow-left me-1"></i> Continue Shopping
+            <div class="d-flex align-items-center gap-2">
+              <button class="btn btn-track-order btn-sm rounded-3 px-3 py-2 fs-8 fw-bold d-inline-flex align-items-center gap-2 shadow-sm">
+                Track Order <i class="bi bi-arrow-right"></i>
+              </button>
+              <button routerLink="/" class="btn btn-continue-shopping btn-sm rounded-3 px-3 py-2 fs-8 fw-semibold bg-white">
+                Continue Shopping
               </button>
             </div>
           </div>
         </div>
+
+        <!-- Right ETA Card -->
+        <div class="col-lg-4 border-start-lg ps-lg-4">
+          <div class="eta-box p-3 rounded-4 d-flex align-items-center justify-content-between bg-white shadow-xs">
+            <div>
+              <span class="fs-8 d-block fw-semibold text-secondary">Estimated Delivery</span>
+              <span class="fw-bold fs-3 text-dark">10-15 <small class="fs-6 text-muted">mins</small></span>
+              <small class="fs-8 d-block mt-1 text-muted">We'll notify you once your order is on the way.</small>
+            </div>
+            <i class="bi bi-scooter display-5 ms-2 text-brand-green opacity-90"></i>
+          </div>
+        </div>
+
       </div>
-  
-    } @else {
-      <div class="text-center py-5">
-        <h5>Order details not found.</h5>
-        <button routerLink="/" class="btn btn-dark rounded-pill mt-3 px-4">Back to Home</button>
+    </div>
+
+
+    <div class="row g-4">
+      <!-- LEFT COLUMN -->
+      <div class="col-lg-8">
+        
+        <!-- 2. ORDER DETAILS METADATA -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+          <h6 class="fw-bold mb-3 border-bottom pb-2 fs-7 d-flex align-items-center gap-2 text-dark">
+            <i class="bi bi-receipt text-muted"></i> Order Details
+          </h6>
+
+          <div class="row row-cols-2 row-cols-sm-4 g-3">
+            <div>
+              <span class="fs-8 text-muted d-block mb-1">Order ID</span>
+              <strong class="fs-7 fw-bold text-dark">#{{ order().order_number || order().id || 'AK123456789' }}</strong>
+            </div>
+
+            <div>
+              <span class="fs-8 text-muted d-block mb-1">Order Date & Time</span>
+              <strong class="fs-8 d-block fw-semibold text-dark">{{order().created_at}}</strong>
+            </div>
+
+            <div>
+              <span class="fs-8 text-muted d-block mb-1">Payment Method</span>
+              <div class="d-flex align-items-center gap-1">
+                <strong class="fs-8 fw-semibold text-dark">{{ order().payment_method || 'UPI' }}</strong>
+                <span class="badge bg-light text-dark border fs-8 px-1.5 py-0.5">UPI</span>
+              </div>
+            </div>
+
+            <div>
+              <span class="fs-8 text-muted d-block mb-1">Payment Status</span>
+              <span class="badge badge-paid px-2.5 py-1 fs-8 fw-bold rounded-2">
+                {{ order().payment_status}}
+              </span>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- 3. LIVE ORDER TRACKING STEPPER -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+          <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+            <h6 class="fw-bold m-0 fs-7 d-flex align-items-center gap-2 text-dark">
+              <i class="bi bi-truck text-muted"></i> Order Tracking
+            </h6>
+            <span class="badge badge-paid fs-8 px-2.5 py-1 fw-bold rounded-2">
+              Order placed successfully <i class="bi bi-check-circle-fill ms-1 text-brand-green"></i>
+            </span>
+          </div>
+
+          <!-- Stepper Track Lines & Points -->
+          <div class="tracking-stepper position-relative px-2 d-flex justify-content-between">
+            
+            <div class="stepper-line-bg"></div>
+            <div class="stepper-line-progress"></div>
+
+            <!-- Step 1: Placed -->
+            <div class="text-center position-relative z-1">
+              <div class="step-node active mx-auto rounded-circle d-flex align-items-center justify-content-center mb-2 shadow-xs">
+                <i class="bi bi-check-lg fw-bold"></i>
+              </div>
+              <span class="fw-bold fs-8 d-block text-dark">Order Placed</span>
+              <small class="fs-8 text-muted">11:24 AM</small>
+            </div>
+
+            <!-- Step 2: Confirmed -->
+            <div class="text-center position-relative z-1">
+              <div class="step-node active mx-auto rounded-circle d-flex align-items-center justify-content-center mb-2 shadow-xs">
+                <i class="bi bi-box-seam fw-bold"></i>
+              </div>
+              <span class="fw-bold fs-8 d-block text-dark">Confirmed</span>
+              <small class="fs-8 text-muted">11:25 AM</small>
+            </div>
+
+            <!-- Step 3: Packed -->
+            <div class="text-center position-relative z-1">
+              <div class="step-node inactive mx-auto rounded-circle d-flex align-items-center justify-content-center mb-2 bg-white border">
+                <i class="bi bi-basket"></i>
+              </div>
+              <span class="fw-semibold fs-8 text-muted d-block">Packed</span>
+              <small class="fs-8 text-muted">Preparing items</small>
+            </div>
+
+            <!-- Step 4: Out for Delivery -->
+            <div class="text-center position-relative z-1">
+              <div class="step-node inactive mx-auto rounded-circle d-flex align-items-center justify-content-center mb-2 bg-white border">
+                <i class="bi bi-scooter"></i>
+              </div>
+              <span class="fw-semibold fs-8 text-muted d-block">Out for Delivery</span>
+              <small class="fs-8 text-muted">On the way</small>
+            </div>
+
+            <!-- Step 5: Delivered -->
+            <div class="text-center position-relative z-1">
+              <div class="step-node inactive mx-auto rounded-circle d-flex align-items-center justify-content-center mb-2 bg-white border">
+                <i class="bi bi-house-door"></i>
+              </div>
+              <span class="fw-semibold fs-8 text-muted d-block">Delivered</span>
+              <small class="fs-8 text-muted">At doorstep</small>
+            </div>
+
+          </div>
+        </div>
+
+
+        <!-- 4. YOU MIGHT ALSO NEED -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold m-0 fs-7 text-dark">You might also need</h6>
+            <a routerLink="/" class="fw-bold fs-8 text-decoration-none text-brand-green">
+              View All <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+
+          <div class="row row-cols-2 row-cols-sm-3 row-cols-md-6 g-2.5">
+            <div class="col">
+              <div class="recommend-item-card rounded-3 p-2 text-center h-100 bg-white border">
+                <img src="https://images.unsplash.com/photo-1528825871115-3581a5387919?w=300&q=80" alt="Banana" class="img-fluid rounded-2 mb-1 product-thumb">
+                <h6 class="fs-8 fw-bold text-dark text-truncate mb-0">Fresh Banana</h6>
+                <small class="fs-8 text-muted d-block mb-1">1 kg</small>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="fw-bold fs-8 text-dark">₹49</span>
+                  <button class="btn btn-add-orange btn-xs rounded-2 fw-bold px-2 py-0.5 fs-8">ADD</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="recommend-item-card rounded-3 p-2 text-center h-100 bg-white border">
+                <img src="https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&q=80" alt="Milk" class="img-fluid rounded-2 mb-1 product-thumb">
+                <h6 class="fs-8 fw-bold text-dark text-truncate mb-0">Amul Milk</h6>
+                <small class="fs-8 text-muted d-block mb-1">1 ltr</small>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="fw-bold fs-8 text-dark">₹61</span>
+                  <button class="btn btn-add-orange btn-xs rounded-2 fw-bold px-2 py-0.5 fs-8">ADD</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="recommend-item-card rounded-3 p-2 text-center h-100 bg-white border">
+                <img src="https://images.unsplash.com/photo-1516467508483-a7212febe31a?w=300&q=80" alt="Eggs" class="img-fluid rounded-2 mb-1 product-thumb">
+                <h6 class="fs-8 fw-bold text-dark text-truncate mb-0">Farm Eggs</h6>
+                <small class="fs-8 text-muted d-block mb-1">6 pcs</small>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="fw-bold fs-8 text-dark">₹36</span>
+                  <button class="btn btn-add-orange btn-xs rounded-2 fw-bold px-2 py-0.5 fs-8">ADD</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="recommend-item-card rounded-3 p-2 text-center h-100 bg-white border">
+                <img src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=300&q=80" alt="Tomato" class="img-fluid rounded-2 mb-1 product-thumb">
+                <h6 class="fs-8 fw-bold text-dark text-truncate mb-0">Fresh Tomato</h6>
+                <small class="fs-8 text-muted d-block mb-1">500 g</small>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="fw-bold fs-8 text-dark">₹23</span>
+                  <button class="btn btn-add-orange btn-xs rounded-2 fw-bold px-2 py-0.5 fs-8">ADD</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="recommend-item-card rounded-3 p-2 text-center h-100 bg-white border">
+                <img src="https://images.unsplash.com/photo-1586201375761-83865001e31c?w=300&q=80" alt="Atta" class="img-fluid rounded-2 mb-1 product-thumb">
+                <h6 class="fs-8 fw-bold text-dark text-truncate mb-0">Aashirvaad Atta</h6>
+                <small class="fs-8 text-muted d-block mb-1">5 kg</small>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="fw-bold fs-8 text-dark">₹249</span>
+                  <button class="btn btn-add-orange btn-xs rounded-2 fw-bold px-2 py-0.5 fs-8">ADD</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="recommend-item-card rounded-3 p-2 text-center h-100 bg-white border">
+                <img src="https://images.unsplash.com/photo-1627483262268-9c2b5b2834b5?w=300&q=80" alt="Salt" class="img-fluid rounded-2 mb-1 product-thumb">
+                <h6 class="fs-8 fw-bold text-dark text-truncate mb-0">Tata Salt</h6>
+                <small class="fs-8 text-muted d-block mb-1">1 kg</small>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="fw-bold fs-8 text-dark">₹18</span>
+                  <button class="btn btn-add-orange btn-xs rounded-2 fw-bold px-2 py-0.5 fs-8">ADD</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
-    }
-  
-  </div>
+
+
+      <!-- RIGHT COLUMN -->
+      <div class="col-lg-4">
+        
+        <!-- 5. ORDER SUMMARY -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+          <h6 class="fw-bold mb-3 fs-7 text-dark">Order Summary</h6>
+
+          <!-- Items Scroll List -->
+          <div class="d-flex flex-column gap-2 mb-3 max-h-250 overflow-y-auto pe-1">
+            @for (item of order().items || order().order_items; track item.id) {
+              <div class="d-flex align-items-center justify-content-between p-2 rounded-3 border-bottom bg-item-box">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="item-thumb bg-white rounded-2 p-1 border">
+                    <img [src]="item.product_image || item.image_url " [alt]="item.product_name" class="w-100 h-100 object-fit-contain" />
+                  </div>
+                  <div>
+                    <h6 class="fw-bold fs-8 mb-0 text-truncate item-title-limit text-dark">
+                      {{ item.product_name || item.product?.name || 'Product' }}
+                    </h6>
+                    <small class="text-muted fs-8">{{ item.quantity }} unit</small>
+                  </div>
+                </div>
+                <span class="fw-bold fs-8 text-dark">₹{{ (item.unit_price || item.price) * item.quantity }}</span>
+              </div>
+            }
+          </div>
+
+          <!-- Bill Details -->
+          <div class="bill-breakdown fs-7 d-flex flex-column gap-2 mb-2">
+            <div class="d-flex justify-content-between text-muted">
+              <span>Item Total</span>
+              <span class="fw-semibold text-dark">₹{{ order().total_amount || 66 }}</span>
+            </div>
+
+            <div class="d-flex justify-content-between text-muted">
+              <span>Delivery Fee</span>
+              <span class="fw-semibold text-dark">₹25</span>
+            </div>
+
+            <div class="d-flex justify-content-between text-muted">
+              <span>Handling Fee</span>
+              <span class="fw-semibold text-dark">₹10</span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center p-2 rounded-2 fs-8 fw-bold badge-paid">
+              <span>Savings</span>
+              <span>-₹10</span>
+            </div>
+          </div>
+
+          <hr class="my-2 border-secondary opacity-25">
+
+          <div class="d-flex justify-content-between align-items-center fw-bold fs-5">
+            <span class="text-dark">To Pay</span>
+            <span class="fs-4 text-dark">₹{{ order().total_amount || 66 }}</span>
+          </div>
+        </div>
+
+
+        <!-- 6. DELIVERY ADDRESS CARD -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <h6 class="fw-bold m-0 fs-7 text-dark">Delivery Address</h6>
+            <span class="badge badge-paid fs-8 px-2 py-0.5">Home</span>
+          </div>
+
+          <div class="d-flex align-items-start gap-2.5">
+            <i class="bi bi-geo-alt text-muted fs-5 mt-1"></i>
+            <div>
+              <h6 class="fw-bold fs-7 mb-1 text-dark">
+                {{ order().shipping_address?.full_name || 'Ankur Kashyap' }}
+              </h6>
+              <p class="fs-8 text-muted mb-1 lh-sm">
+                {{ order().shipping_address?.address_line || '250, Muzaffarnagar' }}<br>
+                {{ order().shipping_address?.city || 'Uttar Pradesh' }} - {{ order().shipping_address?.postal_code || '251002' }}
+              </p>
+              <span class="fs-8 text-muted">Phone: {{ order().shipping_address?.phone || '6396958896' }}</span>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- 7. NEED HELP CARD -->
+        <div class="card border-0 shadow-sm rounded-4 p-3.5 need-help-box">
+          <div class="d-flex align-items-center gap-3">
+            <div class="bg-white p-2.5 rounded-circle shadow-xs">
+              <i class="bi bi-headset fs-4 text-brand-orange"></i>
+            </div>
+            <div>
+              <h6 class="fw-bold text-dark mb-0 fs-7">Need Help?</h6>
+              <small class="text-muted fs-8 d-block mb-2">Our support team is here for you</small>
+              <button class="btn btn-white btn-sm border rounded-pill px-3 py-1 fs-8 fw-bold text-dark bg-white shadow-xs">
+                <i class="bi bi-chat-dots me-1 text-brand-orange"></i> Chat with us
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  } @else {
+    <div class="text-center py-5 bg-white rounded-4 shadow-sm border p-4">
+      <i class="bi bi-exclamation-circle text-muted display-4"></i>
+      <h5 class="fw-bold mt-3 text-dark">Order details not found</h5>
+      <p class="text-muted fs-7">We couldn't retrieve the requested order information.</p>
+      <button routerLink="/" class="btn btn-track-order rounded-pill px-4 py-2 fs-7 fw-bold border-0 text-white">
+        Back to Home
+      </button>
+    </div>
+  }
+
+</div>

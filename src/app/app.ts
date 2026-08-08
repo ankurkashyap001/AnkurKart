@@ -21,7 +21,7 @@ import { OrderDetail } from './pages/order-detail/order-detail';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, Counter, Computed, Cart, Login, Register, Footer, Navbar, Home, CartDrawer, Checkout, OrderDetail, HttpClientModule, GlobalModal],
+  imports: [RouterOutlet, RouterLink, Counter, Computed, Cart, Login, Register, Footer, Navbar, Home, CartDrawer, Checkout, OrderDetail, GlobalModal],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

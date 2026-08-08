@@ -2,6 +2,7 @@ import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { OrderPayload, OrderResponse } from '../models/order.model';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -30,5 +31,10 @@ export class OrderService {
 
   getOrders() {
     return this.http.get<OrderResponse[]>(this.apiUrl, this.getHeaders());
+  }
+  // src/app/services/order.service.ts
+
+  getOrderById(id: string | number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`, this.getHeaders());
   }
 }

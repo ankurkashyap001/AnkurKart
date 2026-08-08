@@ -16,25 +16,33 @@ export class OrderDetail implements OnInit {
 
   order = signal<any>(null);
   isLoading = signal<boolean>(true);
+  defaultImage = 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=300&q=80';
 
   ngOnInit() {
+    // Extract ID or Order Number from URL
     const orderId = this.route.snapshot.paramMap.get('id');
+
     if (orderId) {
-      this.loadOrderDetails(orderId);
+      this.fetchSingleOrder(orderId);
+    } else {
+      this.isLoading.set(false);
     }
   }
 
-  loadOrderDetails(id: string) {
+  fetchSingleOrder(id: string) {
     this.isLoading.set(true);
-    // Fetch single order details or filter from order history
-    this.orderService.getOrders().subscribe({
+    
+    this.orderService.getOrderById(id).subscribe({
       next: (res: any) => {
-        const ordersList = Array.isArray(res) ? res : (res?.data || []);
-        const foundOrder = ordersList.find((o: any) => o.id == id || o.order_number == id);
-        this.order.set(foundOrder || ordersList[0] || null);
+        const orderData = res.data || res.order || res;
+        this.order.set(orderData);
         this.isLoading.set(false);
       },
-      error: () => this.isLoading.set(false)
+      error: (err) => {
+        console.error('Failed to load order details:', err);
+        this.order.set(null);
+        this.isLoading.set(false);
+      }
     });
   }
 }

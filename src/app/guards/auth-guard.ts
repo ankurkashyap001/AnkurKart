@@ -7,14 +7,15 @@ export const authGuard: CanActivateFn = (route, state) => {
   const platformId = inject(PLATFORM_ID);
 
   if (isPlatformBrowser(platformId)) {
-    const token = localStorage.getItem('auth_token');
+    // Check all possible token keys used in Login
+    const token = localStorage.getItem('auth_token') || localStorage.getItem('token');
     
-    if (token) {
-      return true;
+    if (token && token !== 'undefined' && token !== 'null') {
+      return true; // Token exist karta hai, allow access
     }
   }
 
-  // Token na hone par login screen par bhejega aur origin URL returnUrl mein pass karega
+  // Token nahi mila to Login page par bhej do
   router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
   return false;
 };

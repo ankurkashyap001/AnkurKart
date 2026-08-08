@@ -8,13 +8,12 @@ import { InventoryList } from './components/inventory-list/inventory-list';
 import { AddItem } from './components/add-item/add-item';
 import { Counter } from './counter/counter';
 import { Computed } from './computed/computed';
-import { OrderDetail } from './pages/order-detail/order-detail';
 
-// 1. Missing AuthGuard import fixed (apne exact path ke according adjust kar lein)
-import { authGuard } from './guards/auth-guard'; 
+// Auth Guard Import
+import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
-  // 2. Default route ko 'login' ki jagah 'home' par redirect kar diya hai
+  // Default Redirect
   { path: '', redirectTo: 'home', pathMatch: 'full' },
 
   // Public E-Commerce Routes
@@ -25,9 +24,13 @@ export const routes: Routes = [
 
   // Protected Routes (Login required)
   { path: 'checkout', component: Checkout, canActivate: [authGuard] },
-
-  //Order-Detail
-  { path: 'orders/:id',loadComponent: () => import('./pages/order-detail/order-detail').then(m => m.OrderDetail)},
+  
+  // Protected Order-Detail (Lazy Loaded)
+  { 
+    path: 'orders/:id', 
+    loadComponent: () => import('./pages/order-detail/order-detail').then(m => m.OrderDetail),
+    // canActivate: [authGuard]
+  },
 
   // Practice / Admin Inventory Routes
   { path: 'items', component: InventoryList },
@@ -35,6 +38,6 @@ export const routes: Routes = [
   { path: 'counter', component: Counter },
   { path: 'computed', component: Computed },
 
-  // 3. Wildcard Route (Invalid URLs ko Home par bhejega)
+  // Wildcard Route
   { path: '**', redirectTo: 'home' }
 ];
