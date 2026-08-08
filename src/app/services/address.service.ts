@@ -2,7 +2,7 @@ import { Injectable, signal, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Address } from '../models/address.model';
-import { tap, catchError, of } from 'rxjs';
+import { tap, catchError, of, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -55,6 +55,15 @@ export class AddressService {
   addAddress(address: Address) {
     return this.http.post<Address>(this.apiUrl, address, this.getHeaders()).pipe(
       tap(() => this.loadAddresses())
+    );
+  }
+
+  deleteAddress(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/${id}`, this.getHeaders()).pipe(
+      tap(() => {
+        // Optimistic state update
+        this.addresses.update(list => list.filter(a => a.id !== id));
+      })
     );
   }
 }

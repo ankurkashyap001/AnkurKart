@@ -24,6 +24,18 @@ export const routes: Routes = [
 
   // Protected Routes (Login required)
   { path: 'checkout', component: Checkout, canActivate: [authGuard] },
+
+
+  { 
+    path: 'my-orders', 
+    loadComponent: () => import('./pages/my-orders/my-orders').then(m => m.MyOrders),
+    canActivate: [authGuard] 
+  },
+  { 
+    path: 'profile', 
+    loadComponent: () => import('./pages/profile/profile').then(m => m.Profile),
+    canActivate: [authGuard] 
+  },
   
   // Protected Order-Detail (Lazy Loaded)
   { 

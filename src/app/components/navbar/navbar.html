@@ -52,13 +52,27 @@
       @if (authService.isLoggedIn()) {
         <!-- Logged In State -->
         <div class="dropdown">
-          <button class="btn btn-light rounded-pill border dropdown-toggle d-flex align-items-center gap-2 fs-7 fw-medium" type="button" data-bs-toggle="dropdown">
-            <i class="bi bi-person-circle fs-5 text-brand-orange"></i> My Account
+          <button class="btn btn-light rounded-pill border dropdown-toggle d-flex align-items-center gap-2 fs-7 fw-medium shadow-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person-circle fs-5 text-brand-orange"></i> 
+            <span>{{ authService.currentUser()?.name || authService.currentUser()?.full_name || 'My Account' }}</span>
           </button>
-          <ul class="dropdown-menu dropdown-menu-end shadow border-0 fs-7">
-            <li><a class="dropdown-item" routerLink="/orders"><i class="bi bi-box-seam me-2"></i>My Orders</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><button class="dropdown-item text-danger" (click)="logout()"><i class="bi bi-box-arrow-right me-2"></i>Logout</button></li>
+          <ul class="dropdown-menu dropdown-menu-end shadow border-0 fs-7 py-2 mt-1">
+            <li>
+              <a class="dropdown-item py-2 px-3 d-flex align-items-center gap-2" routerLink="/profile">
+                <i class="bi bi-person text-muted fs-6"></i> Profile & Saved Addresses
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item py-2 px-3 d-flex align-items-center gap-2" routerLink="/my-orders">
+                <i class="bi bi-box-seam text-muted fs-6"></i> My Orders
+              </a>
+            </li>
+            <li><hr class="dropdown-divider my-1"></li>
+            <li>
+              <button class="dropdown-item py-2 px-3 d-flex align-items-center gap-2 text-danger" (click)="logout()">
+                <i class="bi bi-box-arrow-right fs-6"></i> Logout
+              </button>
+            </li>
           </ul>
         </div>
       } @else {
@@ -75,29 +89,28 @@
         <span>Wishlist</span>
       </a>
 
-      <!-- My Cart Button -->
-      <!-- Cart Button with Dynamic Badge -->
+      <!-- My Cart Button with Dynamic Badge -->
       <button 
-      (click)="cartService.openDrawer()" 
-      class="btn btn-brand-orange text-white d-flex align-items-center gap-2 px-3 py-2 rounded-3 border-0 shadow-sm position-relative">
+        (click)="cartService.openDrawer()" 
+        class="btn btn-brand-orange text-white d-flex align-items-center gap-2 px-3 py-2 rounded-3 border-0 shadow-sm position-relative">
 
-      <div class="position-relative">
-        <i class="bi bi-cart3 fs-5"></i>
-        
-        <!-- Active Cart Items Badge Count -->
-        @if (cartService.cartCount() > 0) {
-          <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-dark text-white fs-8">
-            {{ cartService.cartCount() }}
-          </span>
-        }
-      </div>
+        <div class="position-relative">
+          <i class="bi bi-cart3 fs-5"></i>
+          
+          <!-- Active Cart Items Badge Count -->
+          @if (cartService.cartCount() > 0) {
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-dark text-white fs-8">
+              {{ cartService.cartCount() }}
+            </span>
+          }
+        </div>
 
-      <div class="d-none d-sm-flex flex-column text-start lh-1">
-        <span class="fw-bold fs-7">My Cart</span>
-        @if (cartService.cartCount() > 0) {
-          <small class="fs-8 text-white-50">₹{{ cartService.grandTotal() }}</small>
-        }
-      </div>
+        <div class="d-none d-sm-flex flex-column text-start lh-1">
+          <span class="fw-bold fs-7">My Cart</span>
+          @if (cartService.cartCount() > 0) {
+            <small class="fs-8 text-white-50">₹{{ cartService.grandTotal() }}</small>
+          }
+        </div>
       </button>
 
     </div>

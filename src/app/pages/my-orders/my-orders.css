@@ -1,0 +1,33 @@
+.max-w-900 { max-width: 900px; }
+
+.item-preview-thumb {
+  width: 50px;
+  height: 50px;
+}
+
+.empty-basket-icon {
+  width: 90px;
+  height: 90px;
+  background-color: var(--brand-green-light, #E8F7F0);
+}
+
+.badge-success { background-color: #ECFDF3; color: #027A48; border: 1px solid #A6F4C5; }
+.badge-warning { background-color: #FEF0C7; color: #DC6803; border: 1px solid #FEDF89; }
+.badge-danger  { background-color: #FEF3F2; color: #B42318; border: 1px solid #FECDCA; }
+.badge-info    { background-color: #F0F9FF; color: #026AA2; border: 1px solid #B9E6FE; }
+
+.btn-outline-brand-green {
+  color: #00A651;
+  border: 1.5px solid #00A651;
+}
+.btn-outline-brand-green:hover {
+  background-color: #00A651;
+  color: #FFFFFF;
+}
+
+.btn-brand-green {
+  background-color: #00A651;
+  color: #FFFFFF;
+  border: none;
+}
+.btn-brand-green:hover { background-color: #008A43; }
