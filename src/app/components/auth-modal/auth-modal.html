@@ -1,0 +1,104 @@
+@if (authService.showAuthModal()) {
+    <div class="auth-modal-backdrop d-flex align-items-center justify-content-center">
+      <div class="auth-modal-card bg-white rounded-4 p-4 p-md-5 position-relative shadow-lg mx-3">
+        
+        <!-- Close Button -->
+        <button 
+          type="button" 
+          class="btn-close position-absolute top-0 end-0 m-3 shadow-none" 
+          (click)="authService.closeAuthModal()"
+        ></button>
+  
+        <!-- Header -->
+        <div class="text-center mb-4">
+          <h4 class="fw-bold text-dark m-0">
+            {{ isLoginMode() ? 'Welcome Back' : 'Create Account' }}
+          </h4>
+          <small class="text-muted">
+            {{ isLoginMode() ? 'Sign in to access your orders & cart' : 'Join AnkurKart for fast grocery delivery' }}
+          </small>
+        </div>
+  
+        <!-- Error Alert -->
+        @if (errorMessage()) {
+          <div class="alert alert-danger py-2 fs-8 rounded-3 mb-3">
+            {{ errorMessage() }}
+          </div>
+        }
+  
+        <!-- Form -->
+        @if (isLoginMode()) {
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <input 
+                type="email" 
+                formControlName="email" 
+                class="form-control shadow-none rounded-3" 
+                placeholder="Email Address"
+              >
+            </div>
+            <div class="mb-3">
+              <input 
+                type="password" 
+                formControlName="password" 
+                class="form-control shadow-none rounded-3" 
+                placeholder="Password"
+              >
+            </div>
+            <button 
+              type="submit" 
+              class="btn btn-brand-orange w-100 py-2.5 rounded-pill fw-bold text-white shadow-sm"
+              [disabled]="isLoading()"
+            >
+              {{ isLoading() ? 'Logging in...' : 'Login' }}
+            </button>
+          </form>
+        } @else {
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <input 
+                type="text" 
+                formControlName="name" 
+                class="form-control shadow-none rounded-3" 
+                placeholder="Full Name"
+              >
+            </div>
+            <div class="mb-3">
+              <input 
+                type="email" 
+                formControlName="email" 
+                class="form-control shadow-none rounded-3" 
+                placeholder="Email Address"
+              >
+            </div>
+            <div class="mb-3">
+              <input 
+                type="password" 
+                formControlName="password" 
+                class="form-control shadow-none rounded-3" 
+                placeholder="Password"
+              >
+            </div>
+            <button 
+              type="submit" 
+              class="btn btn-brand-orange w-100 py-2.5 rounded-pill fw-bold text-white shadow-sm"
+              [disabled]="isLoading()"
+            >
+              {{ isLoading() ? 'Creating Account...' : 'Register' }}
+            </button>
+          </form>
+        }
+  
+        <!-- Toggle Mode Footer -->
+        <div class="text-center mt-4 fs-7">
+          <span class="text-muted">
+            {{ isLoginMode() ? "Don't have an account?" : "Already have an account?" }}
+          </span>
+          <button type="button" class="btn btn-link text-brand-orange p-0 ms-1 fw-bold text-decoration-none fs-7" (click)="toggleMode()">
+            {{ isLoginMode() ? 'Register Now' : 'Login' }}
+          </button>
+        </div>
+  
+      </div>
+    </div>
+  }
