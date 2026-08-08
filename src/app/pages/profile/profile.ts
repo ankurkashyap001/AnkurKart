@@ -2,51 +2,51 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AddressService } from '../../services/address.service';
+import { Auth } from '../../services/auth';
+import { RouterLink } from '@angular/router';
+
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './profile.html',
   styleUrl: './profile.css'
 })
 export class Profile implements OnInit {
   addressService = inject(AddressService);
+  // HTML template access ke liye Auth service ko public rakhein
+  public authService = inject(Auth);
   private fb = inject(FormBuilder);
 
   activeTab = signal<'personal' | 'addresses'>('personal');
   isEditing = signal<boolean>(false);
   isSaving = signal<boolean>(false);
+  isLoadingProfile = signal<boolean>(false);
   
   showAddAddressModal = signal<boolean>(false);
   deletingAddressId = signal<number | null>(null);
 
+  // Initialized empty signal instead of hardcoding
   userProfile = signal<{ name: string; email: string; phone: string }>({
-    name: 'Ankur Kashyap',
-    email: 'ankur@example.com',
-    phone: '6396958896'
+    name: '',
+    email: '',
+    phone: ''
   });
 
   profileForm!: FormGroup;
   addressForm!: FormGroup;
 
   ngOnInit() {
-    // Load User from Local Storage if present
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      try {
-        const parsed = JSON.parse(savedUser);
-        this.userProfile.set({
-          name: parsed.name || parsed.full_name || 'Ankur Kashyap',
-          email: parsed.email || 'ankur@example.com',
-          phone: parsed.phone || '6396958896'
-        });
-      } catch (e) {}
-    }
+    this.initForms();
+    this.loadUserProfile();
+    this.addressService.loadAddresses();
+  }
 
+  private initForms() {
     this.profileForm = this.fb.group({
-      name: [this.userProfile().name, Validators.required],
-      phone: [this.userProfile().phone, [Validators.required, Validators.pattern('^[0-9]{10}$')]]
+      name: ['', Validators.required],
+      phone: ['', [Validators.pattern('^[0-9]{10}$')]]
     });
 
     this.addressForm = this.fb.group({
@@ -57,25 +57,58 @@ export class Profile implements OnInit {
       state: ['', Validators.required],
       postal_code: ['', [Validators.required, Validators.pattern('^[0-9]{6}$')]]
     });
-
-    this.addressService.loadAddresses();
   }
 
+  loadUserProfile() {
+    // 1. Pehle Auth Service / LocalStorage Signal se populate karo
+    const currentUser = this.authService.currentUser() || this.authService.getUserFromStorage();
+
+    if (currentUser) {
+      this.populateUserData(currentUser);
+    }
+  }
+
+  private populateUserData(user: any) {
+    const data = {
+      name: user.name || user.full_name || '',
+      email: user.email || '',
+      phone: user.phone || ''
+    };
+
+    this.userProfile.set(data);
+
+    this.profileForm.patchValue({
+      name: data.name,
+      phone: data.phone
+    });
+  }
+
+  // Real Backend API Hit for Updating Profile
   saveProfile() {
     if (this.profileForm.invalid) return;
     this.isSaving.set(true);
 
-    setTimeout(() => {
-      const updated = {
-        ...this.userProfile(),
-        name: this.profileForm.value.name,
-        phone: this.profileForm.value.phone
-      };
-      this.userProfile.set(updated);
-      localStorage.setItem('user', JSON.stringify(updated));
-      this.isSaving.set(false);
-      this.isEditing.set(false);
-    }, 600);
+    const payload = {
+      name: this.profileForm.value.name,
+      phone: this.profileForm.value.phone
+    };
+
+    this.authService.updateProfile(payload).subscribe({
+      next: (res: any) => {
+        const updatedUser = res?.data || res?.user || res;
+        
+        // Signal & Form Sync
+        this.populateUserData(updatedUser);
+        
+        this.isSaving.set(false);
+        this.isEditing.set(false);
+      },
+      error: (err: any) => {
+        console.error('Failed to update profile:', err);
+        alert(err.error?.message || 'Failed to update profile.');
+        this.isSaving.set(false);
+      }
+    });
   }
 
   onSaveAddress() {

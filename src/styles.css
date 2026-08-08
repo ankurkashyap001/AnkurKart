@@ -38,3 +38,86 @@ body {
 
 .fs-7 { font-size: 0.75rem; }
 .fs-8 { font-size: 0.68rem; }
+
+
+:root {
+  --brand-green: #00A651;
+  --brand-green-hover: #008A43;
+  --brand-green-subtle: #E8F7F0;
+  --brand-orange: #FF5E00;
+  --text-dark: #1D2939;
+  --text-muted: #667085;
+  --border-color: #E4E7EC;
+}
+
+/* Left Navigation Sidebar */
+.account-sidebar {
+  background: #FFFFFF;
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  padding: 12px;
+}
+
+.account-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  color: var(--text-dark);
+  font-weight: 500;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  margin-bottom: 4px;
+}
+
+.account-nav-item:hover {
+  background-color: #F8F9FA;
+  color: var(--brand-green);
+}
+
+.account-nav-item.active {
+  background-color: var(--brand-green-subtle);
+  color: var(--brand-green);
+  font-weight: 700;
+}
+
+.account-nav-item i {
+  font-size: 1.1rem;
+}
+
+/* Badges */
+.badge-delivered { background-color: #ECFDF3; color: #027A48; border: 1px solid #A6F4C5; }
+.badge-out-for-delivery { background-color: #FEF0C7; color: #DC6803; border: 1px solid #FEDF89; }
+.badge-packed { background-color: #F0F9FF; color: #026AA2; border: 1px solid #B9E6FE; }
+.badge-confirmed { background-color: #F4F3FF; color: #5925DC; border: 1px solid #D9D6FE; }
+.badge-cancelled { background-color: #FEF3F2; color: #B42318; border: 1px solid #FECDCA; }
+
+/* Buttons */
+.btn-brand-green {
+  background-color: var(--brand-green) !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  font-weight: 600;
+}
+
+.btn-brand-green:hover {
+  background-color: var(--brand-green-hover) !important;
+}
+
+.btn-outline-brand-green {
+  border: 1px solid var(--brand-green) !important;
+  color: var(--brand-green) !important;
+  background-color: transparent !important;
+  font-weight: 600;
+}
+
+.btn-outline-brand-green:hover {
+  background-color: var(--brand-green) !important;
+  color: #FFFFFF !important;
+}
+
+.fs-7 { font-size: 0.825rem; }
+.fs-8 { font-size: 0.725rem; }
+

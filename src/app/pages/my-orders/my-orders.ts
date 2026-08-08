@@ -2,6 +2,8 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { OrderService } from '../../services/order.service';
+import { Auth } from '../../services/auth';
+
 
 @Component({
   selector: 'app-my-orders',
@@ -12,6 +14,8 @@ import { OrderService } from '../../services/order.service';
 })
 export class MyOrders implements OnInit {
   private orderService = inject(OrderService);
+  // HTML template access ke liye Auth service ko public rakhein
+  public authService = inject(Auth);
 
   orders = signal<any[]>([]);
   isLoading = signal<boolean>(true);

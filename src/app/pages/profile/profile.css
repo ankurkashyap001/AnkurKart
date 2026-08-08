@@ -1,32 +1,29 @@
-.max-w-900 { max-width: 900px; }
 
-.avatar-box {
-  width: 65px;
-  height: 65px;
-  background-color: #00A651 !important;
+/* Header Green Gradient Banner */
+.profile-header-card {
+  background: linear-gradient(135deg, #0A5C36 0%, #00A651 100%);
+  min-height: 120px;
 }
 
-.custom-pills .nav-link {
-  color: #475467;
-  background-color: #F2F4F7;
+.avatar-circle {
+  width: 64px;
+  height: 64px;
 }
 
-.custom-pills .nav-link.active {
-  background-color: #00A651 !important;
-  color: #FFFFFF !important;
-}
-
-.btn-brand-green {
-  background-color: #00A651 !important;
-  color: #FFFFFF !important;
-  border: none;
-}
-.btn-brand-green:hover { background-color: #008A43 !important; }
-
-.address-card {
-  border: 1px solid #E4E7EC;
+.address-box {
+  border-color: var(--border-color) !important;
   transition: all 0.2s ease;
 }
-.address-card:hover {
-  border-color: #00A651;
+
+.address-box:hover {
+  border-color: var(--brand-green) !important;
+}
+
+.quick-action-card {
+  transition: all 0.2s ease;
+}
+
+.quick-action-card:hover {
+  border-color: var(--brand-green) !important;
+  transform: translateY(-2px);
 }

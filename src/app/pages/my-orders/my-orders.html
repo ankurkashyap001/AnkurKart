@@ -1,85 +1,145 @@
-<div class="container py-4 my-2 max-w-900">
-  
-    <div class="d-flex align-items-center justify-content-between mb-4">
-      <div>
-        <h4 class="fw-bold text-dark m-0">My Orders</h4>
-        <small class="text-muted fs-8">View and track all your past order history</small>
-      </div>
-      <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fs-8 fw-semibold">
-        Total Orders: {{ orders().length }}
-      </span>
-    </div>
-  
-    @if (isLoading()) {
-      <div class="text-center py-5 bg-white rounded-4 shadow-sm border">
-        <div class="spinner-border text-brand-green" role="status"></div>
-        <p class="mt-2 text-muted fs-7 mb-0">Fetching your orders...</p>
-      </div>
-    } @else if (orders().length > 0) {
-  
-      <div class="d-flex flex-column gap-3">
-        @for (order of orders(); track order.id) {
-          <div class="card border-0 shadow-sm rounded-4 p-3.5 bg-white transition-hover">
-            
-            <!-- Card Header -->
-            <div class="d-flex flex-wrap justify-content-between align-items-center pb-3 border-bottom gap-2">
-              <div class="d-flex align-items-center gap-2">
-                <span class="fw-bold text-dark fs-7">#{{ order.order_number || order.id }}</span>
-                <span class="badge px-2.5 py-1 fs-8 text-capitalize" [ngClass]="getStatusBadgeClass(order.status)">
-                  {{ order.status || 'Placed' }}
-                </span>
-              </div>
-  
-              <span class="fs-8 text-muted">
-                Placed on {{ (order.created_at || '2026-08-07') | date:'dd MMM yyyy, hh:mm a' }}
-              </span>
-            </div>
-  
-            <!-- Card Body -->
-            <div class="py-3 row align-items-center g-3">
-              
-              <div class="col-md-7">
-                <div class="d-flex align-items-center gap-2 overflow-x-auto pe-2">
-                  @for (item of (order.items || order.order_items || []); track $index) {
-                    <div class="item-preview-thumb bg-light rounded-3 p-1 border flex-shrink-0" title="{{ item.product_name || item.product?.title }}">
-                      <img [src]="item.product_image || item.image_url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=100&q=80'" class="w-100 h-100 object-fit-contain" alt="item">
-                    </div>
-                  }
-                </div>
-                <small class="text-muted fs-8 mt-2 d-block">
-                  {{ (order.items || order.order_items || []).length }} Item(s) included
-                </small>
-              </div>
-  
-              <div class="col-md-5 d-flex align-items-center justify-content-between justify-content-md-end gap-3 border-start-md ps-md-4">
-                <div>
-                  <span class="fs-8 text-muted d-block">Total Paid</span>
-                  <span class="fw-bold fs-6 text-dark">₹{{ order.total_amount }}</span>
-                </div>
-  
-                <a [routerLink]="['/orders', order.order_number || order.id]" class="btn btn-outline-brand-green btn-sm rounded-pill px-3 py-1.5 fw-bold fs-8">
-                  View Details <i class="bi bi-chevron-right ms-1"></i>
-                </a>
-              </div>
-  
-            </div>
-  
-          </div>
-        }
-      </div>
-  
-    } @else {
-      <!-- Empty State -->
-      <div class="text-center py-5 bg-white rounded-4 shadow-sm border p-4">
-        <div class="empty-basket-icon mx-auto rounded-circle mb-3 d-flex align-items-center justify-content-center">
-          <i class="bi bi-bag-x text-brand-green display-5"></i>
-        </div>
-        <h5 class="fw-bold text-dark mb-1">No orders placed yet</h5>
-        <p class="text-muted fs-7 mb-4">Looks like you haven't bought anything with us yet.</p>
-        <a routerLink="/" class="btn btn-brand-green rounded-pill px-4 py-2.5 fw-bold fs-7">
-          Start Shopping Now
+<div class="container py-4 my-2">
+  <div class="row g-4">
+    
+    <!-- LEFT SIDEBAR MENU -->
+    <div class="col-lg-3">
+      <div class="account-sidebar shadow-sm">
+        <a routerLink="/profile" class="account-nav-item">
+          <i class="bi bi-person"></i> My Profile
+        </a>
+        <a routerLink="/my-orders" class="account-nav-item active">
+          <i class="bi bi-bag"></i> My Orders
+        </a>
+        <a routerLink="/profile" class="account-nav-item">
+          <i class="bi bi-geo-alt"></i> Saved Addresses
+        </a>
+        <a href="javascript:void(0)" class="account-nav-item">
+          <i class="bi bi-credit-card"></i> Payment Methods
+        </a>
+        <a href="javascript:void(0)" class="account-nav-item">
+          <i class="bi bi-heart"></i> My Wishlist
+        </a>
+        <a href="javascript:void(0)" class="account-nav-item">
+          <i class="bi bi-bell"></i> Notifications
+        </a>
+        <a href="javascript:void(0)" class="account-nav-item">
+          <i class="bi bi-question-circle"></i> Help & Support
+        </a>
+        <hr class="my-2 text-muted opacity-25">
+        <a href="javascript:void(0)" class="account-nav-item text-danger" (click)="authService.logout()">
+          <i class="bi bi-box-arrow-right"></i> Logout
         </a>
       </div>
-    }
-  
+    </div>
+
+    <!-- MAIN ORDERS CONTENT AREA -->
+    <div class="col-lg-9">
+      
+      <!-- HEADER & FILTER DROPDOWN -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h4 class="fw-bold text-dark m-0">My Orders</h4>
+          <small class="text-muted fs-8">View and track all your past orders</small>
+        </div>
+        
+        <div class="dropdown">
+          <button class="btn btn-white btn-sm border rounded-pill shadow-none fs-8 fw-semibold bg-white px-3.5 py-1.5" type="button" data-bs-toggle="dropdown">
+            All Orders <i class="bi bi-chevron-down ms-1"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow border-0 fs-8">
+            <li><a class="dropdown-item py-1.5" href="#">All Orders</a></li>
+            <li><a class="dropdown-item py-1.5" href="#">Delivered</a></li>
+            <li><a class="dropdown-item py-1.5" href="#">Out for Delivery</a></li>
+            <li><a class="dropdown-item py-1.5" href="#">Packed</a></li>
+            <li><a class="dropdown-item py-1.5" href="#">Cancelled</a></li>
+          </ul>
+        </div>
+      </div>
+
+      @if (isLoading()) {
+        <div class="text-center py-5 bg-white rounded-4 shadow-sm border">
+          <div class="spinner-border text-brand-green" role="status"></div>
+          <p class="mt-2 text-muted fs-8 mb-0">Loading your order history...</p>
+        </div>
+      } @else if (orders().length > 0) {
+
+        <div class="d-flex flex-column gap-3">
+          @for (order of orders(); track order.id) {
+            <div class="order-card card border-0 shadow-sm rounded-4 p-3.5 bg-white">
+              
+              <!-- Card Top Row: Order ID, Status Badge, Placed/Delivered Date -->
+              <div class="d-flex justify-content-between align-items-center pb-3 border-bottom">
+                <div class="d-flex align-items-center gap-2.5">
+                  <span class="fw-bold fs-7 text-dark">#{{ order.order_number || order.id }}</span>
+                  <span class="badge px-2.5 py-1 fs-8 fw-bold rounded-2 text-capitalize" [ngClass]="getStatusBadgeClass(order.status)">
+                    {{ order.status || 'Placed' }}
+                  </span>
+                </div>
+                
+                <small class="text-muted fs-8">
+                  {{ (order.status || '').toLowerCase() === 'delivered' ? 'Delivered on ' : 'Placed on ' }}
+                  {{ (order.created_at || '2026-05-08T11:08:00') | date:'dd MMM yyyy, hh:mm a' }}
+                </small>
+              </div>
+
+              <!-- Card Middle Row: Thumbnails, Count, Price & Details Button -->
+              <div class="py-3 row align-items-center g-3">
+                
+                <!-- Left: Items Thumbnails + Item Count -->
+                <div class="col-md-7 d-flex align-items-center gap-3">
+                  <div class="d-flex align-items-center gap-2">
+                    @for (item of (order.items || order.order_items || []); track $index) {
+                      @if ($index < 3) {
+                        <div class="item-thumb bg-white rounded-3 border p-1 flex-shrink-0">
+                          <img [src]="item.product_image || item.image_url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=100&q=80'" class="w-100 h-100 object-fit-contain" [alt]="item.product_name || 'Product'">
+                        </div>
+                      }
+                    }
+
+                    <!-- +N Counter Badge Box -->
+                    @if ((order.items || order.order_items || []).length > 3) {
+                      <div class="item-more-thumb bg-light rounded-3 border d-flex align-items-center justify-content-center flex-shrink-0 fw-bold fs-8 text-muted">
+                        +{{ (order.items || order.order_items || []).length - 3 }}
+                      </div>
+                    }
+                  </div>
+
+                  <span class="text-muted fs-8">
+                    {{ (order.items || order.order_items || []).length }} items in this order
+                  </span>
+                </div>
+
+                <!-- Right: Total Paid + View Details CTA -->
+                <div class="col-md-5 d-flex align-items-center justify-content-between justify-content-md-end gap-3.5">
+                  <div class="text-md-end">
+                    <span class="fs-8 text-muted d-block lh-1 mb-1">Total Paid</span>
+                    <strong class="fs-6 text-dark fw-bold">₹{{ order.total_amount }}</strong>
+                  </div>
+
+                  <a [routerLink]="['/orders', order.order_number || order.id]" class="btn btn-outline-brand-green btn-sm rounded-pill px-3.5 py-1.5 fs-8 d-inline-flex align-items-center gap-1">
+                    View Details <i class="bi bi-chevron-right fs-8"></i>
+                  </a>
+                </div>
+
+              </div>
+
+            </div>
+          }
+        </div>
+
+      } @else {
+        <!-- EMPTY STATE -->
+        <div class="text-center py-5 bg-white rounded-4 shadow-sm border p-4">
+          <i class="bi bi-bag-x text-muted display-4"></i>
+          <h5 class="fw-bold text-dark mt-3">No orders found</h5>
+          <p class="text-muted fs-8">You haven't placed any orders yet.</p>
+          <a routerLink="/" class="btn btn-brand-green rounded-pill px-4 py-2 fs-8 fw-bold">
+            Start Shopping
+          </a>
+        </div>
+      }
+
+    </div>
+
   </div>
+</div>
