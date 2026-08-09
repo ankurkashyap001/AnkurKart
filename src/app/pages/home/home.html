@@ -158,42 +158,86 @@
       <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3">
         @for (prod of products(); track prod.id) {
           <div class="col">
-            <div class="product-card-fixed position-relative">
+            <div class="product-card card border-0 shadow-sm rounded-4 p-3 h-100 bg-white d-flex flex-column justify-content-between position-relative">
               
-              <!-- Clickable Product Image & Details Link -->
-              <a [routerLink]="['/products', prod.id]" class="text-decoration-none text-dark d-block">
-                <div class="product-img-wrapper cursor-pointer">
-                  @if (prod.discount_percentage > 0) {
-                    <span class="badge position-absolute top-0 start-0 m-2 bg-discount fs-8 z-1">
-                      {{ prod.discount_percentage }}% OFF
+              <div>
+                <!-- Image Wrapper Container -->
+                <div class="product-thumb-container mb-2.5 p-2 rounded-3 bg-light position-relative">
+                  
+                  <!-- Discount Badge -->
+                  @if (prod.discount_percentage > 0 || (prod.price && prod.sale_price && prod.price > prod.sale_price)) {
+                    <span class="badge bg-danger position-absolute top-0 start-0 m-2 px-2 py-1 fs-8 fw-bold rounded-1 z-1">
+                      {{ prod.discount_percentage || Math.round(((prod.price - prod.sale_price) / prod.price) * 100) }}% OFF
                     </span>
                   }
-                  <img 
-                    [src]="prod.primary_image || defaultImage" 
-                    [alt]="prod.title"
-                    (error)="onImageError($event)"
-                  />
+
+                  <!-- Wishlist Heart Button -->
+                  <button 
+                    class="wishlist-heart-btn btn btn-sm p-0 border-0 position-absolute top-0 end-0 m-2 text-muted z-2" 
+                    type="button"
+                    (click)="wishlistService.toggleWishlist(prod)"
+                    title="Toggle Wishlist"
+                  >
+                    <i 
+                      class="bi fs-6" 
+                      [class.bi-heart-fill]="wishlistService.isInWishlist(prod.id)" 
+                      [class.text-danger]="wishlistService.isInWishlist(prod.id)" 
+                      [class.bi-heart]="!wishlistService.isInWishlist(prod.id)"
+                    ></i>
+                  </button>
+
+                  <!-- Product Image Link -->
+                  <a [routerLink]="['/products', prod.id]" class="d-flex align-items-center justify-content-center h-100 w-100 text-decoration-none">
+                    <img 
+                      [src]="prod.primary_image || defaultImage" 
+                      [alt]="prod.title"
+                      class="product-img img-fluid"
+                      (error)="onImageError($event)"
+                    />
+                  </a>
                 </div>
 
-                <div class="product-name cursor-pointer" [title]="prod.title">{{ prod.title }}</div>
-              </a>
+                <!-- Unit / Pack Label (Brand Green) -->
+                <span class="text-brand-green fs-8 fw-bold d-block mb-1">
+                  {{ $any(prod).unit || $any(prod).weight || '1 pack' }}
+                </span>
 
-              <div class="product-unit">500 g</div>
+                <!-- Product Title -->
+                <a [routerLink]="['/products', prod.id]" class="text-decoration-none">
+                  <h6 class="fs-8 fw-bold text-dark product-title-clamp mb-2 lh-sm" [title]="prod.title">
+                    {{ prod.title }}
+                  </h6>
+                </a>
+              </div>
 
-              <div class="product-action-row">
-                <div class="price-box">
-                  <span class="sale-price">₹{{ prod.sale_price }}</span>
-                  @if (prod.price > prod.sale_price) {
-                    <span class="original-price">₹{{ prod.price }}</span>
+              <!-- Bottom Row: Price & Cart Action Button/Stepper -->
+              <div class="pt-2 d-flex align-items-center justify-content-between mt-auto">
+                
+                <!-- Price Block -->
+                <div class="d-flex align-items-center gap-1 flex-wrap">
+                  <span class="fw-bold fs-7 text-dark">₹{{ prod.sale_price || prod.price }}</span>
+                  
+                  @if (prod.price && prod.sale_price && prod.price > prod.sale_price) {
+                    <small class="text-muted text-decoration-line-through fs-8">₹{{ prod.price }}</small>
                   }
                 </div>
 
-                <!-- Product Add Button -->
-                <button 
-                  (click)="cartService.addToCart(prod)" 
-                  class="btn btn-outline-brand-orange btn-sm fw-bold px-3 py-1 rounded-2 z-2">
-                  ADD
-                </button>
+                <!-- Quick ADD / Stepper Button -->
+                @if (getCartQuantity(prod.id) === 0) {
+                  <button 
+                    class="btn btn-outline-brand-green btn-sm rounded-pill px-3 py-1 fs-8 fw-bold shadow-xs z-2" 
+                    (click)="cartService.addToCart(prod.id, 1)"
+                  >
+                    ADD
+                  </button>
+                } @else {
+                  <div class="stepper-pill d-inline-flex align-items-center rounded-pill bg-brand-green text-white px-2 py-0.5 fs-8 fw-bold shadow-xs z-2">
+                    <button class="btn btn-link text-white p-0 me-1 border-0 fs-7 lh-1 text-decoration-none" (click)="cartService.addToCart(prod.id, -1)">−</button>
+                    <span class="px-1.5">{{ getCartQuantity(prod.id) }}</span>
+                    <button class="btn btn-link text-white p-0 ms-1 border-0 fs-7 lh-1 text-decoration-none" (click)="cartService.addToCart(prod.id, 1)">+</button>
+                  </div>
+                }
+
               </div>
 
             </div>

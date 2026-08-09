@@ -8,6 +8,7 @@ import { SalesCategory } from '../../models/category.model';
 import { Product } from '../../models/product.model';
 import { CartService } from '../../services/cart.service';
 import { RouterLink } from '@angular/router';
+import { WishlistService } from '../../services/wishlist.service';
 
 @Component({
   selector: 'app-home',
@@ -21,6 +22,9 @@ export class Home implements OnInit {
   private productService = inject(ProductService);
   // CartService Inject yahan karein
   cartService = inject(CartService);
+  // Wishlist
+  public wishlistService = inject(WishlistService);
+  Math = Math;
 
   // Category Signals
   categories = signal<SalesCategory[]>([]);
@@ -55,6 +59,12 @@ export class Home implements OnInit {
         this.isCategoriesLoading.set(false);
       }
     });
+  }
+
+  getCartQuantity(productId: number): number {
+    const cartItems = this.cartService.cart()?.items || [];
+    const item = cartItems.find((i: any) => i.product_id === productId);
+    return item ? item.quantity : 0;
   }
 
   fetchProducts(): void {
