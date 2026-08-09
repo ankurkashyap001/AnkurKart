@@ -28,18 +28,21 @@
       </div>
     </div>
 
-    <!-- 3. Center Search Bar with Integrated Orange Button -->
+    <!-- 3. Center Search Bar with Live Navigation -->
     <div class="flex-grow-1 my-2 my-lg-0 me-lg-4" style="max-width: 550px;">
       <div class="input-group">
         <input 
           type="text" 
           class="form-control bg-light border-end-0 py-2 ps-3 shadow-none fs-7" 
           placeholder="Search for &quot;milk, eggs, bread...&quot;"
+          [(ngModel)]="searchTerm"
+          (keyup.enter)="onSearch()"
           style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;"
         />
         <button 
           class="btn btn-brand-orange px-3 d-flex align-items-center justify-content-center" 
           type="button"
+          (click)="onSearch()"
           style="border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 8px; border-bottom-right-radius: 8px;">
           <i class="bi bi-search fs-6"></i>
         </button>
@@ -69,14 +72,14 @@
             </li>
             <li><hr class="dropdown-divider my-1"></li>
             <li>
-              <button class="dropdown-item py-2 px-3 d-flex align-items-center gap-2 text-danger" (click)="authService.logout()">
+              <button class="dropdown-item py-2 px-3 d-flex align-items-center gap-2 text-danger" (click)="logout()">
                 <i class="bi bi-box-arrow-right fs-6"></i> Logout
               </button>
             </li>
           </ul>
         </div>
       } @else {
-        <!-- Logged Out State (Triggers Signal-driven Instant Modal) -->
+        <!-- Logged Out State -->
         <div 
           class="text-dark text-decoration-none fw-semibold fs-7 d-flex flex-column align-items-center cursor-pointer"
           (click)="authService.openAuthModal()"

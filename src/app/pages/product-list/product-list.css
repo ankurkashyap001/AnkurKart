@@ -1,0 +1,99 @@
+:root {
+    --brand-green: #00A651;
+    --brand-green-hover: #008A43;
+    --brand-green-subtle: #E8F7F0;
+    --border-light: #E4E7EC;
+    --text-dark: #1D2939;
+  }
+  
+  .filter-sidebar {
+    border: 1px solid var(--border-light) !important;
+  }
+  
+  .category-nav-item {
+    background-color: transparent;
+    color: #475467;
+    transition: all 0.2s ease;
+  }
+  
+  .category-nav-item:hover {
+    background-color: #F8F9FA;
+    color: var(--brand-green);
+  }
+  
+  .category-nav-item.active {
+    background-color: var(--brand-green-subtle);
+    color: var(--brand-green);
+    font-weight: 700 !important;
+  }
+  
+  /* Product Cards */
+  .product-card {
+    border: 1px solid var(--border-light) !important;
+    transition: all 0.2s ease;
+  }
+  
+  .product-card:hover {
+    border-color: var(--brand-green) !important;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.06) !important;
+    transform: translateY(-2px);
+  }
+  
+  .product-thumb-box {
+    height: 120px;
+    width: 100%;
+    overflow: hidden;
+  }
+  
+  .max-h-120 {
+    max-height: 110px;
+  }
+  
+  .product-title-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 32px;
+  }
+  
+  /* Buttons & Badges */
+  .btn-outline-brand-green {
+    color: var(--brand-green);
+    border: 1.5px solid var(--brand-green);
+    background: #FFFFFF;
+  }
+  
+  .btn-outline-brand-green:hover {
+    background-color: var(--brand-green);
+    color: #FFFFFF;
+  }
+  
+  .btn-brand-green {
+    background-color: var(--brand-green) !important;
+    color: #FFFFFF !important;
+    border: none !important;
+  }
+  
+  .btn-brand-green:hover {
+    background-color: var(--brand-green-hover) !important;
+  }
+  
+  .bg-brand-green-subtle {
+    background-color: var(--brand-green-subtle) !important;
+  }
+  
+  .text-brand-green {
+    color: var(--brand-green) !important;
+  }
+  
+  .border-brand-green {
+    border-color: #A6F4C5 !important;
+  }
+  
+  .cursor-pointer {
+    cursor: pointer;
+  }
+  
+  .fs-7 { font-size: 0.825rem; }
+  .fs-8 { font-size: 0.725rem; }
