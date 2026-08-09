@@ -12,11 +12,8 @@ export class Auth {
   
   private apiUrl = 'http://localhost:8000/api';
 
-  // Reactive Application State Signals
   currentUser = signal<any>(this.getUserFromStorage());
   isLoggedInSignal = signal<boolean>(!!this.getToken());
-  
-  // Signal for Pure Angular Auth Modal (Lag-free control)
   showAuthModal = signal<boolean>(false);
 
   private isBrowser(): boolean {
@@ -32,20 +29,9 @@ export class Auth {
       })
     };
   }
-
-  // --- Modal Controls ---
-
-  openAuthModal(): void {
-    this.showAuthModal.set(true);
-  }
-
-  closeAuthModal(): void {
-    this.showAuthModal.set(false);
-  }
-
-  toggleAuthModal(): void {
-    this.showAuthModal.update(state => !state);
-  }
+  // Modal Controls
+  openAuthModal(): void { this.showAuthModal.set(true); }
+  closeAuthModal(): void { this.showAuthModal.set(false); }
 
   // --- API Methods ---
 
@@ -88,6 +74,24 @@ export class Auth {
     );
   }
 
+  // Phone Auth APIs
+  sendOtp(phone: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/send-otp`, { phone });
+  }
+
+  verifyOtp(payload: { phone: string; otp: string; name?: string }): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/auth/verify-otp`, payload).pipe(
+      tap((res: any) => {
+        const token = res.token || res.access_token || res.data?.token;
+        const user = res.user || res.data?.user;
+
+        if (token) this.setToken(token);
+        if (user) this.setUser(user);
+        if (token || user) this.closeAuthModal();
+      })
+    );
+  }
+
   logout(): void {
     const token = this.getToken();
 
@@ -111,14 +115,11 @@ export class Auth {
           'Authorization': `Bearer ${token}`,
           'Accept': 'application/json'
         })
-      }).pipe(
-        catchError(() => of(null)) // Quietly catch error if token is already expired
-      ).subscribe();
+      }).pipe(catchError(() => of(null))).subscribe();
     }
   }
 
-  // --- LocalStorage & State Helpers ---
-
+  // LocalStorage Helpers
   setToken(token: string): void {
     if (this.isBrowser()) {
       localStorage.setItem('auth_token', token);
@@ -143,11 +144,7 @@ export class Auth {
     if (!this.isBrowser()) return null;
     const userStr = localStorage.getItem('user');
     if (!userStr) return null;
-    try {
-      return JSON.parse(userStr);
-    } catch {
-      return null;
-    }
+    try { return JSON.parse(userStr); } catch { return null; }
   }
 
   isLoggedIn(): boolean {

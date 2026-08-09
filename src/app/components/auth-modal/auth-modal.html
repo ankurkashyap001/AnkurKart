@@ -1,104 +1,113 @@
 @if (authService.showAuthModal()) {
-    <div class="auth-modal-backdrop d-flex align-items-center justify-content-center">
-      <div class="auth-modal-card bg-white rounded-4 p-4 p-md-5 position-relative shadow-lg mx-3">
-        
-        <!-- Close Button -->
-        <button 
-          type="button" 
-          class="btn-close position-absolute top-0 end-0 m-3 shadow-none" 
-          (click)="authService.closeAuthModal()"
-        ></button>
-  
-        <!-- Header -->
+  <div class="auth-modal-backdrop d-flex align-items-center justify-content-center">
+    <div class="auth-modal-card bg-white rounded-4 p-4 p-md-5 position-relative shadow-lg mx-3">
+      
+      <!-- Close Button -->
+      <button 
+        type="button" 
+        class="btn-close position-absolute top-0 end-0 m-3 shadow-none" 
+        (click)="authService.closeAuthModal(); resetModal()"
+      ></button>
+
+      <!-- Step 1: Mobile Input -->
+      @if (step() === 1) {
         <div class="text-center mb-4">
-          <h4 class="fw-bold text-dark m-0">
-            {{ isLoginMode() ? 'Welcome Back' : 'Create Account' }}
-          </h4>
-          <small class="text-muted">
-            {{ isLoginMode() ? 'Sign in to access your orders & cart' : 'Join AnkurKart for fast grocery delivery' }}
-          </small>
+          <div class="bg-warning-subtle text-warning rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
+            <i class="bi bi-phone fs-3"></i>
+          </div>
+          <h4 class="fw-bold text-dark m-0">Login or Signup</h4>
+          <small class="text-muted">Enter your phone number to proceed</small>
         </div>
-  
-        <!-- Error Alert -->
+
         @if (errorMessage()) {
           <div class="alert alert-danger py-2 fs-8 rounded-3 mb-3">
             {{ errorMessage() }}
           </div>
         }
-  
-        <!-- Form -->
-        @if (isLoginMode()) {
-          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-            <div class="mb-3">
-              <input 
-                type="email" 
-                formControlName="email" 
-                class="form-control shadow-none rounded-3" 
-                placeholder="Email Address"
-              >
-            </div>
-            <div class="mb-3">
-              <input 
-                type="password" 
-                formControlName="password" 
-                class="form-control shadow-none rounded-3" 
-                placeholder="Password"
-              >
-            </div>
-            <button 
-              type="submit" 
-              class="btn btn-brand-orange w-100 py-2.5 rounded-pill fw-bold text-white shadow-sm"
-              [disabled]="isLoading()"
+
+        <form [formGroup]="phoneForm" (ngSubmit)="onSendOtp()">
+          <div class="input-group mb-3">
+            <span class="input-group-text bg-light fw-bold text-dark border-end-0 fs-7">+91</span>
+            <input 
+              type="text" 
+              formControlName="phone" 
+              class="form-control shadow-none rounded-end-3 fs-7" 
+              placeholder="10-digit Mobile Number"
+              maxlength="10"
             >
-              {{ isLoading() ? 'Logging in...' : 'Login' }}
-            </button>
-          </form>
-        } @else {
-          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-            <div class="mb-3">
-              <input 
-                type="text" 
-                formControlName="name" 
-                class="form-control shadow-none rounded-3" 
-                placeholder="Full Name"
-              >
-            </div>
-            <div class="mb-3">
-              <input 
-                type="email" 
-                formControlName="email" 
-                class="form-control shadow-none rounded-3" 
-                placeholder="Email Address"
-              >
-            </div>
-            <div class="mb-3">
-              <input 
-                type="password" 
-                formControlName="password" 
-                class="form-control shadow-none rounded-3" 
-                placeholder="Password"
-              >
-            </div>
-            <button 
-              type="submit" 
-              class="btn btn-brand-orange w-100 py-2.5 rounded-pill fw-bold text-white shadow-sm"
-              [disabled]="isLoading()"
-            >
-              {{ isLoading() ? 'Creating Account...' : 'Register' }}
-            </button>
-          </form>
-        }
-  
-        <!-- Toggle Mode Footer -->
-        <div class="text-center mt-4 fs-7">
-          <span class="text-muted">
-            {{ isLoginMode() ? "Don't have an account?" : "Already have an account?" }}
-          </span>
-          <button type="button" class="btn btn-link text-brand-orange p-0 ms-1 fw-bold text-decoration-none fs-7" (click)="toggleMode()">
-            {{ isLoginMode() ? 'Register Now' : 'Login' }}
+          </div>
+          @if (phoneForm.get('phone')?.touched && phoneForm.get('phone')?.invalid) {
+            <small class="text-danger fs-8 d-block mb-2">Valid 10-digit mobile number required</small>
+          }
+
+          <button 
+            type="submit" 
+            class="btn btn-brand-orange w-100 py-2.5 rounded-pill fw-bold text-white shadow-sm mt-2"
+            [disabled]="isLoading()"
+          >
+            {{ isLoading() ? 'Sending OTP...' : 'Continue' }}
           </button>
+        </form>
+      }
+
+      <!-- Step 2: OTP Input -->
+      @if (step() === 2) {
+        <div class="text-center mb-4">
+          <div class="bg-success-subtle text-success rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
+            <i class="bi bi-shield-check fs-3"></i>
+          </div>
+          <h4 class="fw-bold text-dark m-0">Verify OTP</h4>
+          <small class="text-muted">
+            Sent to <strong>+91 {{ phoneForm.value.phone }}</strong>
+            <button class="btn btn-link p-0 ms-1 fs-8 text-brand-orange text-decoration-none fw-bold" (click)="backToPhoneStep()">Change</button>
+          </small>
         </div>
-  
-      </div>
+
+        @if (debugOtp()) {
+          <div class="alert alert-info py-2 fs-8 rounded-3 mb-3 text-center">
+            <strong>Dev Mode OTP:</strong> {{ debugOtp() }}
+          </div>
+        }
+
+        @if (errorMessage()) {
+          <div class="alert alert-danger py-2 fs-8 rounded-3 mb-3">
+            {{ errorMessage() }}
+          </div>
+        }
+
+        <form [formGroup]="otpForm" (ngSubmit)="onVerifyOtp()">
+          <div class="mb-3">
+            <input 
+              type="text" 
+              formControlName="otp" 
+              class="form-control shadow-none rounded-3 text-center fw-bold fs-5 tracking-wider" 
+              placeholder="Enter 4-digit OTP"
+              maxlength="4"
+            >
+          </div>
+          @if (otpForm.get('otp')?.touched && otpForm.get('otp')?.invalid) {
+            <small class="text-danger fs-8 d-block mb-2">Please enter 4-digit OTP</small>
+          }
+
+          <div class="mb-3">
+            <input 
+              type="text" 
+              formControlName="name" 
+              class="form-control shadow-none rounded-3 fs-7" 
+              placeholder="Full Name (Optional for new users)"
+            >
+          </div>
+
+          <button 
+            type="submit" 
+            class="btn btn-brand-orange w-100 py-2.5 rounded-pill fw-bold text-white shadow-sm mt-2"
+            [disabled]="isLoading()"
+          >
+            {{ isLoading() ? 'Verifying...' : 'Verify & Continue' }}
+          </button>
+        </form>
+      }
+
     </div>
-  }
+  </div>
+}
