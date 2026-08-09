@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
+import { WishlistService } from '../../services/wishlist.service'; 
 
 @Component({
   selector: 'app-product-detail',
@@ -15,6 +16,7 @@ export class ProductDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private productService = inject(ProductService);
   public cartService = inject(CartService);
+  public wishlistService = inject(WishlistService); // 👈 Inject WishlistService
 
   product = signal<any>(null);
   similarProducts = signal<any[]>([]);

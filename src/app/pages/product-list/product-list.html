@@ -152,9 +152,19 @@
                         </span>
                       }
   
-                      <!-- Wishlist Heart Button -->
-                      <button class="wishlist-heart-btn btn btn-sm p-0 border-0 position-absolute top-0 end-0 m-2 text-muted" type="button">
-                        <i class="bi bi-heart fs-6"></i>
+                      <!-- Wishlist Heart Button with Dynamic State & Click Handler -->
+                      <button 
+                            class="wishlist-heart-btn btn btn-sm p-0 border-0 position-absolute top-0 end-0 m-2 text-muted" 
+                            type="button"
+                            (click)="wishlistService.toggleWishlist(prod)"
+                            title="Toggle Wishlist"
+                            >
+                            <i 
+                            class="bi fs-6" 
+                            [class.bi-heart-fill]="wishlistService.isInWishlist(prod.id)" 
+                            [class.text-danger]="wishlistService.isInWishlist(prod.id)" 
+                            [class.bi-heart]="!wishlistService.isInWishlist(prod.id)"
+                        ></i>
                       </button>
   
                       <!-- Product Image Link -->

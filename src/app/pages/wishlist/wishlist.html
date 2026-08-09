@@ -1,0 +1,115 @@
+<div class="container py-4 my-2">
+  
+    <!-- BREADCRUMBS -->
+    <nav aria-label="breadcrumb" class="mb-3">
+      <ol class="breadcrumb fs-8 fw-semibold m-0">
+        <li class="breadcrumb-item"><a routerLink="/" class="text-muted text-decoration-none">Home</a></li>
+        <li class="breadcrumb-item active text-dark" aria-current="page">My Wishlist</li>
+      </ol>
+    </nav>
+  
+    <!-- HEADER -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <div>
+        <h4 class="fw-bold text-dark m-0">My Wishlist</h4>
+        <small class="text-muted fs-8">
+          {{ wishlistService.wishlistCount() }} {{ wishlistService.wishlistCount() === 1 ? 'item' : 'items' }} saved for later
+        </small>
+      </div>
+  
+      @if (wishlistService.wishlistCount() > 0) {
+        <a routerLink="/products" class="btn btn-outline-brand-green btn-sm rounded-pill px-3 py-1.5 fs-8 fw-bold">
+          + Add More Items
+        </a>
+      }
+    </div>
+  
+    @if (wishlistService.isLoading()) {
+      <div class="text-center py-5 bg-white rounded-4 shadow-sm border">
+        <div class="spinner-border text-brand-green" role="status"></div>
+        <p class="mt-2 text-muted fs-8 mb-0">Loading your saved items...</p>
+      </div>
+    } @else if (wishlistService.wishlistItems().length > 0) {
+  
+      <!-- WISHLIST GRID -->
+      <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3 mb-4">
+        @for (prod of wishlistService.wishlistItems(); track (prod.id || prod.product_id)) {
+          <div class="col">
+            <div class="product-card card border-0 shadow-sm rounded-4 p-3 h-100 bg-white d-flex flex-column justify-content-between position-relative">
+              
+              <div>
+                <!-- Image Container -->
+                <div class="product-thumb-container mb-2.5 p-2 rounded-3 bg-light position-relative">
+                  
+                  <!-- Remove Trash Icon -->
+                  <button 
+                    class="remove-wishlist-btn btn btn-sm p-0 border-0 position-absolute top-0 end-0 m-2 text-muted" 
+                    type="button"
+                    (click)="removeItem(prod.id || prod.product_id)"
+                    title="Remove from wishlist"
+                  >
+                    <i class="bi bi-trash3 fs-7 text-danger"></i>
+                  </button>
+  
+                  <!-- Discount Tag -->
+                  @if (prod.original_price && prod.original_price > prod.price) {
+                    <span class="badge bg-danger position-absolute top-0 start-0 m-2 px-2 py-1 fs-8 fw-bold rounded-1">
+                      {{ Math.round(((prod.original_price - prod.price) / prod.original_price) * 100) }}% OFF
+                    </span>
+                  }
+  
+                  <a [routerLink]="['/products', prod.id || prod.product_id]" class="d-flex align-items-center justify-content-center h-100 w-100 text-decoration-none">
+                    <img [src]="prod.primary_image || prod.image_url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=300&q=80'" [alt]="prod.title" class="product-img img-fluid">
+                  </a>
+                </div>
+  
+                <!-- Unit Label -->
+                <span class="text-brand-green fs-8 fw-bold d-block mb-1">
+                  {{ prod.unit || prod.weight || '1 pack' }}
+                </span>
+  
+                <!-- Product Title -->
+                <a [routerLink]="['/products', prod.id || prod.product_id]" class="text-decoration-none">
+                  <h6 class="fs-8 fw-bold text-dark product-title-clamp mb-2 lh-sm">
+                    {{ prod.title || prod.name }}
+                  </h6>
+                </a>
+              </div>
+  
+              <!-- Pricing & Move to Cart Button -->
+              <div class="pt-2 border-top d-flex flex-column gap-2 mt-auto">
+                <div class="d-flex align-items-center gap-1.5">
+                  <span class="fw-bold fs-7 text-dark">₹{{ prod.price }}</span>
+                  @if (prod.original_price && prod.original_price > prod.price) {
+                    <small class="text-muted text-decoration-line-through fs-8">₹{{ prod.original_price }}</small>
+                  }
+                </div>
+  
+                <button 
+                  class="btn btn-brand-green btn-sm rounded-3 w-100 py-1.5 fs-8 fw-bold d-flex align-items-center justify-content-center gap-1.5 shadow-xs"
+                  (click)="moveToCart(prod)"
+                >
+                  <i class="bi bi-bag-plus fs-7"></i> Move to Cart
+                </button>
+              </div>
+  
+            </div>
+          </div>
+        }
+      </div>
+  
+    } @else {
+      <!-- EMPTY WISHLIST STATE -->
+      <div class="text-center py-5 bg-white rounded-4 shadow-sm border p-4 mb-4">
+        <div class="empty-icon-circle bg-light rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 76px; height: 76px;">
+          <i class="bi bi-heart text-muted display-6"></i>
+        </div>
+        <h5 class="fw-bold text-dark mb-1">Your wishlist is empty</h5>
+        <p class="text-muted fs-8 mb-4">Explore our wide range of fresh groceries and save your favorites!</p>
+        <a routerLink="/products" class="btn btn-brand-green rounded-pill px-4 py-2 fs-8 fw-bold">
+          Explore Products
+        </a>
+      </div>
+    }
+  
+  </div>

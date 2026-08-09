@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms'; // 👈 Form binding (ngModel) ke liye
 import { Auth } from '../../services/auth';
 import { CartService } from '../../services/cart.service';
+import { WishlistService } from '../../services/wishlist.service'; // 👈 Import WishlistService
 
 @Component({
   selector: 'app-navbar',
@@ -16,6 +17,7 @@ export class Navbar {
   public authService = inject(Auth);
   public cartService = inject(CartService);
   private router = inject(Router);
+  public wishlistService = inject(WishlistService); // 👈 Inject WishlistService
 
   searchTerm: string = '';
 

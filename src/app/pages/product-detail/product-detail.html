@@ -127,13 +127,26 @@
                 </button>
   
                 <!-- Add to Wishlist Button -->
-                <button 
-                  class="btn btn-wishlist rounded-3 px-3.5 py-2 fs-8 text-dark d-inline-flex align-items-center justify-content-center gap-1.5"
+                <!-- <button 
+                    class="btn btn-wishlist rounded-3 px-3.5 py-2 fs-8 text-dark d-inline-flex align-items-center justify-content-center gap-1.5"
                   [class.text-danger]="isWishlisted()"
-                  (click)="toggleWishlist()"
-                >
-                  <i class="bi fs-7" [class.bi-heart-fill]="isWishlisted()" [class.bi-heart]="!isWishlisted()"></i>
-                  <span>ADD TO WISHLIST</span>
+                    (click)="toggleWishlist()"
+                    >
+                    <i class="bi fs-7" [class.bi-heart-fill]="isWishlisted()" [class.bi-heart]="!isWishlisted()"></i>
+                    <span>ADD TO WISHLIST</span>
+                </button> -->
+
+                <!-- ADD TO WISHLIST BUTTON -->
+                <button 
+                    class="btn btn-wishlist rounded-3 px-3.5 py-2 fs-8 text-dark d-inline-flex align-items-center justify-content-center gap-1.5"
+                    [class.text-danger]="wishlistService.isInWishlist(product()?.id)"
+                    (click)="wishlistService.toggleWishlist(product())"
+                    >
+                    <i class="bi fs-7" 
+                    [class.bi-heart-fill]="wishlistService.isInWishlist(product()?.id)" 
+                    [class.text-danger]="wishlistService.isInWishlist(product()?.id)" 
+                    [class.bi-heart]="!wishlistService.isInWishlist(product()?.id)"></i>
+                    <span>{{ wishlistService.isInWishlist(product()?.id) ? 'WISHLISTED' : 'ADD TO WISHLIST' }}</span>
                 </button>
               </div>
   

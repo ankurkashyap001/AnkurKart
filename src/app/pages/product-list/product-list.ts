@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../services/category.service';
 import { CartService } from '../../services/cart.service';
+import { WishlistService } from '../../services/wishlist.service';
+
 
 @Component({
   selector: 'app-product-list',
@@ -21,6 +23,7 @@ export class ProductList implements OnInit {
   private productService = inject(ProductService);
   private categoryService = inject(CategoryService);
   public cartService = inject(CartService);
+  public wishlistService = inject(WishlistService);
 
   // Raw API Signals
   allProducts = signal<any[]>([]);
