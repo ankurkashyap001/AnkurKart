@@ -120,13 +120,24 @@ export class CartService {
     ).subscribe();
   }
 
-  addToCart(product: any) {
+  // src/app/services/cart.service.ts
+
+  addToCart(productOrId: any, quantity: number = 1) {
+    // 1. Check whether input is an Object or a direct ID (number/string)
+    const productId = typeof productOrId === 'object' ? (productOrId?.id || productOrId?.product_id) : productOrId;
+
+    if (!productId) {
+      console.error('Invalid productId provided to addToCart:', productOrId);
+      return;
+    }
+
+    // 2. Stock Limit Verification
     const currentItems = this.cart()?.items || [];
-    const existingIndex = currentItems.findIndex(i => i.product_id === product.id);
+    const existingIndex = currentItems.findIndex(i => i.product_id === productId);
 
     if (existingIndex > -1) {
       const item = currentItems[existingIndex];
-      if (item.quantity >= item.stock_limit) {
+      if (item.stock_limit && (item.quantity + quantity > item.stock_limit)) {
         alert(`Stock limit reached! Max ${item.stock_limit} allowed.`);
         return;
       }
@@ -134,9 +145,16 @@ export class CartService {
 
     this.openDrawer();
 
-    this.http.post<any>(`${this.apiUrl}/add`, { product_id: product.id, quantity: 1 }, this.getHeaders()).pipe(
+    // 3. Payload with validated product_id
+    const payload = { 
+      product_id: productId, 
+      quantity: quantity 
+    };
+
+    this.http.post<any>(`${this.apiUrl}/add`, payload, this.getHeaders()).pipe(
       tap(updatedCart => this.cart.set(this.formatCartResponse(updatedCart))),
-      catchError(() => {
+      catchError((err) => {
+        console.error('Cart add error:', err);
         this.loadCart();
         return of(null);
       })

@@ -21,6 +21,7 @@ export const routes: Routes = [
   { path: 'login', component: Login },
   { path: 'register', component: Register },
   { path: 'cart', component: Cart },
+  { path: 'products/:id', loadComponent: () => import('./pages/product-detail/product-detail').then(m => m.ProductDetail)},
 
   // Protected Routes (Login required)
   { path: 'checkout', component: Checkout, canActivate: [authGuard] },

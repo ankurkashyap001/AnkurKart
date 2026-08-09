@@ -158,22 +158,26 @@
       <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3">
         @for (prod of products(); track prod.id) {
           <div class="col">
-            <div class="product-card-fixed">
+            <div class="product-card-fixed position-relative">
               
-              <div class="product-img-wrapper">
-                @if (prod.discount_percentage > 0) {
-                  <span class="badge position-absolute top-0 start-0 m-2 bg-discount fs-8">
-                    {{ prod.discount_percentage }}% OFF
-                  </span>
-                }
-                <img 
-                  [src]="prod.primary_image || defaultImage" 
-                  [alt]="prod.title"
-                  (error)="onImageError($event)"
-                />
-              </div>
+              <!-- Clickable Product Image & Details Link -->
+              <a [routerLink]="['/products', prod.id]" class="text-decoration-none text-dark d-block">
+                <div class="product-img-wrapper cursor-pointer">
+                  @if (prod.discount_percentage > 0) {
+                    <span class="badge position-absolute top-0 start-0 m-2 bg-discount fs-8 z-1">
+                      {{ prod.discount_percentage }}% OFF
+                    </span>
+                  }
+                  <img 
+                    [src]="prod.primary_image || defaultImage" 
+                    [alt]="prod.title"
+                    (error)="onImageError($event)"
+                  />
+                </div>
 
-              <div class="product-name" [title]="prod.title">{{ prod.title }}</div>
+                <div class="product-name cursor-pointer" [title]="prod.title">{{ prod.title }}</div>
+              </a>
+
               <div class="product-unit">500 g</div>
 
               <div class="product-action-row">
@@ -184,10 +188,10 @@
                   }
                 </div>
 
-                <!-- Product Add Button (Fixed parameter binding) -->
+                <!-- Product Add Button -->
                 <button 
                   (click)="cartService.addToCart(prod)" 
-                  class="btn btn-outline-brand-orange btn-sm fw-bold px-3 py-1 rounded-2">
+                  class="btn btn-outline-brand-orange btn-sm fw-bold px-3 py-1 rounded-2 z-2">
                   ADD
                 </button>
               </div>
@@ -201,6 +205,5 @@
         }
       </div>
     }
-  </div>
 
 </div>

@@ -7,11 +7,12 @@ import { ProductService } from '../../services/product.service';
 import { SalesCategory } from '../../models/category.model';
 import { Product } from '../../models/product.model';
 import { CartService } from '../../services/cart.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })

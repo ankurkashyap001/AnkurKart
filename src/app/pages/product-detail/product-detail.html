@@ -1,0 +1,302 @@
+<div class="container py-3">
+
+    @if (isLoading()) {
+      <div class="text-center py-5 bg-white rounded-4 shadow-sm border my-3">
+        <div class="spinner-border text-brand-green" role="status"></div>
+        <p class="mt-2 text-muted fs-7 mb-0">Loading product details...</p>
+      </div>
+    } @else if (product()) {
+  
+      <!-- 1. BREADCRUMBS -->
+      <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb fs-8 fw-semibold m-0">
+          <li class="breadcrumb-item"><a routerLink="/" class="text-muted text-decoration-none">Home</a></li>
+          <li class="breadcrumb-item">
+            <a routerLink="/" class="text-muted text-decoration-none">
+              {{ product().category?.name || product().category_name || 'Soft Drinks' }}
+            </a>
+          </li>
+          <li class="breadcrumb-item active text-dark" aria-current="page">
+            {{ product().title || product().name || 'Sprite Lime Flavoured Soft Drink 750 ml' }}
+          </li>
+        </ol>
+      </nav>
+  
+  
+      <!-- MAIN PRODUCT CARD WRAPPER -->
+      <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+        <div class="row g-4">
+          
+          <!-- 2. LEFT GALLERY SECTION -->
+          <div class="col-lg-6">
+            <div class="d-flex gap-3">
+              
+              <!-- Vertical Thumbnail List -->
+              <div class="d-flex flex-column gap-2.5">
+                @for (img of productImages(); track $index) {
+                  @if ($index < 3) {
+                    <div 
+                      class="thumb-box rounded-3 border p-1 cursor-pointer position-relative"
+                      [class.active]="selectedImageIndex() === $index"
+                      (click)="selectImage($index)"
+                    >
+                      <img [src]="img" class="w-100 h-100 object-fit-contain rounded-2" [alt]="product().title">
+                    </div>
+                  }
+                }
+  
+                <!-- +N Overlay Box if Image Count > 3 -->
+                @if (productImages().length > 3) {
+                  <div 
+                    class="thumb-box rounded-3 border bg-light d-flex align-items-center justify-content-center cursor-pointer fw-bold fs-7 text-dark"
+                    (click)="selectImage(3)"
+                  >
+                    +{{ productImages().length - 3 }}
+                  </div>
+                }
+              </div>
+  
+              <!-- Main Showcase Card -->
+              <div class="main-showcase-card rounded-4 p-4 flex-grow-1 position-relative d-flex align-items-center justify-content-center overflow-hidden">
+                
+                <!-- Red Discount Badge -->
+                @if (discountPercent() > 0) {
+                  <span class="discount-badge-red position-absolute top-0 start-0 m-3 px-2.5 py-1 fw-bold fs-8 rounded-2 shadow-xs">
+                    {{ discountPercent() }}% OFF
+                  </span>
+                }
+  
+                <img [src]="currentImage()" [alt]="product().title" class="main-product-img img-fluid">
+              </div>
+  
+            </div>
+          </div>
+  
+  
+          <!-- 3. RIGHT PRODUCT INFO SECTION -->
+          <div class="col-lg-6 d-flex flex-column justify-content-between ps-lg-4">
+            <div>
+              
+              <!-- In Stock Pill & SKU -->
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge badge-in-stock px-2.5 py-1 fs-8 fw-bold text-uppercase rounded-1">IN STOCK</span>
+                <span class="fs-8 text-muted fw-semibold">SKU: {{ product().sku || 'SPRITE-750ML' }}</span>
+              </div>
+  
+              <!-- Product Title -->
+              <h2 class="fw-bold text-dark fs-3 mb-2.5 lh-sm">
+                {{ product().title || product().name || 'Sprite Lime Flavoured Soft Drink 750 ml' }}
+              </h2>
+  
+              <!-- Superfast Delivery Banner -->
+              <div class="delivery-pill d-inline-flex align-items-center gap-1.5 px-3 py-1.5 rounded-pill mb-3 fs-8 fw-bold">
+                <span class="text-warning fs-7">⚡</span>
+                <span class="text-dark">Superfast delivery in 10-15 mins</span>
+              </div>
+  
+              <hr class="my-3 border-secondary opacity-10">
+  
+              <!-- Pricing Section -->
+              <div class="d-flex align-items-center gap-3 mb-4">
+                <span class="fs-2 fw-bold text-dark lh-1">₹{{ product().price || 40 }}</span>
+                
+                @if (product().original_price && product().original_price > product().price) {
+                  <span class="fs-5 text-muted text-decoration-line-through fw-semibold">₹{{ product().original_price }}</span>
+                } @else {
+                  <span class="fs-5 text-muted text-decoration-line-through fw-semibold">₹45</span>
+                }
+  
+                <span class="badge badge-savings px-2.5 py-1.5 fs-8 fw-bold rounded-2">
+                  Save ₹{{ savingsAmount() || 5 }} ({{ discountPercent() || 11 }}%)
+                </span>
+              </div>
+  
+              <!-- Action Buttons Bar (Height Matched) -->
+              <div class="d-flex flex-wrap align-items-center gap-3 mb-4 action-bar-row">
+                
+                <!-- Stepper -->
+                <div class="stepper-box d-flex align-items-center rounded-3 bg-white px-2">
+                  <button class="stepper-btn fw-bold" (click)="decrementQuantity()">−</button>
+                  <span class="px-2 fw-bold fs-7 text-dark">{{ quantity() }}</span>
+                  <button class="stepper-btn fw-bold" (click)="incrementQuantity()">+</button>
+                </div>
+  
+                <!-- Add to Cart Button -->
+                <button class="btn btn-brand-orange rounded-3 px-4 py-2 fs-7 d-inline-flex align-items-center justify-content-center gap-2 flex-grow-1 shadow-sm" (click)="addToCart()">
+                  <i class="bi bi-cart3 fs-6"></i> ADD TO CART
+                </button>
+  
+                <!-- Add to Wishlist Button -->
+                <button 
+                  class="btn btn-wishlist rounded-3 px-3.5 py-2 fs-8 text-dark d-inline-flex align-items-center justify-content-center gap-1.5"
+                  [class.text-danger]="isWishlisted()"
+                  (click)="toggleWishlist()"
+                >
+                  <i class="bi fs-7" [class.bi-heart-fill]="isWishlisted()" [class.bi-heart]="!isWishlisted()"></i>
+                  <span>ADD TO WISHLIST</span>
+                </button>
+              </div>
+  
+              <!-- 3-Item Feature Banner -->
+              <div class="feature-banner-card p-3 rounded-4 mb-4">
+                <div class="row row-cols-3 text-center g-2">
+                  <div class="col d-flex align-items-center gap-2 text-start border-end pe-2">
+                    <div class="feature-icon-box rounded-circle bg-white d-flex align-items-center justify-content-center shadow-xs">
+                      <i class="bi bi-shield-check text-brand-green fs-5"></i>
+                    </div>
+                    <div>
+                      <strong class="fs-8 text-dark d-block lh-1 mb-0.5">100% Original</strong>
+                      <small class="fs-8 text-muted">Quality Assured</small>
+                    </div>
+                  </div>
+  
+                  <div class="col d-flex align-items-center gap-2 text-start border-end ps-2 pe-2">
+                    <div class="feature-icon-box rounded-circle bg-white d-flex align-items-center justify-content-center shadow-xs">
+                      <i class="bi bi-thermometer-snow text-info fs-5"></i>
+                    </div>
+                    <div>
+                      <strong class="fs-8 text-dark d-block lh-1 mb-0.5">Chilled Delivery</strong>
+                      <small class="fs-8 text-muted">Fresh & Cold</small>
+                    </div>
+                  </div>
+  
+                  <div class="col d-flex align-items-center gap-2 text-start ps-2">
+                    <div class="feature-icon-box rounded-circle bg-white d-flex align-items-center justify-content-center shadow-xs">
+                      <i class="bi bi-box-seam text-brand-green fs-5"></i>
+                    </div>
+                    <div>
+                      <strong class="fs-8 text-dark d-block lh-1 mb-0.5">Secure Packaging</strong>
+                      <small class="fs-8 text-muted">Safe & Hygienic</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Product Description -->
+              <div class="description-block">
+                <h6 class="fw-bold text-dark mb-1 fs-7">Product Description</h6>
+                <p class="fs-8 text-muted lh-base mb-0">
+                  {{ product().description || 'Clear, crisp, lemon-lime drink that instantly quenches thirst with clean taste.' }}
+                </p>
+              </div>
+  
+            </div>
+          </div>
+  
+        </div>
+      </div>
+  
+  
+      <!-- 4. SIMILAR PRODUCTS SECTION -->
+    <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-dark m-0">Similar Products</h5>
+        <a routerLink="/" class="text-brand-green fw-bold fs-8 text-decoration-none d-inline-flex align-items-center gap-1">
+            View All <i class="bi bi-arrow-right"></i>
+        </a>
+        </div>
+    
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-5 g-3">
+        @for (item of similarProducts(); track item.id) {
+            <div class="col">
+            <div class="similar-product-card card border-0 shadow-sm rounded-4 p-3 h-100 bg-white">
+                
+                <!-- Image Container with Overflow Fix -->
+                <div class="product-thumb-container mb-2.5 p-2">
+                <img [src]="item.primary_image || item.image_url || 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=300&q=80'" [alt]="item.title">
+                </div>
+    
+                <!-- Product Title -->
+                <h6 class="fs-8 fw-bold text-dark style-title-height mb-2 lh-sm">
+                {{ item.title || item.name }}
+                </h6>
+    
+                <!-- Price & Add Button -->
+                <div class="mt-auto d-flex align-items-center justify-content-between pt-1">
+                <div>
+                    <span class="fw-bold fs-7 text-dark">₹{{ item.price }}</span>
+                    @if (item.original_price && item.original_price > item.price) {
+                    <small class="text-muted text-decoration-line-through fs-8 ms-1">₹{{ item.original_price }}</small>
+                    }
+                    <span class="badge bg-success-subtle text-success fs-8 ms-1 px-1.5 py-0.5 fw-bold">8% OFF</span>
+                </div>
+    
+                <button class="btn btn-brand-green btn-circle rounded-circle d-flex align-items-center justify-content-center text-white shadow-xs" (click)="cartService.addToCart(item.id)">
+                    <i class="bi bi-plus-lg fs-7"></i>
+                </button>
+                </div>
+    
+            </div>
+            </div>
+        }
+        </div>
+    </div>
+  
+  
+      <!-- 5. BOTTOM TRUST FEATURES BAR -->
+      <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3 text-start">
+          <div class="col d-flex align-items-center gap-3">
+            <div class="trust-icon bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center flex-shrink-0">
+              <i class="bi bi-lightning-charge-fill fs-5"></i>
+            </div>
+            <div>
+              <strong class="fs-8 text-dark d-block mb-0.5">10 Minute Delivery</strong>
+              <small class="fs-8 text-muted d-block lh-xs">Super fast delivery at your doorstep</small>
+            </div>
+          </div>
+  
+          <div class="col d-flex align-items-center gap-3">
+            <div class="trust-icon bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center flex-shrink-0">
+              <i class="bi bi-patch-check-fill fs-5"></i>
+            </div>
+            <div>
+              <strong class="fs-8 text-dark d-block mb-0.5">Best Quality Products</strong>
+              <small class="fs-8 text-muted d-block lh-xs">Handpicked & quality assured</small>
+            </div>
+          </div>
+  
+          <div class="col d-flex align-items-center gap-3">
+            <div class="trust-icon bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center flex-shrink-0">
+              <i class="bi bi-box-seam-fill fs-5"></i>
+            </div>
+            <div>
+              <strong class="fs-8 text-dark d-block mb-0.5">Easy Returns Policy</strong>
+              <small class="fs-8 text-muted d-block lh-xs">Not satisfied? We'll take it back</small>
+            </div>
+          </div>
+  
+          <div class="col d-flex align-items-center gap-3">
+            <div class="trust-icon bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center flex-shrink-0">
+              <i class="bi bi-shield-lock-fill fs-5"></i>
+            </div>
+            <div>
+              <strong class="fs-8 text-dark d-block mb-0.5">100% Secure Payments</strong>
+              <small class="fs-8 text-muted d-block lh-xs">Secure & safe payment options</small>
+            </div>
+          </div>
+  
+          <div class="col d-flex align-items-center gap-3">
+            <div class="trust-icon bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center flex-shrink-0">
+              <i class="bi bi-headset fs-5"></i>
+            </div>
+            <div>
+              <strong class="fs-8 text-dark d-block mb-0.5">24/7 Customer Support</strong>
+              <small class="fs-8 text-muted d-block lh-xs">Always here to help you</small>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+    } @else {
+      <div class="text-center py-5 bg-white rounded-4 shadow-sm border my-4">
+        <i class="bi bi-exclamation-circle text-muted display-4"></i>
+        <h5 class="fw-bold text-dark mt-3">Product Not Found</h5>
+        <p class="text-muted fs-7">We couldn't locate the requested product details.</p>
+        <button routerLink="/" class="btn btn-brand-green rounded-pill px-4 py-2 fs-7 fw-bold">
+          Back to Home
+        </button>
+      </div>
+    }
+  
+  </div>
