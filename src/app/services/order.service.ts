@@ -37,4 +37,9 @@ export class OrderService {
   getOrderById(id: string | number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`, this.getHeaders());
   }
+
+  // Live Order Tracking API call
+  trackOrder(orderId: string | number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${orderId}/track`, this.getHeaders());
+  }
 }

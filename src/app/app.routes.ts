@@ -39,6 +39,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/profile/profile').then(m => m.Profile),
     canActivate: [authGuard] 
   },
+  // tracking order
+  {
+    path: 'orders/:id/track',
+    loadComponent: () => import('./pages/order-tracking/order-tracking').then(m => m.OrderTracking)
+  },
   
   // Protected Order-Detail (Lazy Loaded)
   { 

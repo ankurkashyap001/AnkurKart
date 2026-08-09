@@ -24,7 +24,7 @@
             <p class="mb-3 fs-8 text-secondary">We've received your order and it is now being processed.</p>
             
             <div class="d-flex align-items-center gap-2">
-              <button class="btn btn-track-order btn-sm rounded-3 px-3 py-2 fs-8 fw-bold d-inline-flex align-items-center gap-2 shadow-sm">
+              <button [routerLink]="['/orders', order().order_id, 'track']" class="btn btn-track-order btn-sm rounded-3 px-3 py-2 fs-8 fw-bold d-inline-flex align-items-center gap-2 shadow-sm">
                 Track Order <i class="bi bi-arrow-right"></i>
               </button>
               <button routerLink="/" class="btn btn-continue-shopping btn-sm rounded-3 px-3 py-2 fs-8 fw-semibold bg-white">
