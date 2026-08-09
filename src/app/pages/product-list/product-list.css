@@ -1,3 +1,4 @@
+/* Color Palette Variables */
 :root {
     --brand-green: #00A651;
     --brand-green-hover: #008A43;
@@ -6,13 +7,14 @@
     --text-dark: #1D2939;
   }
   
+  /* Sidebar Categories */
   .filter-sidebar {
     border: 1px solid var(--border-light) !important;
   }
   
   .category-nav-item {
     background-color: transparent;
-    color: #475467;
+    color: #344054;
     transition: all 0.2s ease;
   }
   
@@ -22,12 +24,40 @@
   }
   
   .category-nav-item.active {
-    background-color: var(--brand-green-subtle);
-    color: var(--brand-green);
+    background-color: var(--brand-green-subtle) !important;
+    color: var(--brand-green) !important;
     font-weight: 700 !important;
   }
   
-  /* Product Cards */
+  /* Quick Filter Pills Bar */
+  .btn-pill-filter {
+    background-color: #FFFFFF;
+    border: 1px solid var(--border-light);
+    color: #475467;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-pill-filter:hover {
+    background-color: #F8F9FA;
+    border-color: var(--brand-green);
+    color: var(--brand-green);
+  }
+  
+  .btn-pill-filter.active {
+    background-color: var(--brand-green) !important;
+    color: #FFFFFF !important;
+    border-color: var(--brand-green) !important;
+  }
+  
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hidden {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  /* Product Cards & Images */
   .product-card {
     border: 1px solid var(--border-light) !important;
     transition: all 0.2s ease;
@@ -39,14 +69,39 @@
     transform: translateY(-2px);
   }
   
-  .product-thumb-box {
-    height: 120px;
+  .product-thumb-container {
+    height: 135px;
     width: 100%;
     overflow: hidden;
+    background-color: #F8F9FA !important;
   }
   
-  .max-h-120 {
-    max-height: 110px;
+  .product-img {
+    max-height: 115px;
+    max-width: 100%;
+    object-fit: contain;
+  }
+  
+  .wishlist-heart-btn {
+    background: rgba(255, 255, 255, 0.85);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 2;
+  }
+  
+  .wishlist-heart-btn:hover {
+    background: #FFFFFF;
+    color: #E53935 !important;
+  }
+  
+  .bg-purple {
+    background-color: #7C3AED !important;
+    color: #FFFFFF;
   }
   
   .product-title-clamp {
@@ -57,16 +112,16 @@
     height: 32px;
   }
   
-  /* Buttons & Badges */
+  /* Buttons & Utilities */
   .btn-outline-brand-green {
-    color: var(--brand-green);
-    border: 1.5px solid var(--brand-green);
-    background: #FFFFFF;
+    color: var(--brand-green) !important;
+    border: 1.5px solid var(--brand-green) !important;
+    background: #FFFFFF !important;
   }
   
   .btn-outline-brand-green:hover {
-    background-color: var(--brand-green);
-    color: #FFFFFF;
+    background-color: var(--brand-green) !important;
+    color: #FFFFFF !important;
   }
   
   .btn-brand-green {
@@ -79,21 +134,15 @@
     background-color: var(--brand-green-hover) !important;
   }
   
-  .bg-brand-green-subtle {
-    background-color: var(--brand-green-subtle) !important;
+  .trust-icon {
+    width: 42px;
+    height: 42px;
   }
   
   .text-brand-green {
     color: var(--brand-green) !important;
   }
   
-  .border-brand-green {
-    border-color: #A6F4C5 !important;
-  }
-  
-  .cursor-pointer {
-    cursor: pointer;
-  }
-  
   .fs-7 { font-size: 0.825rem; }
   .fs-8 { font-size: 0.725rem; }
+  .lh-xs { line-height: 1.25; }

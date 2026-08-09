@@ -43,20 +43,20 @@ export class ProductList implements OnInit {
     });
   }
 
-  // Fetch Categories with backend response mapping (data.sales_category)
+  // Fetch Categories from Backend API
   fetchCategories() {
     this.categoryService.getCategories().subscribe({
       next: (res: any) => {
-        // Handle backend key: res.data.sales_category
         const rawList = res?.data?.sales_category || res?.data || res || [];
 
         if (Array.isArray(rawList) && rawList.length > 0) {
           const formattedCategories = rawList.map((cat: any) => {
             const name = cat.category_name || cat.name || '';
+            const id = String(cat.category_id || cat.id);
             return {
-              id: cat.category_id || cat.id,
+              id: id,
               name: name,
-              slug: (cat.slug || name).toLowerCase().replace(/\s+/g, '-'),
+              slug: name.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
               logo: cat.category_logo_url_web || cat.category_logo_url || cat.logo || null
             };
           });
@@ -66,14 +66,13 @@ export class ProductList implements OnInit {
           this.extractCategoriesFromProducts();
         }
       },
-      error: (err) => {
-        console.warn('Category API error, falling back to product categories:', err);
+      error: () => {
         this.extractCategoriesFromProducts();
       }
     });
   }
 
-  // Fallback to extract unique categories directly from loaded products
+  // Fallback Category Extraction
   private extractCategoriesFromProducts() {
     const products = this.allProducts();
     if (!products || products.length === 0) return;
@@ -82,13 +81,13 @@ export class ProductList implements OnInit {
 
     products.forEach((p: any) => {
       const catName = p.category?.name || p.category_name || p.category;
-      if (!catName) return;
+      if (!catName || typeof catName !== 'string') return;
 
-      const catSlug = (p.category?.slug || p.category_slug || catName).toLowerCase().replace(/\s+/g, '-');
-      const catId = p.category?.id || p.category_id;
+      const catId = String(p.category?.id || p.category_id || p.sales_category_id || catName);
+      const catSlug = catName.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
-      if (!categoryMap.has(catSlug)) {
-        categoryMap.set(catSlug, {
+      if (!categoryMap.has(catId)) {
+        categoryMap.set(catId, {
           id: catId,
           name: catName,
           slug: catSlug,
@@ -108,7 +107,6 @@ export class ProductList implements OnInit {
         this.allProducts.set(list);
         this.isLoading.set(false);
 
-        // Fallback category extraction if categories list is currently empty
         if (this.categories().length === 0) {
           this.extractCategoriesFromProducts();
         }
@@ -120,15 +118,15 @@ export class ProductList implements OnInit {
     });
   }
 
-  // Reactive Computed Signal for Search, Category Filtering & Sorting
+  // Filtered Products Computed Signal
   filteredProducts = computed(() => {
     let list = [...this.allProducts()];
 
     const query = this.searchQuery().trim().toLowerCase();
-    const catSlug = this.selectedCategorySlug().toLowerCase();
+    const catFilter = this.selectedCategorySlug().trim().toLowerCase();
     const sort = this.selectedSort();
 
-    // 1. Filter by Search Query
+    // 1. Search Query Filter
     if (query) {
       list = list.filter(p => 
         (p.title || p.name || '').toLowerCase().includes(query) ||
@@ -137,18 +135,37 @@ export class ProductList implements OnInit {
       );
     }
 
-    // 2. Filter by Category Slug / Name / ID
-    if (catSlug) {
-      list = list.filter(p => {
-        const pCatName = (p.category?.name || p.category_name || p.category || '').toLowerCase();
-        const pCatSlug = (p.category?.slug || p.category_slug || pCatName).toLowerCase().replace(/\s+/g, '-');
-        const pCatId = String(p.category_id || p.category?.id || '');
+    // 2. Category Filter (Matches ID, Slug, or Name)
+    if (catFilter) {
+      const matchedCat = this.categories().find(c => 
+        String(c.id) === catFilter || 
+        c.slug === catFilter || 
+        c.name.toLowerCase() === catFilter
+      );
 
-        return pCatSlug === catSlug || pCatName === catSlug || pCatId === catSlug;
+      const targetId = matchedCat ? String(matchedCat.id) : catFilter;
+      const targetName = matchedCat ? matchedCat.name.toLowerCase() : catFilter;
+      const targetSlug = matchedCat ? matchedCat.slug : catFilter;
+
+      list = list.filter(p => {
+        const pId = String(p.category_id || p.sales_category_id || p.category?.id || '');
+        const pName = (p.category_name || p.category?.name || (typeof p.category === 'string' ? p.category : '') || '').toLowerCase();
+        const pSlug = pName.replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+        // Match by Category ID
+        if (pId && targetId && pId === targetId) return true;
+
+        // Match by Slug
+        if (pSlug && targetSlug && pSlug === targetSlug) return true;
+
+        // Match by Name
+        if (pName && targetName && (pName.includes(targetName) || targetName.includes(pName))) return true;
+
+        return false;
       });
     }
 
-    // 3. Apply Sorting
+    // 3. Sorting
     if (sort === 'low-high') {
       list.sort((a, b) => (a.price || 0) - (b.price || 0));
     } else if (sort === 'high-low') {
@@ -160,9 +177,13 @@ export class ProductList implements OnInit {
     return list;
   });
 
-  // Filter Actions & Router Sync
-  selectCategory(slug: string) {
-    this.updateQueryParams({ category: slug || null });
+  selectCategory(cat: any) {
+    // Pass Category ID to URL to prevent '&' symbol conflicts
+    const paramVal = cat ? String(cat.id) : null;
+    this.updateQueryParams({ 
+      category: paramVal, 
+      search: null 
+    });
   }
 
   clearSearch() {
@@ -181,6 +202,26 @@ export class ProductList implements OnInit {
     });
   }
 
+  isCategoryActive(cat: any): boolean {
+    const activeVal = this.selectedCategorySlug().toLowerCase();
+    if (!activeVal) return false;
+
+    return String(cat.id) === activeVal || 
+           cat.slug === activeVal || 
+           cat.name.toLowerCase() === activeVal;
+  }
+
+  getActiveCategoryName(): string {
+    const activeVal = this.selectedCategorySlug().toLowerCase();
+    if (!activeVal) return '';
+
+    const found = this.categories().find(c => 
+      String(c.id) === activeVal || c.slug === activeVal || c.name.toLowerCase() === activeVal
+    );
+
+    return found ? found.name : activeVal;
+  }
+
   onSortChange(event: Event) {
     const val = (event.target as HTMLSelectElement).value;
     this.selectedSort.set(val);
@@ -194,7 +235,6 @@ export class ProductList implements OnInit {
     });
   }
 
-  // Cart Quantity Helper
   getCartQuantity(productId: number): number {
     const cartItems = this.cartService.cart()?.items || [];
     const item = cartItems.find((i: any) => i.product_id === productId);

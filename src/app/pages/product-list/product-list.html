@@ -1,6 +1,6 @@
 <div class="container py-4 my-2">
   
-    <!-- BREADCRUMB -->
+    <!-- BREADCRUMBS -->
     <nav aria-label="breadcrumb" class="mb-3">
       <ol class="breadcrumb fs-8 fw-semibold m-0">
         <li class="breadcrumb-item"><a routerLink="/" class="text-muted text-decoration-none">Home</a></li>
@@ -10,44 +10,64 @@
   
     <div class="row g-4">
       
-      <!-- LEFT SIDEBAR: CATEGORY FILTERING -->
+      <!-- LEFT SIDEBAR: CATEGORIES -->
       <div class="col-lg-3">
         <div class="filter-sidebar card border-0 shadow-sm rounded-4 p-3 bg-white">
-          <h6 class="fw-bold text-dark mb-3 px-2 d-flex align-items-center justify-content-between fs-7">
-            <span>Categories</span>
+          
+          <div class="d-flex align-items-center justify-content-between mb-3 px-1">
+            <h6 class="fw-bold text-dark m-0 fs-7">Categories</h6>
             @if (selectedCategorySlug()) {
               <button class="btn btn-link p-0 text-brand-green fs-8 text-decoration-none fw-semibold" (click)="clearCategory()">
                 Reset
               </button>
             }
-          </h6>
+          </div>
   
-          <div class="d-flex flex-column gap-1">
+          <!-- Category Nav Items -->
+          <div class="d-flex flex-column gap-1 mb-3">
+            
             <!-- All Categories Option -->
             <button 
-              class="category-nav-item border-0 text-start w-100 px-3 py-2 rounded-3 fs-8 fw-semibold"
+              class="category-nav-item border-0 text-start w-100 px-3 py-2.5 rounded-3 fs-8 fw-semibold d-flex align-items-center justify-content-between"
               [class.active]="!selectedCategorySlug()"
-              (click)="selectCategory('')"
+              (click)="selectCategory(null)"
             >
-              <i class="bi bi-grid-fill me-2 fs-7"></i> All Categories
+              <div class="d-flex align-items-center gap-2.5">
+                <i class="bi bi-grid-fill fs-6"></i>
+                <span>All Categories</span>
+              </div>
             </button>
   
             <!-- Dynamic Categories List -->
             @for (cat of categories(); track cat.id) {
-                <button 
+              <button 
                 class="category-nav-item border-0 text-start w-100 px-3 py-2 rounded-3 fs-8 fw-semibold d-flex align-items-center justify-content-between"
-                [class.active]="selectedCategorySlug() === (cat.slug || cat.name?.toLowerCase())"
-                (click)="selectCategory(cat.slug || cat.name?.toLowerCase())"
-                >
-                <div class="d-flex align-items-center gap-2 text-truncate">
-                    @if (cat.logo) {
-                    <img [src]="cat.logo" class="rounded-1" style="width: 20px; height: 20px; object-fit: contain;">
-                    }
-                    <span class="text-truncate">{{ cat.name }}</span>
+                [class.active]="isCategoryActive(cat)"
+                (click)="selectCategory(cat)"
+              >
+                <div class="d-flex align-items-center gap-2 text-truncate pe-2">
+                  @if (cat.logo) {
+                    <img [src]="cat.logo" class="rounded-1 flex-shrink-0" style="width: 20px; height: 20px; object-fit: contain;" [alt]="cat.name">
+                  } @else {
+                    <i class="bi bi-box-seam text-muted fs-7"></i>
+                  }
+                  <span class="text-truncate">{{ cat.name }}</span>
                 </div>
-                </button>
+  
+                <!-- Product Count Pill -->
+                <span class="badge bg-light text-muted border border-0 fs-8 fw-bold px-2 py-1 rounded-2">
+                  {{ cat.products_count || 35 }}
+                </span>
+              </button>
             }
+  
           </div>
+  
+          <!-- View All Categories Bottom Button -->
+          <button class="btn btn-outline-brand-green w-100 py-2 rounded-3 fs-8 fw-bold d-flex align-items-center justify-content-center gap-2" (click)="clearAllFilters()">
+            <i class="bi bi-grid-3x3-gap"></i> View All Categories
+          </button>
+  
         </div>
       </div>
   
@@ -55,49 +75,52 @@
       <!-- MAIN CONTENT AREA -->
       <div class="col-lg-9">
         
-        <!-- TOP CONTROLS: ACTIVE FILTERS & SORT DROPDOWN -->
-        <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
-          <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
-            
-            <!-- Active Filter Pills -->
-            <div class="d-flex flex-wrap align-items-center gap-2">
-              <span class="fw-bold fs-7 text-dark me-1">
-                {{ filteredProducts().length }} {{ filteredProducts().length === 1 ? 'Product' : 'Products' }}
-              </span>
-  
+        <!-- TOP HEADER ROW & SORT DROPDOWN -->
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+          <div>
+            <h4 class="fw-bold text-dark mb-1 fs-5">
               @if (searchQuery()) {
-                <span class="badge bg-brand-green-subtle text-brand-green border border-brand-green px-2.5 py-1.5 fs-8 rounded-pill d-inline-flex align-items-center gap-1.5">
-                  Search: "{{ searchQuery() }}"
-                  <i class="bi bi-x-circle-fill cursor-pointer text-brand-green" (click)="clearSearch()"></i>
-                </span>
+                Showing results for <span class="text-brand-green">"{{ searchQuery() }}"</span>
+              } @else if (selectedCategorySlug()) {
+                {{ getActiveCategoryName() }}
+              } @else {
+                All Products
               }
-  
-              @if (selectedCategorySlug()) {
-                <span class="badge bg-brand-green-subtle text-brand-green border border-brand-green px-2.5 py-1.5 fs-8 rounded-pill d-inline-flex align-items-center gap-1.5 text-capitalize">
-                  Category: {{ selectedCategorySlug() }}
-                  <i class="bi bi-x-circle-fill cursor-pointer text-brand-green" (click)="clearCategory()"></i>
-                </span>
-              }
-  
-              @if (searchQuery() || selectedCategorySlug()) {
-                <button class="btn btn-link p-0 fs-8 text-muted text-decoration-underline ms-1" (click)="clearAllFilters()">
-                  Clear All
-                </button>
-              }
-            </div>
-  
-            <!-- Sort Dropdown -->
-            <div class="d-flex align-items-center gap-2 ms-auto">
-              <label class="fs-8 text-muted fw-semibold mb-0 text-nowrap">Sort By:</label>
-              <select class="form-select form-select-sm shadow-none rounded-3 border fs-8 fw-semibold bg-light py-1.5 pe-4" (change)="onSortChange($event)" [value]="selectedSort()">
-                <option value="relevance">Relevance</option>
-                <option value="low-high">Price: Low to High</option>
-                <option value="high-low">Price: High to Low</option>
-                <option value="newest">Newest First</option>
-              </select>
-            </div>
-  
+            </h4>
+            <span class="text-muted fs-8 fw-medium">
+              {{ filteredProducts().length }} {{ filteredProducts().length === 1 ? 'Product' : 'Products' }} found
+            </span>
           </div>
+  
+          <!-- Sort By Dropdown -->
+          <div class="d-flex align-items-center gap-2 ms-auto">
+            <label class="fs-8 text-muted fw-semibold mb-0 text-nowrap">Sort By:</label>
+            <select class="form-select form-select-sm shadow-none rounded-pill border fs-8 fw-semibold bg-white py-1.5 px-3" (change)="onSortChange($event)" [value]="selectedSort()">
+              <option value="relevance">Relevance</option>
+              <option value="low-high">Price: Low to High</option>
+              <option value="high-low">Price: High to Low</option>
+              <option value="newest">Newest First</option>
+            </select>
+          </div>
+        </div>
+  
+  
+        <!-- QUICK SUB-CATEGORY / FILTER PILLS -->
+        <div class="d-flex align-items-center gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hidden">
+          <button class="btn btn-pill-filter px-3 py-1.5 rounded-3 fs-8 fw-semibold text-nowrap" [class.active]="!searchQuery()" (click)="clearSearch()">
+            All
+          </button>
+          <button class="btn btn-pill-filter px-3 py-1.5 rounded-3 fs-8 fw-semibold text-nowrap" (click)="searchQuery.set('milk')">Milk</button>
+          <button class="btn btn-pill-filter px-3 py-1.5 rounded-3 fs-8 fw-semibold text-nowrap" (click)="searchQuery.set('toned milk')">Toned Milk</button>
+          <button class="btn btn-pill-filter px-3 py-1.5 rounded-3 fs-8 fw-semibold text-nowrap" (click)="searchQuery.set('flavoured')">Flavoured Milk</button>
+          <button class="btn btn-pill-filter px-3 py-1.5 rounded-3 fs-8 fw-semibold text-nowrap" (click)="searchQuery.set('powder')">Milk Powder</button>
+          <button class="btn btn-pill-filter px-3 py-1.5 rounded-3 fs-8 fw-semibold text-nowrap" (click)="searchQuery.set('cream')">Cream</button>
+          <button class="btn btn-pill-filter px-3 py-1.5 rounded-3 fs-8 fw-semibold text-nowrap" (click)="searchQuery.set('butter')">Butter</button>
+          <button class="btn btn-pill-filter px-3 py-1.5 rounded-3 fs-8 fw-semibold text-nowrap" (click)="searchQuery.set('cheese')">Cheese</button>
+          
+          <button class="btn btn-outline-secondary btn-sm rounded-3 px-3 py-1.5 fs-8 fw-semibold text-nowrap ms-auto d-flex align-items-center gap-1.5 bg-white">
+            <i class="bi bi-sliders"></i> Filters
+          </button>
         </div>
   
   
@@ -105,32 +128,45 @@
         @if (isLoading()) {
           <div class="text-center py-5 bg-white rounded-4 shadow-sm border">
             <div class="spinner-border text-brand-green" role="status"></div>
-            <p class="mt-2 text-muted fs-8 mb-0">Fetching products...</p>
+            <p class="mt-2 text-muted fs-8 mb-0">Loading products...</p>
           </div>
         } @else if (filteredProducts().length > 0) {
   
-          <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-3">
+          <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-3 mb-4">
             @for (prod of filteredProducts(); track (prod.id || $index)) {
               <div class="col">
                 <div class="product-card card border-0 shadow-sm rounded-4 p-3 h-100 bg-white d-flex flex-column justify-content-between position-relative">
                   
                   <div>
-                    <!-- Discount Badge -->
-                    @if (prod.original_price && prod.original_price > prod.price) {
-                      <span class="badge bg-danger position-absolute top-0 start-0 m-2 px-2 py-1 fs-8 fw-bold rounded-2">
-                        {{ Math.round(((prod.original_price - prod.price) / prod.original_price) * 100) }}% OFF
-                      </span>
-                    }
+                    <!-- Product Image Container -->
+                    <div class="product-thumb-container mb-2.5 p-2 rounded-3 bg-light position-relative">
+                      
+                      <!-- Top Left Badge: Discount / Bestseller -->
+                      @if (prod.original_price && prod.original_price > prod.price) {
+                        <span class="badge bg-danger position-absolute top-0 start-0 m-2 px-2 py-1 fs-8 fw-bold rounded-1">
+                          {{ Math.round(((prod.original_price - prod.price) / prod.original_price) * 100) }}% OFF
+                        </span>
+                      } @else if ($index % 3 === 2) {
+                        <span class="badge bg-purple position-absolute top-0 start-0 m-2 px-2 py-1 fs-8 fw-bold rounded-1">
+                          BESTSELLER
+                        </span>
+                      }
   
-                    <!-- Product Image -->
-                    <a [routerLink]="['/products', prod.id]" class="d-block text-decoration-none">
-                      <div class="product-thumb-box mb-2 p-2 bg-light rounded-3 d-flex align-items-center justify-content-center">
-                        <img [src]="prod.primary_image || prod.image_url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=300&q=80'" [alt]="prod.title" class="img-fluid object-fit-contain rounded-2 max-h-120">
-                      </div>
-                    </a>
+                      <!-- Wishlist Heart Button -->
+                      <button class="wishlist-heart-btn btn btn-sm p-0 border-0 position-absolute top-0 end-0 m-2 text-muted" type="button">
+                        <i class="bi bi-heart fs-6"></i>
+                      </button>
   
-                    <!-- Weight / Unit Info -->
-                    <small class="text-muted fs-8 d-block mb-1">{{ prod.unit || prod.weight || '1 pack' }}</small>
+                      <!-- Product Image Link -->
+                      <a [routerLink]="['/products', prod.id]" class="d-flex align-items-center justify-content-center h-100 w-100 text-decoration-none">
+                        <img [src]="prod.primary_image || prod.image_url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=300&q=80'" [alt]="prod.title" class="product-img img-fluid">
+                      </a>
+                    </div>
+  
+                    <!-- Unit / Pack Label (Green) -->
+                    <span class="text-brand-green fs-8 fw-bold d-block mb-1">
+                      {{ prod.unit || prod.weight || '1 pack' }}
+                    </span>
   
                     <!-- Product Title -->
                     <a [routerLink]="['/products', prod.id]" class="text-decoration-none">
@@ -140,27 +176,34 @@
                     </a>
                   </div>
   
-                  <!-- Price & Add / Stepper CTA -->
-                  <div class="pt-2 border-top d-flex align-items-center justify-content-between">
-                    <div>
+                  <!-- Bottom Row: Price & ADD Button -->
+                  <div class="pt-2 d-flex align-items-center justify-content-between mt-auto">
+                    
+                    <!-- Price Block -->
+                    <div class="d-flex align-items-center gap-1.5 flex-wrap">
                       <span class="fw-bold fs-7 text-dark">₹{{ prod.price }}</span>
+                      
                       @if (prod.original_price && prod.original_price > prod.price) {
-                        <small class="text-muted text-decoration-line-through fs-8 ms-1">₹{{ prod.original_price }}</small>
+                        <small class="text-muted text-decoration-line-through fs-8">₹{{ prod.original_price }}</small>
+                        <span class="badge bg-success-subtle text-success fs-8 px-1.5 py-0.5 fw-bold rounded-1">
+                          Save ₹{{ prod.original_price - prod.price }}
+                        </span>
                       }
                     </div>
   
-                    <!-- Quick Add / Stepper Controller -->
+                    <!-- ADD / Stepper Button -->
                     @if (getCartQuantity(prod.id) === 0) {
-                      <button class="btn btn-outline-brand-green btn-sm rounded-pill px-3 py-1 fs-8 fw-bold" (click)="cartService.addToCart(prod.id, 1)">
+                      <button class="btn btn-outline-brand-green btn-sm rounded-pill px-3 py-1 fs-8 fw-bold shadow-xs" (click)="cartService.addToCart(prod.id, 1)">
                         ADD
                       </button>
                     } @else {
-                      <div class="stepper-pill d-inline-flex align-items-center rounded-pill bg-brand-green text-white px-2 py-0.5 fs-8 fw-bold">
+                      <div class="stepper-pill d-inline-flex align-items-center rounded-pill bg-brand-green text-white px-2 py-0.5 fs-8 fw-bold shadow-xs">
                         <button class="btn btn-link text-white p-0 me-1 border-0 fs-7 lh-1 text-decoration-none" (click)="cartService.addToCart(prod.id, -1)">−</button>
                         <span class="px-1.5">{{ getCartQuantity(prod.id) }}</span>
                         <button class="btn btn-link text-white p-0 ms-1 border-0 fs-7 lh-1 text-decoration-none" (click)="cartService.addToCart(prod.id, 1)">+</button>
                       </div>
                     }
+  
                   </div>
   
                 </div>
@@ -169,8 +212,8 @@
           </div>
   
         } @else {
-          <!-- EMPTY SEARCH / FILTER STATE -->
-          <div class="text-center py-5 bg-white rounded-4 shadow-sm border p-4">
+          <!-- EMPTY STATE -->
+          <div class="text-center py-5 bg-white rounded-4 shadow-sm border p-4 mb-4">
             <div class="empty-icon-circle bg-light rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
               <i class="bi bi-search text-muted fs-3"></i>
             </div>
@@ -185,4 +228,61 @@
       </div>
   
     </div>
+  
+  
+    <!-- BOTTOM TRUST FEATURES BAR -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mt-2">
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3 text-start">
+        <div class="col d-flex align-items-center gap-3">
+          <div class="trust-icon bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center flex-shrink-0">
+            <i class="bi bi-lightning-charge-fill fs-5"></i>
+          </div>
+          <div>
+            <strong class="fs-8 text-dark d-block mb-0.5">10 Minute Delivery</strong>
+            <small class="fs-8 text-muted d-block lh-xs">Super fast delivery at your doorstep</small>
+          </div>
+        </div>
+  
+        <div class="col d-flex align-items-center gap-3">
+          <div class="trust-icon bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center flex-shrink-0">
+            <i class="bi bi-patch-check-fill fs-5"></i>
+          </div>
+          <div>
+            <strong class="fs-8 text-dark d-block mb-0.5">Best Quality Products</strong>
+            <small class="fs-8 text-muted d-block lh-xs">Handpicked & quality assured</small>
+          </div>
+        </div>
+  
+        <div class="col d-flex align-items-center gap-3">
+          <div class="trust-icon bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center flex-shrink-0">
+            <i class="bi bi-box-seam-fill fs-5"></i>
+          </div>
+          <div>
+            <strong class="fs-8 text-dark d-block mb-0.5">Easy Returns Policy</strong>
+            <small class="fs-8 text-muted d-block lh-xs">Not satisfied? We'll take it back</small>
+          </div>
+        </div>
+  
+        <div class="col d-flex align-items-center gap-3">
+          <div class="trust-icon bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center flex-shrink-0">
+            <i class="bi bi-shield-lock-fill fs-5"></i>
+          </div>
+          <div>
+            <strong class="fs-8 text-dark d-block mb-0.5">100% Secure Payments</strong>
+            <small class="fs-8 text-muted d-block lh-xs">Secure & safe payment options</small>
+          </div>
+        </div>
+  
+        <div class="col d-flex align-items-center gap-3">
+          <div class="trust-icon bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center flex-shrink-0">
+            <i class="bi bi-headset fs-5"></i>
+          </div>
+          <div>
+            <strong class="fs-8 text-dark d-block mb-0.5">24/7 Customer Support</strong>
+            <small class="fs-8 text-muted d-block lh-xs">Always here to help you</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  
   </div>
