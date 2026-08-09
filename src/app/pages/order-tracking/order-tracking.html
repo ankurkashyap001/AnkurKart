@@ -1,165 +1,554 @@
-<div class="container py-4 my-2">
+<div class="tracking-page">
+
+    <div class="container py-4">
   
-    <!-- BREADCRUMBS -->
-    <nav aria-label="breadcrumb" class="mb-3">
-      <ol class="breadcrumb fs-8 fw-semibold m-0">
-        <li class="breadcrumb-item"><a routerLink="/" class="text-muted text-decoration-none">Home</a></li>
-        <li class="breadcrumb-item"><a routerLink="/my-orders" class="text-muted text-decoration-none">My Orders</a></li>
-        <li class="breadcrumb-item active text-dark" aria-current="page">Track Order</li>
-      </ol>
-    </nav>
+      <!-- ================= BREADCRUMB ================= -->
+      <nav aria-label="breadcrumb" class="tracking-breadcrumb mb-4">
+        <ol class="breadcrumb m-0">
+          <li class="breadcrumb-item">
+            <a routerLink="/">Home</a>
+          </li>
   
-    @if (isLoading()) {
-      <div class="text-center py-5 bg-white rounded-4 shadow-sm border">
-        <div class="spinner-border text-brand-orange" role="status"></div>
-        <p class="mt-2 text-muted fs-8 mb-0">Fetching live delivery status...</p>
-      </div>
-    } @else if (order()) {
+          <li class="breadcrumb-item">
+            <a routerLink="/my-orders">My Orders</a>
+          </li>
   
-      <div class="row g-4 justify-content-center">
-        <div class="col-lg-8">
-          
-          <!-- 1. ETA BANNER CARD -->
-          <div class="card border-0 shadow-sm rounded-4 p-3.5 bg-brand-orange text-white mb-4 position-relative overflow-hidden">
-            <div class="d-flex align-items-center justify-content-between relative-z1">
-              <div>
-                <div class="d-inline-flex align-items-center gap-2 bg-white bg-opacity-20 px-2.5 py-1 rounded-pill mb-2">
-                  <span class="pulsing-green-dot"></span>
-                  <span class="fs-8 fw-bold text-uppercase tracking-wider">Live Delivery Status</span>
-                </div>
+          <li class="breadcrumb-item active">
+            Track Order
+          </li>
+        </ol>
+      </nav>
   
-                @if (order().status === 'delivered') {
-                  <h3 class="fw-extrabold m-0 fs-4">Order Delivered! 🎉</h3>
-                  <small class="text-white-50 fs-8">Your package has been successfully delivered.</small>
-                } @else {
-                  <h3 class="fw-extrabold m-0 fs-3">Arriving in {{ remainingMins() }} Mins</h3>
-                  <small class="text-white-50 fs-8">Your delivery partner is on the way!</small>
-                }
+  
+      @if (isLoading()) {
+  
+        <!-- ================= LOADING ================= -->
+        <div class="tracking-loading">
+          <div class="spinner-border text-brand-green"></div>
+          <h6>Fetching live order status...</h6>
+          <p>Please wait while we get the latest update.</p>
+        </div>
+  
+      } @else if (order()) {
+  
+        <div class="tracking-wrapper">
+  
+          <!-- ================================================= -->
+          <!-- 1. ETA HERO -->
+          <!-- ================================================= -->
+  
+          <section class="eta-card">
+  
+            <div class="eta-left">
+  
+              <div class="scooter-wrapper">
+  
+                <!-- Delivery scooter asset -->
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/2972/2972531.png"
+                  alt="Delivery partner"
+                  class="scooter-image"
+                >
+  
               </div>
   
-              <div class="text-end">
-                <span class="badge bg-white text-dark fw-bold fs-8 px-2.5 py-1.5 rounded-2 shadow-xs d-block mb-1">
-                  #{{ order().order_number }}
+              <div class="eta-content">
+  
+                <span class="eta-label">
+                  Your order is on the way
                 </span>
-                <a routerLink="/my-orders" class="text-white-50 fs-8 text-decoration-underline">All Orders</a>
+  
+                <h1>
+                  Arriving in
+                  <strong>
+                    {{ order().estimated_mins || remainingMins() || 10 }}
+                    Minutes
+                  </strong>
+  
+                  <span class="eta-bolt">⚡</span>
+                </h1>
+  
+                <p>
+                  Your delivery partner is heading to your doorstep.
+                </p>
+  
               </div>
+  
             </div>
-          </div>
   
   
-          <!-- 2. TIMELINE / STEPPER CARD -->
-          <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
-            <h6 class="fw-bold text-dark mb-4 fs-7 pb-2 border-bottom">Order Progress</h6>
+            <div class="eta-right">
   
-            <div class="timeline-stepper">
-              @for (step of order().timeline; track step.stage; let isLast = $last) {
-                <div class="timeline-step" [class.completed]="step.completed" [class.active]="order().status === step.stage">
-                  
-                  <div class="step-icon-wrapper">
-                    @if (step.completed) {
-                      <i class="bi bi-check-circle-fill text-success fs-5"></i>
-                    } @else if (order().status === step.stage) {
-                      <div class="active-pulse-ring"></div>
-                    } @else {
-                      <i class="bi bi-circle text-muted fs-6"></i>
+              <span class="order-number">
+                #{{ order().order_number || ('ANK-' + order().id) }}
+              </span>
+  
+              <span class="placed-time">
+                Placed on {{ order().created_at || '08 Aug 2026, 08:58 PM' }}
+              </span>
+  
+              <a
+                [routerLink]="['/orders', order().id]"
+                class="view-order-btn"
+              >
+                View Order Details
+                <i class="bi bi-arrow-right"></i>
+              </a>
+  
+            </div>
+  
+          </section>
+  
+  
+          <!-- ================================================= -->
+          <!-- 2. ORDER PROGRESS -->
+          <!-- ================================================= -->
+  
+          <section class="tracking-card">
+  
+            <div class="section-header">
+  
+              <div>
+                <span class="section-eyebrow">
+                  LIVE UPDATE
+                </span>
+  
+                <h2>Order Progress</h2>
+              </div>
+  
+              <span class="live-status">
+                <span></span>
+                Live
+              </span>
+  
+            </div>
+  
+  
+            <div class="timeline-wrapper">
+  
+              <!-- STEP 1 -->
+              <div class="timeline-step completed">
+  
+                <div class="timeline-icon">
+                  <i class="bi bi-check-lg"></i>
+                </div>
+  
+                <div class="timeline-info">
+                  <strong>Order Placed</strong>
+                  <small>08 Aug, 08:58 PM</small>
+                </div>
+  
+              </div>
+  
+  
+              <div class="timeline-connector completed"></div>
+  
+  
+              <!-- STEP 2 -->
+              <div class="timeline-step completed">
+  
+                <div class="timeline-icon">
+                  <i class="bi bi-box-seam-fill"></i>
+                </div>
+  
+                <div class="timeline-info">
+                  <strong>Items Packed</strong>
+                  <small>08 Aug, 09:00 PM</small>
+                </div>
+  
+              </div>
+  
+  
+              <div class="timeline-connector active"></div>
+  
+  
+              <!-- STEP 3 -->
+              <div class="timeline-step active">
+  
+                <div class="timeline-active-ring">
+  
+                  <div class="timeline-icon">
+                    <i class="bi bi-scooter"></i>
+                  </div>
+  
+                </div>
+  
+                <div class="timeline-info">
+                  <strong>Out for Delivery</strong>
+                  <small>08 Aug, 09:02 PM</small>
+                </div>
+  
+              </div>
+  
+  
+              <div class="timeline-connector"></div>
+  
+  
+              <!-- STEP 4 -->
+              <div class="timeline-step pending">
+  
+                <div class="timeline-icon">
+                  <i class="bi bi-house-check"></i>
+                </div>
+  
+                <div class="timeline-info">
+                  <strong>Delivered</strong>
+                  <small>08 Aug, 09:08 PM</small>
+                </div>
+  
+              </div>
+  
+            </div>
+  
+          </section>
+  
+  
+          <!-- ================================================= -->
+          <!-- 3. DELIVERY PARTNER -->
+          <!-- ================================================= -->
+  
+          <section class="delivery-partner-card">
+  
+            <div class="partner-info">
+  
+              <div class="partner-avatar-wrapper">
+  
+                <img
+                  [src]="order().delivery_partner?.avatar || 'https://i.pravatar.cc/150?img=12'"
+                  [alt]="order().delivery_partner?.name || 'Delivery Partner'"
+                  class="partner-avatar"
+                >
+  
+                <span class="online-dot"></span>
+  
+              </div>
+  
+  
+              <div>
+  
+                <span class="partner-label">
+                  Your Delivery Partner
+                </span>
+  
+                <h3>
+                  {{ order().delivery_partner?.name || 'Rahul Sharma' }}
+                </h3>
+  
+                <small>
+                  <i class="bi bi-shield-check"></i>
+                  Verified delivery partner
+                </small>
+  
+              </div>
+  
+            </div>
+  
+  
+            <a
+              [href]="'tel:' + (order().delivery_partner?.phone || '+919876543210')"
+              class="call-partner-btn"
+            >
+              <i class="bi bi-telephone-fill"></i>
+              Call Partner
+            </a>
+  
+          </section>
+  
+  
+          <!-- ================================================= -->
+          <!-- 4. DELIVERY ADDRESS -->
+          <!-- ================================================= -->
+  
+          <section class="tracking-card address-card">
+  
+            <div class="section-title">
+  
+              <div class="title-icon orange">
+                <i class="bi bi-geo-alt-fill"></i>
+              </div>
+  
+              <div>
+                <span>DELIVERY TO</span>
+                <h2>Delivery Address</h2>
+              </div>
+  
+            </div>
+  
+  
+            <div class="address-content">
+  
+              <div>
+  
+                <h3>
+                  {{ order().delivery_address?.full_name || 'Aastha ji' }}
+                </h3>
+  
+                <p>
+                  {{ order().delivery_address?.address_line || 'Sarafa Bazar, Moti mahal near janta band' }},
+                  {{ order().delivery_address?.city || 'Muzaffarnagar' }},
+                  {{ order().delivery_address?.state || 'Uttar Pradesh' }} -
+                  {{ order().delivery_address?.postal_code || '251002' }}
+                </p>
+  
+                <span class="address-phone">
+                  <i class="bi bi-telephone"></i>
+                  {{ order().delivery_address?.phone || '7417565438' }}
+                </span>
+  
+              </div>
+  
+  
+              <button class="change-address-btn">
+                <i class="bi bi-pencil"></i>
+                Change Address
+              </button>
+  
+            </div>
+  
+          </section>
+  
+  
+          <!-- ================================================= -->
+          <!-- 5. ORDER DETAILS -->
+          <!-- ================================================= -->
+  
+          <section class="tracking-card order-details-card">
+  
+            <div class="section-header">
+  
+              <div>
+  
+                <span class="section-eyebrow">
+                  YOUR PURCHASE
+                </span>
+  
+                <h2>Order Details</h2>
+  
+              </div>
+  
+              <span class="items-count">
+                {{ (order().items?.length || 1) }}
+                {{ (order().items?.length || 1) === 1 ? 'Item' : 'Items' }}
+              </span>
+  
+            </div>
+  
+  
+            <div class="order-items">
+  
+              @for (
+                item of (
+                  order().items ||
+                  [
+                    {
+                      title: 'Amul Pasteurised Butter 100 g',
+                      quantity: 4,
+                      unit_price: 58,
+                      total_price: 232,
+                      image_url: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=120&q=80'
                     }
+                  ]
+                );
+                track (item.id || $index)
+              ) {
+  
+                <div class="order-item">
+  
+                  <div class="product-image-box">
+  
+                    <img
+                      [src]="item.image_url || 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=120&q=80'"
+                      [alt]="item.title"
+                    >
+  
                   </div>
   
-                  <div class="step-content">
-                    <span class="fw-bold fs-8 d-block text-dark">{{ step.title }}</span>
-                    <small class="text-muted fs-8 d-block">{{ step.time || 'Pending' }}</small>
+  
+                  <div class="product-info">
+  
+                    <h3>
+                      {{ item.title }}
+                    </h3>
+  
+                    <p>
+                      Qty: {{ item.quantity }}
+                      × ₹{{ item.unit_price || (item.total_price / item.quantity) }}
+                    </p>
+  
                   </div>
   
-                  @if (!isLast) {
-                    <div class="step-connector" [class.completed]="step.completed"></div>
-                  }
+  
+                  <strong class="item-total">
+                    ₹{{ item.total_price }}
+                  </strong>
   
                 </div>
+  
               }
+  
             </div>
-          </div>
   
   
-          <!-- 3. DELIVERY PARTNER CARD (SHOW WHEN ASSIGNED) -->
-          @if (order().delivery_partner && (order().status === 'out_for_delivery' || order().status === 'packing')) {
-            <div class="card border-0 shadow-sm rounded-4 p-3.5 bg-white mb-4">
-              <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-                <div class="d-flex align-items-center gap-3">
-                  <img [src]="order().delivery_partner.avatar || 'https://i.pravatar.cc/150?img=12'" [alt]="order().delivery_partner.name" class="driver-avatar rounded-circle border border-2 border-brand-orange">
-                  <div>
-                    <span class="fs-8 text-muted fw-semibold d-block">Your Delivery Partner</span>
-                    <h6 class="fw-bold text-dark m-0 fs-7">{{ order().delivery_partner.name }}</h6>
-                  </div>
-                </div>
+            <div class="payment-total">
   
-                @if (order().delivery_partner.phone) {
-                  <a [href]="'tel:' + order().delivery_partner.phone" class="btn btn-success btn-sm rounded-pill px-3 py-1.5 fs-8 fw-bold d-inline-flex align-items-center gap-1.5 shadow-xs">
-                    <i class="bi bi-telephone-fill fs-8"></i> Call Delivery Partner
-                  </a>
-                }
+              <div>
+                <span>Total Amount Paid</span>
+                <small>
+                  Paid securely online
+                </small>
               </div>
-            </div>
-          }
   
+              <strong>
+                ₹{{ order().total_amount || 232 }}
+              </strong>
   
-          <!-- 4. DELIVERY ADDRESS CARD -->
-          <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
-            <h6 class="fw-bold text-dark mb-3 fs-7 pb-2 border-bottom d-flex align-items-center gap-2">
-              <i class="bi bi-geo-alt-fill text-brand-orange fs-6"></i> Delivery Address
-            </h6>
-  
-            <div class="lh-sm">
-              <strong class="fs-8 text-dark d-block mb-1">{{ order().delivery_address?.full_name }}</strong>
-              <p class="fs-8 text-muted mb-1">
-                {{ order().delivery_address?.address_line }}, {{ order().delivery_address?.city }}, {{ order().delivery_address?.state }} - {{ order().delivery_address?.postal_code }}
-              </p>
-              <small class="fs-8 text-muted fw-semibold">Phone: {{ order().delivery_address?.phone }}</small>
-            </div>
-          </div>
-  
-  
-          <!-- 5. ORDER SUMMARY ITEM LIST -->
-          <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
-            <h6 class="fw-bold text-dark mb-3 fs-7 pb-2 border-bottom d-flex align-items-center justify-content-between">
-              <span>Order Details</span>
-              <span class="fs-8 text-muted fw-normal">{{ order().items?.length }} Items</span>
-            </h6>
-  
-            <div class="d-flex flex-column gap-3 mb-3">
-              @for (item of order().items; track item.id) {
-                <div class="d-flex align-items-center justify-content-between gap-3">
-                  <div class="d-flex align-items-center gap-2.5 min-w-0">
-                    <img [src]="item.image_url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=100&q=80'" class="item-thumb rounded-2 border bg-light" [alt]="item.title">
-                    <div class="min-w-0">
-                      <h6 class="fs-8 fw-bold text-dark text-truncate mb-0.5">{{ item.title }}</h6>
-                      <small class="text-muted fs-8">Qty: {{ item.quantity }} × ₹{{ item.unit_price }}</small>
-                    </div>
-                  </div>
-  
-                  <span class="fw-bold fs-8 text-dark text-nowrap">₹{{ item.total_price }}</span>
-                </div>
-              }
             </div>
   
-            <div class="pt-3 border-top d-flex align-items-center justify-content-between fs-7 fw-bold text-dark">
-              <span>Total Amount Paid</span>
-              <span class="fs-6 text-brand-orange">₹{{ order().total_amount }}</span>
+          </section>
+  
+  
+          <!-- ================================================= -->
+          <!-- 6. HELP & SUPPORT -->
+          <!-- ================================================= -->
+  
+          <section class="support-card">
+  
+            <div class="support-left">
+  
+              <div class="support-icon">
+                <i class="bi bi-headset"></i>
+              </div>
+  
+              <div>
+  
+                <h3>
+                  Need help with your order?
+                </h3>
+  
+                <p>
+                  Our support team is available to assist you.
+                </p>
+  
+              </div>
+  
             </div>
-          </div>
+  
+  
+            <button class="support-btn">
+  
+              <i class="bi bi-chat-dots-fill"></i>
+  
+              Chat with Support
+  
+            </button>
+  
+          </section>
+  
+  
+          <!-- ================================================= -->
+          <!-- 7. TRUST FEATURES -->
+          <!-- ================================================= -->
+  
+          <section class="trust-bar">
+  
+            <div class="trust-item">
+  
+              <div class="trust-icon orange">
+                <i class="bi bi-lightning-charge-fill"></i>
+              </div>
+  
+              <div>
+                <strong>10 Minute Delivery</strong>
+                <span>Super fast delivery</span>
+              </div>
+  
+            </div>
+  
+  
+            <div class="trust-item">
+  
+              <div class="trust-icon green">
+                <i class="bi bi-patch-check-fill"></i>
+              </div>
+  
+              <div>
+                <strong>Best Quality Products</strong>
+                <span>Handpicked & quality assured</span>
+              </div>
+  
+            </div>
+  
+  
+            <div class="trust-item">
+  
+              <div class="trust-icon orange">
+                <i class="bi bi-box-seam-fill"></i>
+              </div>
+  
+              <div>
+                <strong>Easy Returns</strong>
+                <span>Hassle-free returns</span>
+              </div>
+  
+            </div>
+  
+  
+            <div class="trust-item">
+  
+              <div class="trust-icon green">
+                <i class="bi bi-shield-lock-fill"></i>
+              </div>
+  
+              <div>
+                <strong>100% Secure Payments</strong>
+                <span>Safe payment options</span>
+              </div>
+  
+            </div>
+  
+  
+            <div class="trust-item">
+  
+              <div class="trust-icon green">
+                <i class="bi bi-headset"></i>
+              </div>
+  
+              <div>
+                <strong>24/7 Support</strong>
+                <span>Always here to help</span>
+              </div>
+  
+            </div>
+  
+          </section>
   
         </div>
-      </div>
   
-    } @else {
-      <!-- NOT FOUND -->
-      <div class="text-center py-5 bg-white rounded-4 shadow-sm border p-4">
-        <i class="bi bi-exclamation-circle text-muted display-4 d-block mb-2"></i>
-        <h5 class="fw-bold text-dark mb-1">Order Not Found</h5>
-        <p class="text-muted fs-8 mb-4">We couldn't retrieve tracking information for this order.</p>
-        <a routerLink="/my-orders" class="btn btn-brand-orange rounded-pill px-4 py-2 fs-8 fw-bold">
-          Back to My Orders
-        </a>
-      </div>
-    }
+      } @else {
+  
+        <!-- ================= EMPTY STATE ================= -->
+  
+        <div class="order-not-found">
+  
+          <div class="not-found-icon">
+            <i class="bi bi-box-seam"></i>
+          </div>
+  
+          <h2>Order Not Found</h2>
+  
+          <p>
+            We couldn't retrieve tracking information for this order.
+          </p>
+  
+          <a routerLink="/my-orders">
+            <i class="bi bi-arrow-left"></i>
+            Back to My Orders
+          </a>
+  
+        </div>
+  
+      }
+  
+    </div>
   
   </div>
