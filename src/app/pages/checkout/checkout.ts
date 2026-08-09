@@ -108,13 +108,21 @@ export class Checkout implements OnInit {
     const selectedMethod = this.paymentMethod();
     const backendPaymentMethod: 'COD' | 'Online' = selectedMethod === 'COD' ? 'COD' : 'Online';
 
-    this.orderService.placeOrder({
+    // Order payload enriched with coupon & discount parameters
+    const payload = {
       address_id: addressId,
-      payment_method: backendPaymentMethod
-    }).subscribe({
+      payment_method: backendPaymentMethod,
+      coupon_code: this.cartService.appliedCoupon()?.code || null,
+      discount_amount: this.cartService.discountTotal()
+    };
+
+    this.orderService.placeOrder(payload).subscribe({
       next: (res: any) => {
         this.isPlacingOrder.set(false);
+        
+        // Clear cart and reset coupon state
         this.cartService.clearCart();
+        this.cartService.removeCoupon();
         
         // Save created order ID & trigger Angular success modal instantly
         const orderId = res?.data?.id || res?.data?.order_number || '';
