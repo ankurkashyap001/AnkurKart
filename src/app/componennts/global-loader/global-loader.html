@@ -1,0 +1,18 @@
+@if (loadingService.isLoading()) {
+    <div class="global-loader-overlay d-flex flex-column align-items-center justify-content-center">
+      <div class="brand-loader-box p-4 rounded-4 bg-white text-center shadow-lg border">
+        
+        <!-- Brand Pulsing Spinner Ring -->
+        <div class="brand-spinner-wrapper mx-auto mb-3">
+          <div class="spinner-ring outer-ring"></div>
+          <div class="spinner-ring inner-ring"></div>
+          <div class="brand-center-icon">
+            <i class="bi bi-cart-fill text-brand-orange fs-4"></i>
+          </div>
+        </div>
+  
+        <h6 class="fw-extrabold text-dark mb-1 fs-7">AnkurKart</h6>
+        <span class="fs-8 text-muted fw-semibold d-block">Fetching fresh groceries...</span>
+      </div>
+    </div>
+  }

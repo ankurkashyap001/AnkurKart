@@ -1,0 +1,21 @@
+<div class="toast-container-wrapper">
+    @for (toast of toastService.toasts(); track toast.id) {
+      <div class="toast-pill-card d-flex align-items-center justify-content-between p-2.5 px-3 rounded-pill shadow-lg text-white mb-2" [ngClass]="'type-' + toast.type">
+        
+        <div class="d-flex align-items-center gap-2 min-w-0">
+          @switch (toast.type) {
+            @case ('success') { <i class="bi bi-check-circle-fill fs-6 text-white"></i> }
+            @case ('error') { <i class="bi bi-x-circle-fill fs-6 text-white"></i> }
+            @case ('warning') { <i class="bi bi-exclamation-triangle-fill fs-6 text-white"></i> }
+            @default { <i class="bi bi-info-circle-fill fs-6 text-white"></i> }
+          }
+          <span class="fs-8 fw-semibold text-truncate me-2">{{ toast.message }}</span>
+        </div>
+  
+        <button class="btn btn-link p-0 text-white opacity-75 border-0 fs-8 lh-1" (click)="toastService.remove(toast.id)">
+          <i class="bi bi-x-lg"></i>
+        </button>
+  
+      </div>
+    }
+  </div>

@@ -14,6 +14,8 @@ import { CartDrawer } from './components/cart-drawer/cart-drawer';
 import { Checkout } from './pages/checkout/checkout';
 import { OrderDetail } from './pages/order-detail/order-detail';
 import { AuthModal } from './components/auth-modal/auth-modal';
+import { GlobalLoader } from './componennts/global-loader/global-loader';
+import { ToastContainer } from './componennts/toast-container/toast-container';
 // import { Header } from './header/header';
 // import { Footer } from './footer/footer';
 // import { Sidebar } from './sidebar/sidebar';
@@ -22,7 +24,7 @@ import { AuthModal } from './components/auth-modal/auth-modal';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, Counter, Computed, Cart, Login, Register, Footer, Navbar, Home, CartDrawer, Checkout, OrderDetail, AuthModal, GlobalModal],
+  imports: [RouterOutlet, RouterLink, Counter, Computed, Cart, Login, Register, Footer, Navbar, Home, CartDrawer, Checkout, OrderDetail, AuthModal, GlobalLoader, ToastContainer, GlobalModal],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

@@ -1,0 +1,47 @@
+.toast-container-wrapper {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    pointer-events: none;
+  }
+  
+  .toast-pill-card {
+    pointer-events: auto;
+    min-width: 260px;
+    max-width: 380px;
+    animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.2s ease;
+  }
+  
+  .type-success {
+    background-color: #00A651 !important;
+  }
+  
+  .type-error {
+    background-color: #E53935 !important;
+  }
+  
+  .type-warning {
+    background-color: #F57C00 !important;
+  }
+  
+  .type-info {
+    background-color: #1E88E5 !important;
+  }
+  
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(100px) scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+  }
+  
+  .fs-8 { font-size: 0.725rem; }
