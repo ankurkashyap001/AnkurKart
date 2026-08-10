@@ -1,0 +1,82 @@
+.toast-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+    max-width: 380px;
+    width: calc(100vw - 40px);
+  }
+  
+  .toast-pill {
+    pointer-events: auto;
+    background-color: #FFFFFF;
+    border: 1.5px solid #E2E8F0;
+    transition: all 0.25s ease-in-out;
+    animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  
+  /* Success Pill */
+  .toast-success {
+    background-color: #E6F7ED !important;
+    border-color: #A3E6CD !important;
+  }
+  .toast-success .toast-message {
+    color: #007A3B !important;
+  }
+  
+  /* Error Pill */
+  .toast-error {
+    background-color: #FDF2F2 !important;
+    border-color: #FCA5A5 !important;
+  }
+  .toast-error .toast-message {
+    color: #9B1C1C !important;
+  }
+  
+  /* Warning Pill */
+  .toast-warning {
+    background-color: #FFFBEB !important;
+    border-color: #FDE68A !important;
+  }
+  .toast-warning .toast-message {
+    color: #92400E !important;
+  }
+  
+  /* Info Pill */
+  .toast-info {
+    background-color: #E0F2FE !important;
+    border-color: #BAE6FD !important;
+  }
+  .toast-info .toast-message {
+    color: #0369A1 !important;
+  }
+  
+  /* Close Button */
+  .btn-close-toast {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+  }
+  .btn-close-toast:hover {
+    opacity: 1;
+  }
+  
+  /* Slide-in Animation */
+  @keyframes slideIn {
+    0% {
+      opacity: 0;
+      transform: translateX(100px) scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+  }
+  
+  .fs-8 {
+    font-size: 0.775rem;
+  }

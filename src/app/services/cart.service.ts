@@ -3,6 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Cart } from '../models/cart.model';
 import { catchError, of, tap } from 'rxjs';
+import { ToastService } from './toast.service';
 
 export interface Coupon {
   code: string;
@@ -16,6 +17,7 @@ export interface Coupon {
 export class CartService {
   private http = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);
+  private toastService = inject(ToastService);
   
   private apiUrl = 'http://localhost:8000/api/cart';
   private couponApiUrl = 'http://localhost:8000/api/coupons/apply';
@@ -30,7 +32,7 @@ export class CartService {
   couponError = signal<string | null>(null);
   isCouponLoading = signal<boolean>(false);
 
-  // Track last subtotal to prevent infinite loop
+  // Track last subtotal to prevent infinite loop during auto-revalidation
   private lastValidatedSubtotal = 0;
 
   cartCount = computed(() =>
@@ -59,7 +61,7 @@ export class CartService {
     if (isPlatformBrowser(this.platformId)) {
       this.loadCart();
 
-      // Infinite loop-safe effect
+      // Infinite loop-safe effect for coupon revalidation
       effect(() => {
         const currentSubtotal = this.subtotal();
         const activeCoupon = this.appliedCoupon();
@@ -68,7 +70,7 @@ export class CartService {
           this.lastValidatedSubtotal = currentSubtotal;
           this.revalidateCoupon(activeCoupon.code, currentSubtotal);
         } else if (activeCoupon && currentSubtotal === 0) {
-          this.removeCoupon();
+          this.removeCoupon(false);
         }
       }, { allowSignalWrites: true });
     }
@@ -139,8 +141,12 @@ export class CartService {
 
     this.openDrawer();
     this.http.post<any>(`${this.apiUrl}/add`, { product_id: productId, quantity }, this.getHeaders()).pipe(
-      tap(updatedCart => this.cart.set(this.formatCartResponse(updatedCart))),
-      catchError(() => {
+      tap(updatedCart => {
+        this.cart.set(this.formatCartResponse(updatedCart));
+        this.toastService.success('Item added to cart!');
+      }),
+      catchError((err) => {
+        this.toastService.error(err.error?.message || 'Failed to add item to cart.');
         this.loadCart();
         return of(null);
       })
@@ -150,6 +156,11 @@ export class CartService {
   updateQuantity(cartItemId: number, newQty: number, stockLimit: number = 10) {
     const itemId = Number(cartItemId);
     if (!itemId || isNaN(itemId)) return;
+
+    if (newQty > stockLimit) {
+      this.toastService.warning(`Max stock limit reached (${stockLimit})`);
+      return;
+    }
 
     if (newQty <= 0) {
       this.removeItem(itemId);
@@ -162,8 +173,12 @@ export class CartService {
     this.cart.update(c => ({ ...(c || this.defaultCart), items: updatedItems }));
 
     this.http.put<any>(`${this.apiUrl}/items/${itemId}`, { quantity: newQty }, this.getHeaders()).pipe(
-      tap(serverCart => this.cart.set(this.formatCartResponse(serverCart))),
-      catchError(() => {
+      tap(serverCart => {
+        this.cart.set(this.formatCartResponse(serverCart));
+        this.toastService.info('Cart quantity updated');
+      }),
+      catchError((err) => {
+        this.toastService.error(err.error?.message || 'Failed to update quantity.');
         this.loadCart();
         return of(null);
       })
@@ -178,8 +193,12 @@ export class CartService {
     this.cart.update(c => ({ ...(c || this.defaultCart), items: updatedItems }));
 
     this.http.delete<any>(`${this.apiUrl}/items/${itemId}`, this.getHeaders()).pipe(
-      tap(serverCart => this.cart.set(this.formatCartResponse(serverCart))),
-      catchError(() => {
+      tap(serverCart => {
+        this.cart.set(this.formatCartResponse(serverCart));
+        this.toastService.info('Item removed from cart');
+      }),
+      catchError((err) => {
+        this.toastService.error(err.error?.message || 'Failed to remove item.');
         this.loadCart();
         return of(null);
       })
@@ -188,24 +207,28 @@ export class CartService {
 
   clearCart() {
     this.cart.set(this.defaultCart);
-    this.removeCoupon();
+    this.removeCoupon(false);
+    this.toastService.info('Cart cleared');
     this.http.delete(`${this.apiUrl}/clear`, this.getHeaders()).subscribe();
   }
 
-  // ================= COUPON ENGINE FIX ================= //
+  // ================= COUPON ENGINE METHODS ================= //
 
   applyCoupon(code: any) {
-    // Force string conversion to fix "The code field must be a string"
     const stringCode = typeof code === 'string' ? code : (code?.code || String(code || ''));
     const cleanCode = stringCode.trim().toUpperCase();
 
     if (!cleanCode) {
-      this.couponError.set('Please enter a valid promo code.');
+      const msg = 'Please enter a valid promo code.';
+      this.couponError.set(msg);
+      this.toastService.warning(msg);
       return;
     }
 
     if (this.subtotal() <= 0) {
-      this.couponError.set('Cart is empty.');
+      const msg = 'Cart is empty.';
+      this.couponError.set(msg);
+      this.toastService.warning(msg);
       return;
     }
 
@@ -222,19 +245,25 @@ export class CartService {
         this.isCouponLoading.set(false);
         if (res.valid || res.success) {
           this.lastValidatedSubtotal = this.subtotal();
+          const msg = res.message || 'Coupon applied successfully!';
           this.appliedCoupon.set({
             code: res.code || cleanCode,
             discountAmount: Number(res.discount_amount || res.discount || 0),
-            message: res.message || 'Coupon applied!'
+            message: msg
           });
           this.couponError.set(null);
+          this.toastService.success(msg);
         } else {
-          this.couponError.set(res.message || 'Invalid promo code.');
+          const errMsg = res.message || 'Invalid promo code.';
+          this.couponError.set(errMsg);
+          this.toastService.error(errMsg);
         }
       },
       error: (err: any) => {
         this.isCouponLoading.set(false);
-        this.couponError.set(err.error?.message || 'Failed to apply coupon.');
+        const errMsg = err.error?.message || 'Failed to apply coupon.';
+        this.couponError.set(errMsg);
+        this.toastService.error(errMsg);
       }
     });
   }
@@ -252,17 +281,22 @@ export class CartService {
             message: res.message
           });
         } else {
-          this.removeCoupon();
-          this.couponError.set(`Coupon '${stringCode}' removed: ${res.message || 'Criteria not met.'}`);
+          this.removeCoupon(false);
+          const msg = `Coupon '${stringCode}' removed: ${res.message || 'Criteria not met.'}`;
+          this.couponError.set(msg);
+          this.toastService.warning(msg);
         }
       },
       error: () => {
-        this.removeCoupon();
+        this.removeCoupon(false);
       }
     });
   }
 
-  removeCoupon() {
+  removeCoupon(showToast: boolean = true) {
+    if (this.appliedCoupon() && showToast) {
+      this.toastService.info('Coupon removed');
+    }
     this.appliedCoupon.set(null);
     this.couponError.set(null);
     this.lastValidatedSubtotal = 0;

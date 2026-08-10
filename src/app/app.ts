@@ -15,6 +15,7 @@ import { Checkout } from './pages/checkout/checkout';
 import { OrderDetail } from './pages/order-detail/order-detail';
 import { AuthModal } from './components/auth-modal/auth-modal';
 import { GlobalLoader } from './components/global-loader/global-loader';
+import { ToastContainer } from './components/toast-container/toast-container';
 // import { Header } from './header/header';
 // import { Footer } from './footer/footer';
 // import { Sidebar } from './sidebar/sidebar';
@@ -23,7 +24,7 @@ import { GlobalLoader } from './components/global-loader/global-loader';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, Counter, Computed, Cart, Login, Register, Footer, Navbar, Home, CartDrawer, Checkout, OrderDetail, GlobalLoader, AuthModal, GlobalModal],
+  imports: [RouterOutlet, RouterLink, Counter, Computed, Cart, Login, Register, Footer, Navbar, Home, CartDrawer, Checkout, OrderDetail, GlobalLoader, ToastContainer, AuthModal, GlobalModal],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
