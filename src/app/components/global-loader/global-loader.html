@@ -1,0 +1,15 @@
+@if (loadingService.isLoading()) {
+    <div class="global-loader-overlay d-flex flex-column align-items-center justify-content-center">
+      <div class="loader-card text-center p-4 rounded-4 bg-white shadow-lg border">
+        
+        <!-- Loader Graphic / Pulse Animation -->
+        <div class="loader-animation-box mx-auto mb-3">
+          <div class="pulse-ring"></div>
+          <img src="https://cdn-icons-png.flaticon.com/512/3724/3724788.png" alt="Loading..." class="loader-gif img-fluid">
+        </div>
+  
+        <h6 class="fw-bold text-dark mb-1 fs-7">AnkurKart</h6>
+        <p class="text-muted fs-8 fw-semibold mb-0">Fetching fresh items...</p>
+      </div>
+    </div>
+  }

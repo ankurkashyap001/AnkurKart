@@ -1,0 +1,67 @@
+.global-loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 999999;
+    animation: fadeIn 0.2s ease-in-out;
+  }
+  
+  .loader-card {
+    width: 220px;
+    border-color: #E2E8F0 !important;
+  }
+  
+  .loader-animation-box {
+    position: relative;
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .loader-gif {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    z-index: 2;
+    animation: bounce 1.2s infinite ease-in-out;
+  }
+  
+  .pulse-ring {
+    position: absolute;
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    border: 3px solid #00A651;
+    animation: pulse-ring-anim 1.5s infinite ease-out;
+  }
+  
+  @keyframes pulse-ring-anim {
+    0% {
+      transform: scale(0.6);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1.25);
+      opacity: 0;
+    }
+  }
+  
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .fs-7 { font-size: 0.825rem; }
+  .fs-8 { font-size: 0.725rem; }

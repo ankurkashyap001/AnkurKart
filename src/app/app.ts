@@ -14,6 +14,7 @@ import { CartDrawer } from './components/cart-drawer/cart-drawer';
 import { Checkout } from './pages/checkout/checkout';
 import { OrderDetail } from './pages/order-detail/order-detail';
 import { AuthModal } from './components/auth-modal/auth-modal';
+import { GlobalLoader } from './components/global-loader/global-loader';
 // import { Header } from './header/header';
 // import { Footer } from './footer/footer';
 // import { Sidebar } from './sidebar/sidebar';
@@ -22,7 +23,7 @@ import { AuthModal } from './components/auth-modal/auth-modal';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, Counter, Computed, Cart, Login, Register, Footer, Navbar, Home, CartDrawer, Checkout, OrderDetail, AuthModal, GlobalModal],
+  imports: [RouterOutlet, RouterLink, Counter, Computed, Cart, Login, Register, Footer, Navbar, Home, CartDrawer, Checkout, OrderDetail, GlobalLoader, AuthModal, GlobalModal],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
