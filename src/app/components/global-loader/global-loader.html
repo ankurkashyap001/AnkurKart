@@ -1,15 +1,83 @@
 @if (loadingService.isLoading()) {
-    <div class="global-loader-overlay d-flex flex-column align-items-center justify-content-center">
-      <div class="loader-card text-center p-4 rounded-4 bg-white shadow-lg border">
+    <div class="global-loader-overlay d-flex align-items-center justify-content-center">
+      
+      <!-- GLASSMORPHIC DARK LOADER MODAL CARD -->
+      <div class="glass-loader-card p-4 rounded-4 text-center position-relative shadow-2xl">
         
-        <!-- Loader Graphic / Pulse Animation -->
-        <div class="loader-animation-box mx-auto mb-3">
-          <div class="pulse-ring"></div>
-          <img src="https://cdn-icons-png.flaticon.com/512/3724/3724788.png" alt="Loading..." class="loader-gif img-fluid">
+        <!-- Top Glowing Circle Basket Header -->
+        <div class="glowing-basket-wrapper mx-auto mb-3">
+          <div class="glowing-ring"></div>
+          <div class="basket-icon-circle bg-dark-subtle d-flex align-items-center justify-content-center">
+            <!-- Grocery Basket Illustration -->
+            <img src="https://cdn-icons-png.flaticon.com/512/3724/3724788.png" alt="Basket" class="basket-img img-fluid">
+          </div>
         </div>
   
-        <h6 class="fw-bold text-dark mb-1 fs-7">AnkurKart</h6>
-        <p class="text-muted fs-8 fw-semibold mb-0">Fetching fresh items...</p>
+        <!-- AnkurKart Logo Brand Text -->
+        <h4 class="brand-title fw-bold text-white mb-0.5 tracking-tight">
+          Ankur<span class="text-brand-orange">Kart</span>
+        </h4>
+        <small class="brand-tagline text-white-50 fs-8 d-block mb-3 fw-medium">
+          Fresh. Fast. For You.
+        </small>
+  
+        <!-- Loading Subtext -->
+        <p class="loading-text text-white fs-8 fw-semibold mb-3">
+          Fetching fresh items for you...
+        </p>
+  
+        <!-- Glowing Green Progress Bar -->
+        <div class="progress-bar-container position-relative mb-4">
+          <div class="progress-bar-track rounded-pill">
+            <div class="progress-bar-fill rounded-pill"></div>
+          </div>
+          <span class="progress-percentage fs-8 fw-bold text-brand-green">63%</span>
+        </div>
+  
+        <!-- Bottom Micro Stepper Row -->
+        <div class="micro-stepper-row d-flex align-items-center justify-content-between px-2">
+          
+          <!-- Stage 1: Searching -->
+          <div class="stepper-node active d-flex flex-column align-items-center">
+            <div class="node-icon bg-brand-green text-white mb-1">
+              <i class="bi bi-search fs-8"></i>
+            </div>
+            <span class="node-label text-white-50 fs-8">Searching</span>
+          </div>
+  
+          <div class="node-line active"></div>
+  
+          <!-- Stage 2: Packing -->
+          <div class="stepper-node d-flex flex-column align-items-center">
+            <div class="node-icon bg-dark-node text-white-50 mb-1">
+              <i class="bi bi-box-seam fs-8"></i>
+            </div>
+            <span class="node-label text-white-50 fs-8">Packing</span>
+          </div>
+  
+          <div class="node-line"></div>
+  
+          <!-- Stage 3: On the way -->
+          <div class="stepper-node d-flex flex-column align-items-center">
+            <div class="node-icon bg-dark-node text-white-50 mb-1">
+              <i class="bi bi-truck fs-8"></i>
+            </div>
+            <span class="node-label text-white-50 fs-8">On the way</span>
+          </div>
+  
+          <div class="node-line"></div>
+  
+          <!-- Stage 4: Delivered -->
+          <div class="stepper-node d-flex flex-column align-items-center">
+            <div class="node-icon bg-dark-node text-white-50 mb-1">
+              <i class="bi bi-check-lg fs-8"></i>
+            </div>
+            <span class="node-label text-white-50 fs-8">Delivered</span>
+          </div>
+  
+        </div>
+  
       </div>
+  
     </div>
   }

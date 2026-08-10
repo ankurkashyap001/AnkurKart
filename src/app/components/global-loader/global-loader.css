@@ -1,67 +1,181 @@
-.global-loader-overlay {
+:root {
+    --brand-green: #00E676;
+    --brand-orange: #FF5E00;
+  }
+  
+  /* 1. Backdrop Blur Overlay */
+  .global-loader-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(2px) !important;
+    -webkit-backdrop-filter: blur(2px) !important;
     z-index: 999999;
-    animation: fadeIn 0.2s ease-in-out;
+    animation: fadeIn 0.25s ease-in-out;
   }
   
-  .loader-card {
-    width: 220px;
-    border-color: #E2E8F0 !important;
+  /* 2. Glassmorphic Dark Container Card */
+  .glass-loader-card {
+    width: 360px;
+    max-width: 90vw;
+    background: #111827; /* Dark Charcoal Card */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
   
-  .loader-animation-box {
+  /* 3. Glowing Basket Avatar Header */
+  .glowing-basket-wrapper {
     position: relative;
-    width: 70px;
-    height: 70px;
+    width: 110px;
+    height: 110px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
   
-  .loader-gif {
-    width: 48px;
-    height: 48px;
-    object-fit: contain;
-    z-index: 2;
-    animation: bounce 1.2s infinite ease-in-out;
-  }
-  
-  .pulse-ring {
+  .glowing-ring {
     position: absolute;
-    width: 65px;
-    height: 65px;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
-    border: 3px solid #00A651;
-    animation: pulse-ring-anim 1.5s infinite ease-out;
+    border: 2px solid var(--brand-green);
+    box-shadow: 0 0 20px rgba(0, 230, 118, 0.4), inset 0 0 20px rgba(0, 230, 118, 0.2);
+    animation: pulseGlow 2s infinite ease-in-out;
   }
   
-  @keyframes pulse-ring-anim {
-    0% {
-      transform: scale(0.6);
-      opacity: 1;
-    }
-    100% {
-      transform: scale(1.25);
-      opacity: 0;
-    }
+  .basket-icon-circle {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #1F2937 0%, #111827 100%);
+    position: relative;
+    z-index: 2;
   }
   
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
+  .basket-img {
+    width: 58px;
+    height: 58px;
+    object-fit: contain;
+    animation: floatBasket 2s infinite ease-in-out;
   }
   
+  /* 4. Brand Text */
+  .text-brand-orange {
+    color: var(--brand-orange) !important;
+  }
+  
+  .text-brand-green {
+    color: var(--brand-green) !important;
+  }
+  
+  /* 5. Glowing Progress Bar */
+  .progress-bar-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .progress-bar-track {
+    flex-grow: 1;
+    height: 6px;
+    background-color: #1F2937;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .progress-bar-fill {
+    height: 100%;
+    width: 63%;
+    background: linear-gradient(90deg, #00A651 0%, #00E676 100%);
+    box-shadow: 0 0 10px rgba(0, 230, 118, 0.8);
+    animation: progressAnim 2s infinite ease-in-out;
+  }
+  
+  .progress-percentage {
+    font-size: 0.75rem;
+    width: 32px;
+    text-align: right;
+  }
+  
+  /* 6. Micro Stepper Row */
+  .micro-stepper-row {
+    position: relative;
+  }
+  
+  .stepper-node {
+    z-index: 2;
+  }
+  
+  .node-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .node-icon.bg-brand-green {
+    background-color: #00A651 !important;
+    box-shadow: 0 0 12px rgba(0, 230, 118, 0.5);
+  }
+  
+  .bg-dark-node {
+    background-color: #1F2937 !important;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  
+  .node-label {
+    font-size: 0.65rem !important;
+  }
+  
+  .node-line {
+    flex-grow: 1;
+    height: 2px;
+    background-color: #1F2937;
+    margin-top: -16px;
+  }
+  
+  .node-line.active {
+    background-color: #00A651;
+  }
+  
+  /* Animations */
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
   }
   
-  .fs-7 { font-size: 0.825rem; }
+  @keyframes popIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes pulseGlow {
+    0% { transform: scale(0.98); opacity: 0.8; }
+    50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 25px rgba(0, 230, 118, 0.6); }
+    100% { transform: scale(0.98); opacity: 0.8; }
+  }
+  
+  @keyframes floatBasket {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+  
+  @keyframes progressAnim {
+    0% { width: 10%; }
+    50% { width: 75%; }
+    100% { width: 100%; }
+  }
+  
   .fs-8 { font-size: 0.725rem; }
