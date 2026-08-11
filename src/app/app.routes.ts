@@ -13,9 +13,11 @@ import { AdminLayout } from './pages/admin/admin-layout/admin-layout';
 import { AdminDashboard } from './pages/admin/admin-dashboard/admin-dashboard';
 import { AdminOrders } from './pages/admin/admin-orders/admin-orders';
 import { adminGuard } from './guards/admin-guard';
+import { AdminProducts } from './pages/admin/admin-products/admin-products';
 
 // Auth Guard Import
 import { authGuard } from './guards/auth-guard';
+
 
 export const routes: Routes = [
   // User Facing Routes
@@ -76,7 +78,7 @@ export const routes: Routes = [
       { path: 'dashboard', component: AdminDashboard },
       { path: 'orders', component: AdminOrders },
       // Placeholder routes for Products, Categories, Users
-      { path: 'products', component: AdminDashboard },
+      { path: 'products', component: AdminProducts }, // 👈 Updated here
       { path: 'categories', component: AdminDashboard },
       { path: 'users', component: AdminDashboard }
     ]

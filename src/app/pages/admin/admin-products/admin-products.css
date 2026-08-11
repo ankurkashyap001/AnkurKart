@@ -1,0 +1,24 @@
+.btn-brand-green {
+    background-color: #00A651 !important;
+    color: #FFFFFF !important;
+    border: none;
+  }
+  
+  .btn-brand-green:hover {
+    background-color: #008A43 !important;
+  }
+  
+  .text-brand-green {
+    color: #00A651 !important;
+  }
+  
+  .modal-backdrop {
+    background-color: rgba(15, 23, 42, 0.5);
+  }
+  
+  .product-thumb {
+    background-color: #F8FAFC;
+  }
+  
+  .fs-8 { font-size: 0.75rem; }
+  .fs-7 { font-size: 0.85rem; }

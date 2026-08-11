@@ -1,0 +1,173 @@
+<div class="products-management-wrapper">
+  
+    <!-- HEADER & ACTIONS -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+      <div>
+        <h4 class="fw-bold text-dark mb-1">Products Inventory</h4>
+        <p class="text-muted fs-8 mb-0">Manage catalog items, pricing, and stock levels</p>
+      </div>
+      <button (click)="openAddModal()" class="btn btn-brand-green btn-sm rounded-pill px-3 py-2 fs-8 fw-bold d-flex align-items-center gap-2">
+        <i class="bi bi-plus-lg fs-6"></i> Add New Product
+      </button>
+    </div>
+  
+    <!-- SEARCH & FILTERS -->
+    <div class="card border-0 shadow-sm rounded-4 p-3 bg-white mb-4">
+      <div class="input-group input-group-sm">
+        <span class="input-group-text bg-white border-end-0 text-muted ps-3">
+          <i class="bi bi-search"></i>
+        </span>
+        <input 
+          type="text" 
+          class="form-control border-start-0 shadow-none fs-8" 
+          placeholder="Search products by name or category..."
+          [ngModel]="searchQuery()"
+          (ngModelChange)="searchQuery.set($event)"
+        />
+      </div>
+    </div>
+  
+    <!-- PRODUCTS TABLE -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+      @if (isLoading()) {
+        <div class="text-center py-5">
+          <div class="spinner-border text-brand-green" role="status"></div>
+          <p class="text-muted fs-8 mt-2">Loading catalog...</p>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-hover align-middle fs-8 mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Unit</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (product of filteredProducts(); track product.id) {
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center gap-2.5">
+                      <img 
+                        [src]="product.image_url || 'assets/placeholder.png'" 
+                        [alt]="product.name"
+                        class="product-thumb rounded-3 border object-fit-cover"
+                        width="42" height="42"
+                        onerror="this.src='https://placehold.co/100x100?text=Item'"
+                      />
+                      <div>
+                        <strong class="d-block text-dark fs-8">{{ product.name }}</strong>
+                        <small class="text-muted fs-8">ID: #{{ product.id }}</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="badge bg-light text-dark border fs-8">{{ product.category || 'General' }}</span></td>
+                  <td class="fw-bold text-dark">₹{{ product.price }}</td>
+                  <td>
+                    <span class="badge rounded-pill px-2.5 py-1"
+                          [ngClass]="{
+                            'bg-success-subtle text-success': product.stock > 10,
+                            'bg-warning-subtle text-warning': product.stock > 0 && product.stock <= 10,
+                            'bg-danger-subtle text-danger': product.stock <= 0
+                          }">
+                      {{ product.stock > 0 ? product.stock + ' in stock' : 'Out of Stock' }}
+                    </span>
+                  </td>
+                  <td class="text-muted">{{ product.unit || '1 unit' }}</td>
+                  <td class="text-end">
+                    <div class="btn-group btn-group-sm">
+                      <button (click)="openEditModal(product)" class="btn btn-outline-secondary btn-sm rounded-2 me-1.5" title="Edit">
+                        <i class="bi bi-pencil"></i>
+                      </button>
+                      <button (click)="deleteProduct(product.id, product.name)" class="btn btn-outline-danger btn-sm rounded-2" title="Delete">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="6" class="text-center text-muted py-4">No products found.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  
+  </div>
+  
+  <!-- ADD / EDIT PRODUCT MODAL -->
+  @if (isModalOpen()) {
+    <div class="modal-backdrop fade show"></div>
+    <div class="modal d-block" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+          
+          <div class="modal-header border-bottom-0 pb-0">
+            <h6 class="modal-title fw-bold text-dark">
+              {{ isEditMode() ? 'Edit Product' : 'Add New Product' }}
+            </h6>
+            <button type="button" class="btn-close shadow-none" (click)="closeModal()"></button>
+          </div>
+  
+          <div class="modal-body fs-8">
+            <form (ngSubmit)="saveProduct()">
+              
+              <div class="mb-3">
+                <label class="form-label fw-semibold text-muted">Product Name</label>
+                <input type="text" class="form-control form-control-sm rounded-3 shadow-none" 
+                       [ngModel]="productForm().name" (ngModelChange)="productForm().name = $event" name="name" required />
+              </div>
+  
+              <div class="row g-2 mb-3">
+                <div class="col-6">
+                  <label class="form-label fw-semibold text-muted">Category</label>
+                  <input type="text" class="form-control form-control-sm rounded-3 shadow-none" 
+                         [ngModel]="productForm().category" (ngModelChange)="productForm().category = $event" name="category" />
+                </div>
+                <div class="col-6">
+                  <label class="form-label fw-semibold text-muted">Unit Quantity</label>
+                  <input type="text" class="form-control form-control-sm rounded-3 shadow-none" placeholder="e.g. 500 g / 1 L"
+                         [ngModel]="productForm().unit" (ngModelChange)="productForm().unit = $event" name="unit" />
+                </div>
+              </div>
+  
+              <div class="row g-2 mb-3">
+                <div class="col-6">
+                  <label class="form-label fw-semibold text-muted">Price (₹)</label>
+                  <input type="number" class="form-control form-control-sm rounded-3 shadow-none" 
+                         [ngModel]="productForm().price" (ngModelChange)="productForm().price = $event" name="price" min="1" required />
+                </div>
+                <div class="col-6">
+                  <label class="form-label fw-semibold text-muted">Stock Quantity</label>
+                  <input type="number" class="form-control form-control-sm rounded-3 shadow-none" 
+                         [ngModel]="productForm().stock" (ngModelChange)="productForm().stock = $event" name="stock" min="0" required />
+                </div>
+              </div>
+  
+              <div class="mb-3">
+                <label class="form-label fw-semibold text-muted">Image URL</label>
+                <input type="text" class="form-control form-control-sm rounded-3 shadow-none" placeholder="https://..."
+                       [ngModel]="productForm().image_url" (ngModelChange)="productForm().image_url = $event" name="image_url" />
+              </div>
+  
+              <div class="d-flex justify-content-end gap-2 mt-4">
+                <button type="button" class="btn btn-light btn-sm rounded-pill px-3 fs-8" (click)="closeModal()">Cancel</button>
+                <button type="submit" class="btn btn-brand-green btn-sm rounded-pill px-4 fs-8 fw-bold">
+                  {{ isEditMode() ? 'Update Product' : 'Save Product' }}
+                </button>
+              </div>
+  
+            </form>
+          </div>
+  
+        </div>
+      </div>
+    </div>
+  }
