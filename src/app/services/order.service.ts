@@ -4,6 +4,17 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { OrderPayload, OrderResponse } from '../models/order.model';
 import { Observable } from 'rxjs';
 
+export interface PlaceOrderPayload {
+  address_id: number;
+  payment_method: 'COD' | 'UPI' | 'Online';
+  transaction_id?: string | null;
+  coupon_code?: string | null;
+  discount_amount?: number;
+  subtotal?: number;
+  delivery_fee?: number;
+  grand_total?: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -25,8 +36,8 @@ export class OrderService {
     };
   }
 
-  placeOrder(payload: OrderPayload) {
-    return this.http.post<OrderResponse>(this.apiUrl, payload, this.getHeaders());
+  placeOrder(payload: PlaceOrderPayload): Observable<any> {
+    return this.http.post<any>(this.apiUrl, payload, this.getHeaders());
   }
 
   getOrders() {
