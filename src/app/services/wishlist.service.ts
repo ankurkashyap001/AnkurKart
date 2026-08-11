@@ -34,7 +34,7 @@ export class WishlistService {
           this.wishlistItems.set([]);
           this.wishlistIds.set([]);
         }
-      }, { allowSignalWrites: true });
+      },);
     }
   }
 

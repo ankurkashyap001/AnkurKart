@@ -1,0 +1,21 @@
+.btn-brand-green {
+    background-color: #00A651 !important;
+    color: #FFFFFF !important;
+    border-color: #00A651 !important;
+  }
+  
+  .btn-white {
+    background-color: #FFFFFF !important;
+    border-color: #E2E8F0 !important;
+  }
+  
+  .btn-white:hover {
+    background-color: #F8FAFC !important;
+  }
+  
+  .text-brand-green {
+    color: #00A651 !important;
+  }
+  
+  .fs-8 { font-size: 0.75rem; }
+  .fs-7 { font-size: 0.85rem; }

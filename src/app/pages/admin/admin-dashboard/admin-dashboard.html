@@ -1,0 +1,136 @@
+<div class="dashboard-wrapper">
+  
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <div>
+        <h4 class="fw-bold text-dark mb-1">Dashboard Overview</h4>
+        <p class="text-muted fs-8 mb-0">Live metrics & store updates</p>
+      </div>
+      <a routerLink="/admin/orders" class="btn btn-brand-green btn-sm rounded-pill px-3 py-1.5 fs-8 fw-bold">
+        View Orders <i class="bi bi-arrow-right ms-1"></i>
+      </a>
+    </div>
+  
+    @if (isLoading()) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-brand-green" role="status"></div>
+        <p class="text-muted fs-8 mt-2">Loading metrics...</p>
+      </div>
+    } @else if (stats()) {
+  
+      <!-- STATS GRID CARDS -->
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-5 g-3 mb-4">
+        
+        <!-- Total Revenue -->
+        <div class="col">
+          <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <span class="fs-8 fw-semibold text-muted">Total Revenue</span>
+              <div class="icon-circle bg-success-subtle text-success rounded-circle">
+                <i class="bi bi-currency-rupee fs-6"></i>
+              </div>
+            </div>
+            <h4 class="fw-extrabold text-dark m-0">₹{{ stats()?.total_revenue || 0 }}</h4>
+          </div>
+        </div>
+  
+        <!-- Total Orders -->
+        <div class="col">
+          <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <span class="fs-8 fw-semibold text-muted">Total Orders</span>
+              <div class="icon-circle bg-primary-subtle text-primary rounded-circle">
+                <i class="bi bi-bag-check fs-6"></i>
+              </div>
+            </div>
+            <h4 class="fw-extrabold text-dark m-0">{{ stats()?.total_orders || 0 }}</h4>
+          </div>
+        </div>
+  
+        <!-- Pending Deliveries -->
+        <div class="col">
+          <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <span class="fs-8 fw-semibold text-muted">Pending Deliveries</span>
+              <div class="icon-circle bg-warning-subtle text-warning rounded-circle">
+                <i class="bi bi-truck fs-6"></i>
+              </div>
+            </div>
+            <h4 class="fw-extrabold text-dark m-0">{{ stats()?.pending_deliveries || 0 }}</h4>
+          </div>
+        </div>
+  
+        <!-- Active Customers -->
+        <div class="col">
+          <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <span class="fs-8 fw-semibold text-muted">Active Customers</span>
+              <div class="icon-circle bg-info-subtle text-info rounded-circle">
+                <i class="bi bi-people fs-6"></i>
+              </div>
+            </div>
+            <h4 class="fw-extrabold text-dark m-0">{{ stats()?.active_customers || 0 }}</h4>
+          </div>
+        </div>
+  
+        <!-- Low Stock Items -->
+        <div class="col">
+          <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <span class="fs-8 fw-semibold text-muted">Low Stock Items</span>
+              <div class="icon-circle bg-danger-subtle text-danger rounded-circle">
+                <i class="bi bi-exclamation-triangle fs-6"></i>
+              </div>
+            </div>
+            <h4 class="fw-extrabold text-dark m-0">{{ stats()?.low_stock_items || 0 }}</h4>
+          </div>
+        </div>
+  
+      </div>
+  
+      <!-- RECENT ORDERS OVERVIEW TABLE -->
+      <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+        <h6 class="fw-bold text-dark mb-3 fs-7">Recent Orders Overview</h6>
+  
+        <div class="table-responsive">
+          <table class="table table-hover align-middle fs-8 mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (order of (stats()?.recent_orders || []); track order.id) {
+                <tr>
+                  <td class="fw-bold">#{{ order.order_number || order.id }}</td>
+                  <td>{{ order.user?.name || order.customer_name || 'Guest' }}</td>
+                  <td class="fw-bold">₹{{ order.total_amount || order.grand_total }}</td>
+                  <td>
+                    <span class="badge rounded-pill px-2.5 py-1" 
+                          [ngClass]="{
+                            'bg-warning-subtle text-warning': order.status === 'Pending',
+                            'bg-info-subtle text-info': order.status === 'Packing' || order.status === 'Out for Delivery',
+                            'bg-success-subtle text-success': order.status === 'Delivered',
+                            'bg-danger-subtle text-danger': order.status === 'Cancelled'
+                          }">
+                      {{ order.status }}
+                    </span>
+                  </td>
+                  <td class="text-muted">{{ order.created_at }}</td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="5" class="text-center text-muted py-3">No recent orders found.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+  
+    }
+  
+  </div>

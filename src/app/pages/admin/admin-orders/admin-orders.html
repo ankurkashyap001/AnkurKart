@@ -1,0 +1,82 @@
+<div class="orders-management-wrapper">
+  
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <div>
+        <h4 class="fw-bold text-dark mb-1">Live Order Management</h4>
+        <p class="text-muted fs-8 mb-0">Filter and update live delivery statuses</p>
+      </div>
+    </div>
+  
+    <!-- FILTER PILLS -->
+    <div class="d-flex align-items-center gap-2 mb-4 overflow-x-auto pb-2">
+      @for (filter of ['All', 'Pending', 'Packing', 'Out for Delivery', 'Delivered', 'Cancelled']; track filter) {
+        <button 
+          type="button" 
+          class="btn btn-sm rounded-pill px-3 py-1.5 fs-8 fw-bold border text-nowrap"
+          [ngClass]="activeFilter() === filter ? 'btn-brand-green text-white' : 'btn-white text-dark'"
+          (click)="setFilter($any(filter))"
+        >
+          {{ filter }}
+        </button>
+      }
+    </div>
+  
+    <!-- ORDERS TABLE -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+      @if (isLoading()) {
+        <div class="text-center py-5">
+          <div class="spinner-border text-brand-green" role="status"></div>
+          <p class="text-muted fs-8 mt-2">Loading orders...</p>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-hover align-middle fs-8 mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Payment</th>
+                <th>Amount</th>
+                <th>Status Action</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (order of orders(); track order.id) {
+                <tr>
+                  <td class="fw-bold">#{{ order.order_number || order.id }}</td>
+                  <td>
+                    <strong class="d-block text-dark">{{ order.user?.name || order.delivery_address?.full_name || 'Customer' }}</strong>
+                    <small class="text-muted fs-8">{{ order.user?.phone || order.delivery_address?.phone || '' }}</small>
+                  </td>
+                  <td>{{ order.items?.length || 1 }} items</td>
+                  <td>
+                    <span class="badge bg-light text-dark border fs-8 fw-semibold">{{ order.payment_method || 'UPI' }}</span>
+                  </td>
+                  <td class="fw-bold text-dark">₹{{ order.total_amount || order.grand_total }}</td>
+                  <td style="min-width: 170px;">
+                    <select 
+                      class="form-select form-select-sm fs-8 fw-semibold rounded-pill shadow-none border"
+                      [value]="order.status"
+                      (change)="onStatusChange(order.id, $event)"
+                    >
+                      @for (statusOpt of statusOptions; track statusOpt) {
+                        <option [value]="statusOpt">{{ statusOpt }}</option>
+                      }
+                    </select>
+                  </td>
+                  <td class="text-muted">{{ order.created_at }}</td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="7" class="text-center text-muted py-4">No orders found matching this filter.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  
+  </div>

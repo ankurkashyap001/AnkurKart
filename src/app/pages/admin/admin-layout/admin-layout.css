@@ -1,0 +1,37 @@
+.admin-container {
+    min-height: 100vh;
+    background-color: #F8FAFC;
+  }
+  
+  .admin-sidebar {
+    width: 240px;
+    min-height: 100vh;
+    background-color: #0F172A !important;
+  }
+  
+  .brand-logo {
+    background-color: #FF5E00 !important;
+  }
+  
+  .nav-link {
+    color: #94A3B8 !important;
+    transition: all 0.2s ease;
+  }
+  
+  .nav-link:hover {
+    color: #FFFFFF !important;
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  .nav-link.active {
+    background-color: #00A651 !important;
+    color: #FFFFFF !important;
+    font-weight: 700;
+  }
+  
+  .bg-brand-orange {
+    background-color: #FF5E00 !important;
+  }
+  
+  .fs-8 { font-size: 0.75rem; }
+  .fs-7 { font-size: 0.85rem; }

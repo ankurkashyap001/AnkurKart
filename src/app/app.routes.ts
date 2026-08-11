@@ -8,11 +8,17 @@ import { InventoryList } from './components/inventory-list/inventory-list';
 import { AddItem } from './components/add-item/add-item';
 import { Counter } from './counter/counter';
 import { Computed } from './computed/computed';
+//admin
+import { AdminLayout } from './pages/admin/admin-layout/admin-layout';
+import { AdminDashboard } from './pages/admin/admin-dashboard/admin-dashboard';
+import { AdminOrders } from './pages/admin/admin-orders/admin-orders';
+import { adminGuard } from './guards/admin-guard';
 
 // Auth Guard Import
 import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
+  // User Facing Routes
   // Default Redirect
   { path: '', redirectTo: 'home', pathMatch: 'full' },
 
@@ -57,6 +63,24 @@ export const routes: Routes = [
   { path: 'add', component: AddItem },
   { path: 'counter', component: Counter },
   { path: 'computed', component: Computed },
+
+  //User Facing Routes ends here
+
+  // ADMIN PANEL PROTECTED ROUTE
+  {
+    path: 'admin',
+    component: AdminLayout,
+    canActivate: [adminGuard],
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: AdminDashboard },
+      { path: 'orders', component: AdminOrders },
+      // Placeholder routes for Products, Categories, Users
+      { path: 'products', component: AdminDashboard },
+      { path: 'categories', component: AdminDashboard },
+      { path: 'users', component: AdminDashboard }
+    ]
+  },
 
   // Wildcard Route
   { path: '**', redirectTo: 'home' }

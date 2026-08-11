@@ -72,7 +72,7 @@ export class CartService {
         } else if (activeCoupon && currentSubtotal === 0) {
           this.removeCoupon(false);
         }
-      }, { allowSignalWrites: true });
+      },);
     }
   }
 

@@ -1,0 +1,52 @@
+<div class="admin-container d-flex">
+  
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="admin-sidebar bg-dark text-white p-3 d-flex flex-column flex-shrink-0">
+      <div class="brand-box mb-4 px-2 d-flex align-items-center gap-2">
+        <div class="brand-logo bg-brand-orange text-white rounded-3 p-1.5 fw-bold fs-6">AK</div>
+        <div>
+          <h6 class="fw-bold text-white mb-0 fs-7">AnkurKart Admin</h6>
+          <small class="text-white-50 fs-8">Management Suite</small>
+        </div>
+      </div>
+  
+      <nav class="nav nav-pills flex-column gap-1.5 mb-auto">
+        <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link text-white-70 d-flex align-items-center gap-2.5 fs-8 py-2 px-3 rounded-3">
+          <i class="bi bi-speedometer2 fs-6"></i> Dashboard
+        </a>
+  
+        <a routerLink="/admin/orders" routerLinkActive="active" class="nav-link text-white-70 d-flex align-items-center justify-content-between fs-8 py-2 px-3 rounded-3">
+          <div class="d-flex align-items-center gap-2.5">
+            <i class="bi bi-box-seam fs-6"></i> Orders
+          </div>
+          @if (pendingOrdersCount() > 0) {
+            <span class="badge bg-brand-orange text-white rounded-pill px-2 py-0.5 fs-8">{{ pendingOrdersCount() }}</span>
+          }
+        </a>
+  
+        <a routerLink="/admin/products" routerLinkActive="active" class="nav-link text-white-70 d-flex align-items-center gap-2.5 fs-8 py-2 px-3 rounded-3">
+          <i class="bi bi-cart3 fs-6"></i> Products
+        </a>
+  
+        <a routerLink="/admin/categories" routerLinkActive="active" class="nav-link text-white-70 d-flex align-items-center gap-2.5 fs-8 py-2 px-3 rounded-3">
+          <i class="bi bi-tags fs-6"></i> Categories
+        </a>
+  
+        <a routerLink="/admin/users" routerLinkActive="active" class="nav-link text-white-70 d-flex align-items-center gap-2.5 fs-8 py-2 px-3 rounded-3">
+          <i class="bi bi-people fs-6"></i> Customers
+        </a>
+      </nav>
+  
+      <hr class="border-secondary opacity-25 my-3">
+  
+      <a routerLink="/" class="btn btn-outline-light btn-sm rounded-pill fs-8 fw-semibold w-100 py-1.5 d-flex align-items-center justify-content-center gap-2">
+        <i class="bi bi-shop"></i> Back to Store
+      </a>
+    </aside>
+  
+    <!-- MAIN CONTENT AREA -->
+    <main class="admin-content flex-grow-1 p-4 bg-light overflow-y-auto">
+      <router-outlet></router-outlet>
+    </main>
+  
+  </div>
