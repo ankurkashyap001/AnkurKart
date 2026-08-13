@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet, RouterLink } from '@angular/router';
+import { Component, signal, inject } from '@angular/core';
+import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { Counter } from './counter/counter';
 import { Computed } from './computed/computed';
 import { Cart } from './cart/cart';
@@ -16,18 +17,44 @@ import { OrderDetail } from './pages/order-detail/order-detail';
 import { AuthModal } from './components/auth-modal/auth-modal';
 import { GlobalLoader } from './components/global-loader/global-loader';
 import { ToastContainer } from './components/toast-container/toast-container';
-// import { Header } from './header/header';
-// import { Footer } from './footer/footer';
-// import { Sidebar } from './sidebar/sidebar';
-// import { Content } from './content/content';
-// import { Main } from './main/main';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, Counter, Computed, Cart, Login, Register, Footer, Navbar, Home, CartDrawer, Checkout, OrderDetail, GlobalLoader, ToastContainer, AuthModal, GlobalModal],
+  standalone: true,
+  imports: [
+    RouterOutlet, 
+    RouterLink, 
+    Counter, 
+    Computed, 
+    Cart, 
+    Login, 
+    Register, 
+    Footer, 
+    Navbar, 
+    Home, 
+    CartDrawer, 
+    Checkout, 
+    OrderDetail, 
+    GlobalLoader, 
+    ToastContainer, 
+    AuthModal, 
+    GlobalModal
+  ],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
+  private router = inject(Router);
+
+  isAdminRoute = signal<boolean>(false);
   protected readonly title = signal('ankur-kart');
+
+  constructor() {
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      // Set to true whenever URL starts with /admin
+      this.isAdminRoute.set(event.urlAfterRedirects.startsWith('/admin'));
+    });
+  }
 }

@@ -1,37 +1,340 @@
-.admin-container {
-    min-height: 100vh;
-    background-color: #F8FAFC;
-  }
-  
-  .admin-sidebar {
-    width: 240px;
-    min-height: 100vh;
-    background-color: #0F172A !important;
-  }
-  
-  .brand-logo {
-    background-color: #FF5E00 !important;
-  }
-  
-  .nav-link {
-    color: #94A3B8 !important;
-    transition: all 0.2s ease;
-  }
-  
-  .nav-link:hover {
-    color: #FFFFFF !important;
-    background-color: rgba(255, 255, 255, 0.05);
-  }
-  
-  .nav-link.active {
-    background-color: #00A651 !important;
-    color: #FFFFFF !important;
-    font-weight: 700;
-  }
-  
-  .bg-brand-orange {
-    background-color: #FF5E00 !important;
-  }
-  
-  .fs-8 { font-size: 0.75rem; }
-  .fs-7 { font-size: 0.85rem; }
+* {
+  box-sizing: border-box;
+}
+
+.admin-app-viewport {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: #f8fafc;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* NAVBAR STYLING */
+.admin-topbar {
+  height: 68px;
+  width: 100vw;
+  background-color: #ffffff;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  flex-shrink: 0;
+  z-index: 100;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.brand-box {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brand-logo {
+  font-weight: 800;
+  font-size: 1.35rem;
+  letter-spacing: -0.5px;
+}
+
+.text-green { color: #00a651; }
+.text-orange { color: #f97316; }
+
+.brand-tag {
+  font-size: 0.72rem;
+  color: #64748b;
+  font-weight: 600;
+  margin-top: 1px;
+}
+
+/* Location Badge */
+.deliver-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 9999px;
+  padding: 5px 14px;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.pin-icon-wrap {
+  color: #f97316;
+  font-size: 0.9rem;
+}
+
+.deliver-info {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+}
+
+.deliver-label {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.deliver-loc {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+/* Topbar Search */
+.topbar-search {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+}
+
+.topbar-search .search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.topbar-search input {
+  width: 100%;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 8px 16px 8px 42px;
+  font-size: 0.82rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.topbar-search input:focus {
+  border-color: #00a651;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0, 166, 81, 0.1);
+}
+
+/* Topbar Right */
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.topbar-icon-btn {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background-color: #f1f5f9;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: #ef4444;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffffff;
+}
+
+.admin-profile-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 6px;
+  cursor: pointer;
+}
+
+.profile-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: #00a651;
+  color: white;
+  font-weight: 700;
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.profile-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.profile-role {
+  font-size: 0.72rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* BODY CONTAINER */
+.admin-body-container {
+  display: flex;
+  width: 100vw;
+  height: calc(100vh - 68px);
+  overflow: hidden;
+}
+
+/* SIDEBAR STYLING */
+.admin-sidebar {
+  width: 240px;
+  background-color: #0f172a;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  flex-shrink: 0;
+}
+
+.sidebar-user-card {
+  background-color: #1e293b;
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.user-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: #00a651;
+  color: white;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.user-name {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.user-role {
+  color: #94a3b8;
+  font-size: 0.72rem;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.menu-item:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.menu-item.active {
+  background-color: #00a651 !important;
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+.sidebar-protip {
+  background-color: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+.protip-header {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.8rem;
+  margin-bottom: 2px;
+}
+
+.protip-title {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.78rem;
+}
+
+.protip-desc {
+  color: #94a3b8;
+  font-size: 0.72rem;
+}
+
+.btn-brand-green {
+  background-color: #00a651 !important;
+  color: white !important;
+  border: none;
+  font-size: 0.78rem;
+  border-radius: 8px;
+}
+
+/* MAIN VIEWPORT */
+.admin-main-viewport {
+  flex-grow: 1;
+  height: 100%;
+  overflow-y: auto;
+  padding: 24px;
+  background-color: #f8fafc;
+}

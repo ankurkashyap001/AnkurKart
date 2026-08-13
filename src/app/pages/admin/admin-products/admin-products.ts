@@ -18,6 +18,8 @@ export class AdminProducts implements OnInit {
   products = signal<any[]>([]);
   isLoading = signal<boolean>(true);
   searchQuery = signal<string>('');
+  selectedCategory = signal<string>('All Categories');
+  selectedStockStatus = signal<string>('All');
 
   // Modal State
   isModalOpen = signal<boolean>(false);
@@ -27,22 +29,37 @@ export class AdminProducts implements OnInit {
   // Form Data
   productForm = signal({
     name: '',
-    category: 'Groceries',
+    sku: '',
+    category: 'Dairy & Breakfast',
     price: 0,
     stock: 0,
-    unit: '1 kg',
+    unit: '1 L',
     image_url: '',
-    description: ''
+    status: 'Active'
   });
 
-  // Filtered products list computed
+  // Filtered computed list
   filteredProducts = computed(() => {
+    let list = this.products();
     const q = this.searchQuery().toLowerCase().trim();
-    if (!q) return this.products();
-    return this.products().filter(p => 
-      p.name?.toLowerCase().includes(q) || 
-      p.category?.toLowerCase().includes(q)
-    );
+    const cat = this.selectedCategory();
+    const stock = this.selectedStockStatus();
+
+    if (q) {
+      list = list.filter(p => p.name?.toLowerCase().includes(q) || p.sku?.toLowerCase().includes(q));
+    }
+    if (cat !== 'All Categories') {
+      list = list.filter(p => p.category === cat);
+    }
+    if (stock === 'In Stock') {
+      list = list.filter(p => (p.stock ?? 0) > 10);
+    } else if (stock === 'Low Stock') {
+      list = list.filter(p => (p.stock ?? 0) > 0 && (p.stock ?? 0) <= 10);
+    } else if (stock === 'Out of Stock') {
+      list = list.filter(p => (p.stock ?? 0) <= 0);
+    }
+
+    return list;
   });
 
   ngOnInit() {
@@ -59,7 +76,7 @@ export class AdminProducts implements OnInit {
       },
       error: (err: any) => {
         this.isLoading.set(false);
-        this.toastService.error(err.error?.message || 'Failed to fetch products.');
+        this.toastService.error(err.error?.message || 'Failed to load products');
       }
     });
   }
@@ -69,12 +86,13 @@ export class AdminProducts implements OnInit {
     this.selectedProductId.set(null);
     this.productForm.set({
       name: '',
-      category: 'Groceries',
+      sku: '',
+      category: 'Dairy & Breakfast',
       price: 0,
       stock: 0,
-      unit: '1 kg',
+      unit: '1 L',
       image_url: '',
-      description: ''
+      status: 'Active'
     });
     this.isModalOpen.set(true);
   }
@@ -84,12 +102,13 @@ export class AdminProducts implements OnInit {
     this.selectedProductId.set(product.id);
     this.productForm.set({
       name: product.name || '',
-      category: product.category || 'Groceries',
+      sku: product.sku || `SKU-${product.id}`,
+      category: product.category || 'General',
       price: product.price || 0,
       stock: product.stock || 0,
       unit: product.unit || '1 unit',
       image_url: product.image_url || '',
-      description: product.description || ''
+      status: product.status || 'Active'
     });
     this.isModalOpen.set(true);
   }
@@ -101,7 +120,7 @@ export class AdminProducts implements OnInit {
   saveProduct() {
     const data = this.productForm();
     if (!data.name || data.price <= 0) {
-      this.toastService.error('Please enter a valid product name and price.');
+      this.toastService.error('Please enter valid product details');
       return;
     }
 
@@ -112,34 +131,28 @@ export class AdminProducts implements OnInit {
           this.closeModal();
           this.loadProducts();
         },
-        error: (err: any) => {
-          this.toastService.error(err.error?.message || 'Failed to update product.');
-        }
+        error: () => this.toastService.error('Failed to update product')
       });
     } else {
       this.adminService.createProduct(data).subscribe({
         next: () => {
-          this.toastService.success('New product added successfully!');
+          this.toastService.success('Product added successfully!');
           this.closeModal();
           this.loadProducts();
         },
-        error: (err: any) => {
-          this.toastService.error(err.error?.message || 'Failed to add product.');
-        }
+        error: () => this.toastService.error('Failed to add product')
       });
     }
   }
 
   deleteProduct(id: number | string, name: string) {
-    if (confirm(`Are you sure you want to delete "${name}"?`)) {
+    if (confirm(`Delete "${name}"?`)) {
       this.adminService.deleteProduct(id).subscribe({
         next: () => {
-          this.toastService.success('Product deleted.');
+          this.toastService.success('Product deleted');
           this.loadProducts();
         },
-        error: (err: any) => {
-          this.toastService.error(err.error?.message || 'Failed to delete product.');
-        }
+        error: () => this.toastService.error('Failed to delete product')
       });
     }
   }
