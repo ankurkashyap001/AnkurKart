@@ -13,67 +13,46 @@
 
   <!-- 5 OVERVIEW STAT CARDS -->
   <div class="stats-grid">
-    
-    <!-- Total Products -->
     <div class="stat-card">
-      <div class="stat-icon icon-green">
-        <i class="bi bi-bag"></i>
-      </div>
+      <div class="stat-icon icon-green"><i class="bi bi-bag"></i></div>
       <div class="stat-data">
         <span class="stat-label">Total Products</span>
         <h5 class="stat-value">1,248</h5>
         <small class="stat-trend text-success"><i class="bi bi-arrow-up"></i> 18.5% this month</small>
       </div>
     </div>
-
-    <!-- In Stock -->
     <div class="stat-card">
-      <div class="stat-icon icon-orange">
-        <i class="bi bi-box-seam"></i>
-      </div>
+      <div class="stat-icon icon-orange"><i class="bi bi-box-seam"></i></div>
       <div class="stat-data">
         <span class="stat-label">In Stock</span>
         <h5 class="stat-value">982</h5>
         <small class="stat-sub">78.7% of total</small>
       </div>
     </div>
-
-    <!-- Low Stock -->
     <div class="stat-card">
-      <div class="stat-icon icon-red">
-        <i class="bi bi-exclamation-triangle"></i>
-      </div>
+      <div class="stat-icon icon-red"><i class="bi bi-exclamation-triangle"></i></div>
       <div class="stat-data">
         <span class="stat-label">Low Stock</span>
         <h5 class="stat-value">56</h5>
         <small class="stat-trend text-danger">Needs attention</small>
       </div>
     </div>
-
-    <!-- Out of Stock -->
     <div class="stat-card">
-      <div class="stat-icon icon-blue">
-        <i class="bi bi-eye"></i>
-      </div>
+      <div class="stat-icon icon-blue"><i class="bi bi-eye"></i></div>
       <div class="stat-data">
         <span class="stat-label">Out of Stock</span>
         <h5 class="stat-value">32</h5>
         <small class="stat-sub text-primary">2.6% of total</small>
       </div>
     </div>
-
-    <!-- Avg Price -->
     <div class="stat-card">
-      <div class="stat-icon icon-purple">
-        <i class="bi bi-tag"></i>
-      </div>
+      <div class="stat-icon icon-purple"><i class="bi bi-tag"></i></div>
       <div class="stat-data">
         <span class="stat-label">Avg. Price</span>
         <h5 class="stat-value">₹256</h5>
         <small class="stat-sub">Across all products</small>
       </div>
     </div>
-
   </div>
 
   <!-- FILTERS BAR CARD -->
@@ -105,9 +84,7 @@
       <option value="Out of Stock">Out of Stock</option>
     </select>
 
-    <button class="btn btn-filter">
-      <i class="bi bi-sliders me-1"></i> Filters
-    </button>
+    <button class="btn btn-filter"><i class="bi bi-sliders me-1"></i> Filters</button>
   </div>
 
   <!-- PRODUCTS TABLE CARD -->
@@ -137,115 +114,76 @@
               <tr>
                 <td class="ps-3"><input type="checkbox" class="form-check-input" /></td>
                 
-                <!-- Product Image & Title -->
                 <td>
                   <div class="product-cell">
                     <img 
-                      [src]="product.image_url || 'https://placehold.co/100x100?text=Item'" 
-                      [alt]="product.name || 'Item'"
+                      [src]="product.image_url || product.primary_image?.url || 'https://placehold.co/100x100?text=Item'" 
+                      [alt]="product.title || product.name"
                       class="product-img"
                       onerror="this.src='https://placehold.co/100x100?text=Item'"
                     />
                     <div class="product-meta">
-                      <strong class="product-name">{{ product.name || product.title || ('Item #' + product.id) }}</strong>
-                      <span class="product-sku">SKU: {{ product.sku || ('AMUL-' + product.id) }}</span>
+                      <strong class="product-name">{{ product.title || product.name || ('Item #' + product.id) }}</strong>
+                      <span class="product-sku">SKU: {{ product.sku || ('SKU-' + product.id) }}</span>
                     </div>
                   </div>
                 </td>
 
-                <!-- Category Pill -->
                 <td>
-                  <span class="category-badge"
-                        [ngClass]="{
-                          'badge-green': (product.category || 'Dairy & Breakfast').includes('Dairy') || (product.category || '').includes('Fruits'),
-                          'badge-blue': (product.category || '').includes('Drinks'),
-                          'badge-yellow': (product.category || '').includes('Snacks'),
-                          'badge-purple': (product.category || '').includes('Grocery'),
-                          'badge-red': (product.category || '').includes('Personal')
-                        }">
-                    {{ product.category || 'Dairy & Breakfast' }}
+                  <span class="category-badge badge-green">
+                    {{ product.categories?.[0]?.name || product.category || 'General' }}
                   </span>
                 </td>
 
-                <!-- Price -->
-                <td class="product-price">₹{{ product.price || 0 }}</td>
+                <td class="product-price">
+                  ₹{{ product.price }}
+                  @if (product.sale_price) {
+                    <small class="d-block text-muted text-decoration-line-through fs-8">₹{{ product.sale_price }}</small>
+                  }
+                </td>
 
-                <!-- Stock Quantity & Text -->
                 <td>
                   <div class="stock-cell">
                     <strong class="stock-num" [ngClass]="{
-                      'text-success': (product.stock ?? 0) > 10,
-                      'text-warning': (product.stock ?? 0) > 0 && (product.stock ?? 0) <= 10,
-                      'text-danger': (product.stock ?? 0) <= 0
+                      'text-success': (product.stock_quantity ?? product.stock ?? 0) > 10,
+                      'text-warning': (product.stock_quantity ?? product.stock ?? 0) > 0 && (product.stock_quantity ?? product.stock ?? 0) <= 10,
+                      'text-danger': (product.stock_quantity ?? product.stock ?? 0) <= 0
                     }">
-                      {{ product.stock ?? 0 }}
+                      {{ product.stock_quantity ?? product.stock ?? 0 }}
                     </strong>
                     <span class="stock-text" [ngClass]="{
-                      'text-success': (product.stock ?? 0) > 10,
-                      'text-warning': (product.stock ?? 0) > 0 && (product.stock ?? 0) <= 10,
-                      'text-danger': (product.stock ?? 0) <= 0
+                      'text-success': (product.stock_quantity ?? product.stock ?? 0) > 10,
+                      'text-warning': (product.stock_quantity ?? product.stock ?? 0) > 0 && (product.stock_quantity ?? product.stock ?? 0) <= 10,
+                      'text-danger': (product.stock_quantity ?? product.stock ?? 0) <= 0
                     }">
-                      {{ (product.stock ?? 0) > 10 ? 'In Stock' : ((product.stock ?? 0) > 0 ? 'Low Stock' : 'Out of Stock') }}
+                      {{ (product.stock_quantity ?? product.stock ?? 0) > 10 ? 'In Stock' : ((product.stock_quantity ?? product.stock ?? 0) > 0 ? 'Low Stock' : 'Out of Stock') }}
                     </span>
                   </div>
                 </td>
 
-                <!-- Active Status -->
                 <td>
-                  <span class="status-badge" [ngClass]="product.status === 'Inactive' ? 'status-inactive' : 'status-active'">
-                    ● {{ product.status || 'Active' }}
+                  <span class="status-badge" [ngClass]="product.is_active === false ? 'status-inactive' : 'status-active'">
+                    ● {{ product.is_active === false ? 'Inactive' : 'Active' }}
                   </span>
                 </td>
 
-                <!-- Date & Time -->
                 <td class="date-cell">
                   <span class="date-main">08 May 2026</span>
                   <span class="date-sub">10:30 AM</span>
                 </td>
 
-                <!-- Action Buttons -->
                 <td class="text-end pe-3">
                   <div class="action-buttons">
-                    <button (click)="openEditModal(product)" class="btn-action" title="Edit">
-                      <i class="bi bi-pencil"></i>
-                    </button>
-                    <button (click)="deleteProduct(product.id, product.name)" class="btn-action text-danger" title="Delete">
-                      <i class="bi bi-trash"></i>
-                    </button>
+                    <button (click)="openEditModal(product)" class="btn-action" title="Edit"><i class="bi bi-pencil"></i></button>
+                    <button (click)="deleteProduct(product.id, product.title || product.name)" class="btn-action text-danger" title="Delete"><i class="bi bi-trash"></i></button>
                   </div>
                 </td>
               </tr>
             } @empty {
-              <tr>
-                <td colspan="8" class="text-center text-muted py-5">No products found.</td>
-              </tr>
+              <tr><td colspan="8" class="text-center text-muted py-5">No products found.</td></tr>
             }
           </tbody>
         </table>
-      </div>
-
-      <!-- PAGINATION FOOTER -->
-      <div class="pagination-footer">
-        <div>Showing 1 to 10 of 1,248 products</div>
-        <div class="pagination-controls">
-          <div class="rows-picker">
-            <span>Rows per page:</span>
-            <select class="rows-select">
-              <option>10</option>
-              <option>25</option>
-              <option>50</option>
-            </select>
-          </div>
-          <div class="page-nums">
-            <button class="page-btn"><i class="bi bi-chevron-left"></i></button>
-            <button class="page-btn page-btn-active">1</button>
-            <button class="page-btn">2</button>
-            <button class="page-btn">3</button>
-            <span>...</span>
-            <button class="page-btn">125</button>
-            <button class="page-btn"><i class="bi bi-chevron-right"></i></button>
-          </div>
-        </div>
       </div>
     }
   </div>
@@ -267,51 +205,66 @@
         </div>
 
         <div class="modal-body fs-8 pt-3">
+          <!-- Inside ADD / EDIT MODAL Form -->
           <form (ngSubmit)="saveProduct()">
             
             <div class="mb-3">
-              <label class="form-label fw-semibold text-muted mb-1">Product Name</label>
-              <input type="text" class="form-control form-control-sm rounded-3 shadow-none py-2" placeholder="e.g. Amul Gold Full Cream Milk 1L"
-                     [ngModel]="productForm().name" (ngModelChange)="productForm().name = $event" name="name" required />
+              <label class="form-label fw-semibold text-muted mb-1">Title</label>
+              <input type="text" class="form-control form-control-sm rounded-3 shadow-none py-2" placeholder="e.g. Macbook Pro"
+                    [ngModel]="productForm().title" (ngModelChange)="productForm().title = $event" name="title" required />
             </div>
 
-            <div class="row g-2 mb-3">
-              <div class="col-6">
-                <label class="form-label fw-semibold text-muted mb-1">SKU</label>
-                <input type="text" class="form-control form-control-sm rounded-3 shadow-none py-2" placeholder="AMUL-001"
-                       [ngModel]="productForm().sku" (ngModelChange)="productForm().sku = $event" name="sku" />
-              </div>
-              <div class="col-6">
-                <label class="form-label fw-semibold text-muted mb-1">Category</label>
-                <select class="form-select form-select-sm rounded-3 shadow-none py-2"
-                        [ngModel]="productForm().category" (ngModelChange)="productForm().category = $event" name="category">
-                  <option>Dairy & Breakfast</option>
-                  <option>Drinks</option>
-                  <option>Snacks</option>
-                  <option>Grocery & Staples</option>
-                  <option>Fruits & Vegetables</option>
-                  <option>Personal Care</option>
-                </select>
-              </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold text-muted mb-1">Description</label>
+              <textarea class="form-control form-control-sm rounded-3 shadow-none py-2" rows="2" placeholder="Enter product description..."
+                        [ngModel]="productForm().description" (ngModelChange)="productForm().description = $event" name="description" required></textarea>
             </div>
 
             <div class="row g-2 mb-3">
               <div class="col-6">
                 <label class="form-label fw-semibold text-muted mb-1">Price (₹)</label>
-                <input type="number" class="form-control form-control-sm rounded-3 shadow-none py-2" placeholder="64"
-                       [ngModel]="productForm().price" (ngModelChange)="productForm().price = $event" name="price" min="1" required />
+                <input type="number" class="form-control form-control-sm rounded-3 shadow-none py-2" placeholder="110000"
+                      [ngModel]="productForm().price" (ngModelChange)="productForm().price = $event" name="price" min="0" required />
               </div>
               <div class="col-6">
-                <label class="form-label fw-semibold text-muted mb-1">Stock Qty</label>
-                <input type="number" class="form-control form-control-sm rounded-3 shadow-none py-2" placeholder="120"
-                       [ngModel]="productForm().stock" (ngModelChange)="productForm().stock = $event" name="stock" min="0" required />
+                <label class="form-label fw-semibold text-muted mb-1">Sale Price (₹)</label>
+                <input type="number" class="form-control form-control-sm rounded-3 shadow-none py-2" placeholder="100000"
+                      [ngModel]="productForm().sale_price" (ngModelChange)="productForm().sale_price = $event" name="sale_price" min="0" />
+              </div>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label fw-semibold text-muted mb-1">Stock Quantity</label>
+                <input type="number" class="form-control form-control-sm rounded-3 shadow-none py-2" placeholder="20"
+                      [ngModel]="productForm().stock_quantity" (ngModelChange)="productForm().stock_quantity = $event" name="stock_quantity" min="0" required />
+              </div>
+              <div class="col-6">
+                <label class="form-label fw-semibold text-muted mb-1">Category</label>
+                <select class="form-select form-select-sm rounded-3 shadow-none py-2"
+                        [ngModel]="productForm().category_id" (ngModelChange)="productForm().category_id = $event" name="category_id">
+                  <option [ngValue]="1">Dairy & Breakfast</option>
+                  <option [ngValue]="2">Drinks & Beverages</option>
+                  <option [ngValue]="3">Snacks & Munchies</option>
+                  <option [ngValue]="4">Grocery & Staples</option>
+                  <option [ngValue]="5">Personal Care & Electronics</option>
+                </select>
               </div>
             </div>
 
             <div class="mb-3">
               <label class="form-label fw-semibold text-muted mb-1">Image URL</label>
               <input type="text" class="form-control form-control-sm rounded-3 shadow-none py-2" placeholder="https://..."
-                     [ngModel]="productForm().image_url" (ngModelChange)="productForm().image_url = $event" name="image_url" />
+                    [ngModel]="productForm().image_url" (ngModelChange)="productForm().image_url = $event" name="image_url" required />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold text-muted mb-1">Status</label>
+              <select class="form-select form-select-sm rounded-3 shadow-none py-2"
+                      [ngModel]="productForm().is_active" (ngModelChange)="productForm().is_active = $event" name="is_active">
+                <option [ngValue]="true">Active</option>
+                <option [ngValue]="false">Inactive</option>
+              </select>
             </div>
 
             <div class="d-flex justify-content-end gap-2 mt-4 pt-2">

@@ -32,9 +32,23 @@ export class AdminOrders implements OnInit {
     this.loadOrders();
   }
 
+  // 🔴 Helper: Maps UI status string to exact Laravel snake_case validation rules
+  private mapStatusToApi(status: string): string {
+    const statusMap: Record<string, string> = {
+      'Pending': 'placed',
+      'Placed': 'placed',
+      'Packing': 'packing',
+      'Out for Delivery': 'out_for_delivery',
+      'Delivered': 'delivered',
+      'Cancelled': 'cancelled'
+    };
+    return statusMap[status] || status.toLowerCase().replace(/\s+/g, '_');
+  }
+
   loadOrders() {
     this.isLoading.set(true);
-    const filterValue = this.activeFilter().toLowerCase();
+    const rawFilter = this.activeFilter();
+    const filterValue = rawFilter === 'All' ? 'all' : this.mapStatusToApi(rawFilter);
 
     this.adminService.getOrders(filterValue).subscribe({
       next: (res: any) => {
@@ -49,13 +63,24 @@ export class AdminOrders implements OnInit {
     });
   }
 
-  onStatusChange(orderId: number | string, event: Event) {
+  onStatusChange(order: any, event: Event) {
     const target = event.target as HTMLSelectElement;
-    const newStatus = target.value;
+    const selectedUiStatus = target.value;
 
-    this.adminService.updateOrderStatus(orderId, newStatus).subscribe({
+    const numericId = Number(order.order_id || order.id);
+
+    if (!numericId || isNaN(numericId)) {
+      this.toastService.error('Invalid Order ID format');
+      this.loadOrders();
+      return;
+    }
+
+    // 🔴 Converts UI string (e.g., "Out for Delivery") -> "out_for_delivery"
+    const apiStatus = this.mapStatusToApi(selectedUiStatus);
+
+    this.adminService.updateOrderStatus(numericId, apiStatus).subscribe({
       next: () => {
-        this.toastService.success(`Order status updated to ${newStatus}`);
+        this.toastService.success(`Order #${order.order_number || numericId} updated to ${selectedUiStatus}`);
         this.loadOrders();
       },
       error: (err: any) => {
