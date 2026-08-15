@@ -2,13 +2,13 @@
 
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { CategoryService } from '../../services/category.service';
 import { ProductService } from '../../services/product.service';
+import { CartService } from '../../services/cart.service';
+import { WishlistService } from '../../services/wishlist.service';
 import { SalesCategory } from '../../models/category.model';
 import { Product } from '../../models/product.model';
-import { CartService } from '../../services/cart.service';
-import { RouterLink } from '@angular/router';
-import { WishlistService } from '../../services/wishlist.service';
 
 @Component({
   selector: 'app-home',
@@ -20,14 +20,13 @@ import { WishlistService } from '../../services/wishlist.service';
 export class Home implements OnInit {
   private categoryService = inject(CategoryService);
   private productService = inject(ProductService);
-  // CartService Inject yahan karein
-  cartService = inject(CartService);
-  // Wishlist
+  public cartService = inject(CartService);
   public wishlistService = inject(WishlistService);
+  
   Math = Math;
 
   // Category Signals
-  categories = signal<SalesCategory[]>([]);
+  categories = signal<any[]>([]);
   isCategoriesLoading = signal<boolean>(true);
   categoriesError = signal<string | null>(null);
 
@@ -37,8 +36,12 @@ export class Home implements OnInit {
   productsError = signal<string | null>(null);
 
   // Fallback image path
-  // defaultImage = 'assets/images/category-placeholder.png';
   defaultImage = 'https://placehold.co/150x150/eef2ff/6f42c1?text=AnkurCart';
+
+  // Soft pastel background palette for Quick-Commerce category icons
+  private bgColors = [
+    '#EBFBF0', '#FFF5E5', '#F1F5FD', '#FFF0F0', '#F3E8FF', '#E6FFFA', '#FFF9E6'
+  ];
 
   ngOnInit(): void {
     this.fetchCategories();
@@ -50,7 +53,9 @@ export class Home implements OnInit {
     this.categoriesError.set(null);
 
     this.categoryService.getCategories().subscribe({
-      next: (data: SalesCategory[]) => {
+      next: (res: any) => {
+        // Handles both direct array and wrapped response structures safely
+        const data = Array.isArray(res) ? res : (res?.data || []);
         this.categories.set(data);
         this.isCategoriesLoading.set(false);
       },
@@ -59,12 +64,6 @@ export class Home implements OnInit {
         this.isCategoriesLoading.set(false);
       }
     });
-  }
-
-  getCartQuantity(productId: number): number {
-    const cartItems = this.cartService.cart()?.items || [];
-    const item = cartItems.find((i: any) => i.product_id === productId);
-    return item ? item.quantity : 0;
   }
 
   fetchProducts(): void {
@@ -81,6 +80,16 @@ export class Home implements OnInit {
         this.isProductsLoading.set(false);
       }
     });
+  }
+
+  getBgColor(index: number): string {
+    return this.bgColors[index % this.bgColors.length];
+  }
+
+  getCartQuantity(productId: number): number {
+    const cartItems = this.cartService.cart()?.items || [];
+    const item = cartItems.find((i: any) => i.product_id === productId);
+    return item ? item.quantity : 0;
   }
 
   onImageError(event: Event): void {
