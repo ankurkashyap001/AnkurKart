@@ -17,6 +17,7 @@ import { AdminProducts } from './pages/admin/admin-products/admin-products';
 
 // Auth Guard Import
 import { authGuard } from './guards/auth-guard';
+import { AdminCategoryForm } from './pages/admin/admin-categories-form/admin-categories-form';
 
 
 export const routes: Routes = [
@@ -79,7 +80,7 @@ export const routes: Routes = [
       { path: 'orders', component: AdminOrders },
       // Placeholder routes for Products, Categories, Users
       { path: 'products', component: AdminProducts }, // 👈 Updated here
-      { path: 'categories', component: AdminDashboard },
+      { path: 'categories', component: AdminCategoryForm },
       { path: 'users', component: AdminDashboard }
     ]
   },
