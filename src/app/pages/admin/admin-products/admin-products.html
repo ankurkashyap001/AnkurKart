@@ -17,7 +17,7 @@
       <div class="stat-icon icon-green"><i class="bi bi-bag"></i></div>
       <div class="stat-data">
         <span class="stat-label">Total Products</span>
-        <h5 class="stat-value">{{ products().length || 1248 }}</h5>
+        <h5 class="stat-value">{{ products().length }}</h5>
         <small class="stat-trend text-success"><i class="bi bi-arrow-up"></i> 18.5% this month</small>
       </div>
     </div>
@@ -67,14 +67,12 @@
       />
     </div>
 
+    <!-- Dynamic Category Filter -->
     <select class="filter-select" [ngModel]="selectedCategory()" (ngModelChange)="selectedCategory.set($event)">
-      <option>All Categories</option>
-      <option>Dairy & Breakfast</option>
-      <option>Drinks & Beverages</option>
-      <option>Snacks & Munchies</option>
-      <option>Grocery & Staples</option>
-      <option>Fruits & Vegetables</option>
-      <option>Personal Care</option>
+      <option value="All Categories">All Categories</option>
+      @for (cat of categories(); track cat.id) {
+        <option [value]="cat.name">{{ cat.name }}</option>
+      }
     </select>
 
     <select class="filter-select" [ngModel]="selectedStockStatus()" (ngModelChange)="selectedStockStatus.set($event)">
@@ -206,7 +204,7 @@
         <div class="modal-body fs-8 pt-2">
           <form (ngSubmit)="saveProduct()">
             
-            <!-- IMAGE PICKER WITH LIVE PREVIEW -->
+            <!-- IMAGE PICKER WITH LIVE PREVIEW (SUPPORT FOR AVIF/WEBP/PNG/JPG) -->
             <div class="mb-3">
               <label class="form-label fw-semibold text-muted mb-1">Product Image</label>
               @if (previewUrl()) {
@@ -220,7 +218,7 @@
                 <label class="upload-dropzone d-flex flex-column align-items-center justify-content-center rounded-4 p-3 text-center cursor-pointer">
                   <i class="bi bi-cloud-arrow-up fs-3 text-brand-green mb-1"></i>
                   <span class="fw-bold text-dark fs-8">Upload product photo</span>
-                  <span class="text-muted fs-9">PNG, JPG, WEBP, SVG (Max 2MB)</span>
+                  <span class="text-muted fs-9">PNG, JPG, WEBP, SVG, AVIF (Max 2MB)</span>
                   <input type="file" (change)="onFileSelected($event)" accept="image/*" class="d-none" />
                 </label>
               }
@@ -254,22 +252,22 @@
               </div>
             </div>
 
-            <!-- STOCK & CATEGORY -->
+            <!-- STOCK & DYNAMIC CATEGORY DROPDOWN -->
             <div class="row g-2 mb-3">
               <div class="col-6">
                 <label class="form-label fw-semibold text-muted mb-1">Stock Quantity <span class="text-danger">*</span></label>
                 <input type="number" class="form-control form-control-sm rounded-3 shadow-none py-2" placeholder="20"
                       [ngModel]="productForm().stock_quantity" (ngModelChange)="productForm().stock_quantity = $event" name="stock_quantity" min="0" required />
               </div>
+              
               <div class="col-6">
-                <label class="form-label fw-semibold text-muted mb-1">Category</label>
+                <label class="form-label fw-semibold text-muted mb-1">Category <span class="text-danger">*</span></label>
                 <select class="form-select form-select-sm rounded-3 shadow-none py-2"
-                        [ngModel]="productForm().category_id" (ngModelChange)="productForm().category_id = $event" name="category_id">
-                  <option [ngValue]="1">Dairy & Breakfast</option>
-                  <option [ngValue]="2">Drinks & Beverages</option>
-                  <option [ngValue]="3">Snacks & Munchies</option>
-                  <option [ngValue]="4">Grocery & Staples</option>
-                  <option [ngValue]="5">Personal Care & Electronics</option>
+                        [ngModel]="productForm().category_id" (ngModelChange)="productForm().category_id = $event" name="category_id" required>
+                  <option [ngValue]="null" disabled>Select Category</option>
+                  @for (cat of categories(); track cat.id) {
+                    <option [ngValue]="cat.id">{{ cat.name }}</option>
+                  }
                 </select>
               </div>
             </div>

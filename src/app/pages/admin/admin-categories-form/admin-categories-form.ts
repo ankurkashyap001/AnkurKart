@@ -132,19 +132,27 @@ export class AdminCategoryForm implements OnInit {
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
-
+  
     const file = input.files[0];
-    const allowed = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/svg+xml'];
+    const allowed = [
+      'image/png',
+      'image/jpeg',
+      'image/jpg',
+      'image/webp',
+      'image/svg+xml',
+      'image/avif'
+    ];
+  
     if (!allowed.includes(file.type)) {
-      this.toastService.error('Only JPG, PNG, WEBP, and SVG formats are allowed.');
+      this.toastService.error('Only JPG, PNG, WEBP, SVG, and AVIF formats are allowed.');
       return;
     }
-
+  
     if (file.size > 2 * 1024 * 1024) {
       this.toastService.error('Image size must be less than 2MB');
       return;
     }
-
+  
     this.selectedFile = file;
     const reader = new FileReader();
     reader.onload = () => this.previewUrl.set(reader.result as string);

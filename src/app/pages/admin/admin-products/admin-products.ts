@@ -16,6 +16,7 @@ export class AdminProducts implements OnInit {
   private toastService = inject(ToastService);
 
   products = signal<any[]>([]);
+  categories = signal<any[]>([]);
   isLoading = signal<boolean>(true);
   searchQuery = signal<string>('');
   selectedCategory = signal<string>('All Categories');
@@ -39,7 +40,7 @@ export class AdminProducts implements OnInit {
     sale_price: null as number | null,
     stock_quantity: 0,
     is_active: true,
-    category_id: 1
+    category_id: null as number | null
   });
 
   // Filtered computed list
@@ -56,7 +57,10 @@ export class AdminProducts implements OnInit {
       );
     }
     if (cat !== 'All Categories') {
-      list = list.filter(p => p.category === cat);
+      list = list.filter(p => {
+        const prodCat = p.categories?.[0]?.name || p.category?.name || p.category;
+        return prodCat === cat;
+      });
     }
     if (stock === 'In Stock') {
       list = list.filter(p => (p.stock_quantity ?? p.stock ?? 0) > 10);
@@ -74,6 +78,23 @@ export class AdminProducts implements OnInit {
 
   ngOnInit(): void {
     this.loadProducts();
+    this.loadCategories();
+  }
+
+  loadCategories(): void {
+    this.adminService.getCategories().subscribe({
+      next: (res: any) => {
+        const raw = res?.data?.sales_category || res?.data || (Array.isArray(res) ? res : []);
+        const list = raw.map((item: any) => ({
+          id: Number(item.id || item.category_id),
+          name: item.name || item.category_name
+        }));
+        this.categories.set(list);
+      },
+      error: (err: any) => {
+        console.error('Failed to load categories:', err);
+      }
+    });
   }
 
   loadProducts(): void {
@@ -96,6 +117,9 @@ export class AdminProducts implements OnInit {
     this.selectedProductId.set(null);
     this.selectedFile = null;
     this.previewUrl.set(null);
+
+    const defaultCatId = this.categories().length > 0 ? this.categories()[0].id : null;
+
     this.productForm.set({
       title: '',
       description: '',
@@ -103,7 +127,7 @@ export class AdminProducts implements OnInit {
       sale_price: null,
       stock_quantity: 0,
       is_active: true,
-      category_id: 1
+      category_id: defaultCatId
     });
     this.isModalOpen.set(true);
   }
@@ -113,12 +137,17 @@ export class AdminProducts implements OnInit {
     this.selectedProductId.set(product.id);
     this.selectedFile = null;
     
-    // Existing image preview fallback
     this.previewUrl.set(
       product.image_url || 
       product.primary_image?.url || 
       product.primary_image || 
       null
+    );
+
+    const prodCatId = Number(
+      product.categories?.[0]?.id || 
+      product.category_id || 
+      (this.categories().length > 0 ? this.categories()[0].id : null)
     );
 
     this.productForm.set({
@@ -128,7 +157,7 @@ export class AdminProducts implements OnInit {
       sale_price: product.sale_price || null,
       stock_quantity: product.stock_quantity ?? product.stock ?? 0,
       is_active: product.is_active ?? true,
-      category_id: product.categories?.[0]?.id || product.category_id || 1
+      category_id: prodCatId
     });
     this.isModalOpen.set(true);
   }
@@ -142,23 +171,26 @@ export class AdminProducts implements OnInit {
     if (!input.files || input.files.length === 0) return;
 
     const file = input.files[0];
+    const allowedTypes = [
+      'image/png',
+      'image/jpeg',
+      'image/jpg',
+      'image/webp',
+      'image/svg+xml',
+      'image/avif'
+    ];
 
-    // Allowed image formats
-    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/svg+xml'];
     if (!allowedTypes.includes(file.type)) {
-      this.toastService.error('Only JPG, PNG, WEBP, and SVG formats are allowed.');
+      this.toastService.error('Only JPG, PNG, WEBP, SVG, and AVIF formats are allowed.');
       return;
     }
 
-    // Max 2MB file size constraint
     if (file.size > 2 * 1024 * 1024) {
       this.toastService.error('Image size must be less than 2MB');
       return;
     }
 
     this.selectedFile = file;
-
-    // Instant local preview
     const reader = new FileReader();
     reader.onload = () => {
       this.previewUrl.set(reader.result as string);
@@ -179,15 +211,19 @@ export class AdminProducts implements OnInit {
       return;
     }
 
+    if (!data.category_id) {
+      this.toastService.error('Please select a category');
+      return;
+    }
+
     this.isSubmitting.set(true);
 
-    // Build FormData for multipart API compatibility
     const formData = new FormData();
     formData.append('title', data.title.trim());
     formData.append('description', data.description.trim() || data.title.trim());
     formData.append('price', String(Number(data.price)));
     
-    if (data.sale_price) {
+    if (data.sale_price !== null && data.sale_price !== undefined) {
       formData.append('sale_price', String(Number(data.sale_price)));
     }
     
@@ -196,9 +232,8 @@ export class AdminProducts implements OnInit {
     formData.append('category_ids[]', String(Number(data.category_id)));
     formData.append('is_active', data.is_active ? '1' : '0');
 
-    // Attach image binary if selected
-    if (this.selectedFile) {
-      formData.append('image', this.selectedFile);
+    if (this.selectedFile instanceof File) {
+      formData.append('image', this.selectedFile, this.selectedFile.name);
     }
 
     const productId = this.selectedProductId();
