@@ -2,12 +2,11 @@
 
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { CategoryService } from '../../services/category.service';
 import { ProductService } from '../../services/product.service';
-import { SalesCategory } from '../../models/category.model';
 import { Product } from '../../models/product.model';
 import { CartService } from '../../services/cart.service';
-import { RouterLink } from '@angular/router';
 import { WishlistService } from '../../services/wishlist.service';
 
 @Component({
@@ -20,14 +19,13 @@ import { WishlistService } from '../../services/wishlist.service';
 export class Home implements OnInit {
   private categoryService = inject(CategoryService);
   private productService = inject(ProductService);
-  // CartService Inject yahan karein
-  cartService = inject(CartService);
-  // Wishlist
+  public cartService = inject(CartService);
   public wishlistService = inject(WishlistService);
+  
   Math = Math;
 
-  // Category Signals
-  categories = signal<SalesCategory[]>([]);
+  // 🔴 Key Fix: Typed as any[] to support both legacy and new category response structures
+  categories = signal<any[]>([]);
   isCategoriesLoading = signal<boolean>(true);
   categoriesError = signal<string | null>(null);
 
@@ -37,7 +35,6 @@ export class Home implements OnInit {
   productsError = signal<string | null>(null);
 
   // Fallback image path
-  // defaultImage = 'assets/images/category-placeholder.png';
   defaultImage = 'https://placehold.co/150x150/eef2ff/6f42c1?text=AnkurCart';
 
   ngOnInit(): void {
@@ -50,8 +47,9 @@ export class Home implements OnInit {
     this.categoriesError.set(null);
 
     this.categoryService.getCategories().subscribe({
-      next: (data: SalesCategory[]) => {
-        this.categories.set(data);
+      next: (data: any) => {
+        const list = Array.isArray(data) ? data : (data?.sales_category || data?.data || []);
+        this.categories.set(list);
         this.isCategoriesLoading.set(false);
       },
       error: (err: Error) => {

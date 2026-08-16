@@ -1,74 +1,244 @@
-<div class="modal-backdrop fade show"></div>
-<div class="modal d-block" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content rounded-4 border-0 shadow-lg p-2">
-      
-      <div class="modal-header border-bottom-0 pb-1">
-        <h6 class="modal-title fw-bold text-dark fs-6">
-          {{ categoryData ? 'Edit Category' : 'Add New Category' }}
-        </h6>
-        <button type="button" class="btn-close shadow-none" (click)="close()"></button>
+<div class="categories-page-container">
+  
+  <!-- PAGE HEADER & ADD BUTTON -->
+  <div class="page-header">
+    <div>
+      <h4 class="header-title">Categories Management</h4>
+      <p class="header-subtitle">Organize and manage your store catalog categories</p>
+    </div>
+    <button (click)="openAddModal()" class="btn btn-add-category">
+      <i class="bi bi-plus-lg"></i> Add New Category
+    </button>
+  </div>
+
+  <!-- OVERVIEW STAT CARDS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon icon-green"><i class="bi bi-grid"></i></div>
+      <div class="stat-data">
+        <span class="stat-label">Total Categories</span>
+        <h5 class="stat-value">{{ totalCount() }}</h5>
+        <small class="stat-trend text-success"><i class="bi bi-arrow-up"></i> Active Catalog</small>
       </div>
-
-      <div class="modal-body fs-8 pt-2">
-        <form (ngSubmit)="submitCategory()">
-
-          <!-- IMAGE UPLOADER WITH PREVIEW -->
-          <div class="mb-3">
-            <label class="form-label fw-semibold text-muted mb-1">Category Icon / Image</label>
-            
-            @if (previewUrl()) {
-              <div class="image-preview-wrapper position-relative rounded-4 p-3 d-flex align-items-center justify-content-center">
-                <img [src]="previewUrl()" alt="Preview" class="preview-thumbnail img-fluid" />
-                <button type="button" class="btn btn-danger btn-sm rounded-circle btn-remove-img" (click)="removeImage()" title="Remove Image">
-                  <i class="bi bi-x-lg"></i>
-                </button>
-              </div>
-            } @else {
-              <label class="upload-dropzone d-flex flex-column align-items-center justify-content-center rounded-4 p-4 text-center cursor-pointer">
-                <i class="bi bi-cloud-arrow-up fs-2 text-brand-green mb-1"></i>
-                <span class="fw-bold text-dark fs-8">Click or drag image to upload</span>
-                <span class="text-muted fs-9 mt-1">PNG, JPG, WEBP or SVG up to 2MB</span>
-                <input type="file" (change)="onFileSelected($event)" accept="image/*" class="d-none" />
-              </label>
-            }
-          </div>
-
-          <!-- NAME -->
-          <div class="mb-3">
-            <label class="form-label fw-semibold text-muted mb-1">Category Name <span class="text-danger">*</span></label>
-            <input type="text" class="form-control form-control-sm rounded-3 shadow-none py-2" placeholder="e.g. Dairy, Bread & Eggs"
-                   [ngModel]="form.name" (ngModelChange)="onNameChange($event)" name="name" required />
-          </div>
-
-          <!-- SLUG -->
-          <div class="mb-3">
-            <label class="form-label fw-semibold text-muted mb-1">Slug</label>
-            <input type="text" class="form-control form-control-sm rounded-3 shadow-none py-2 bg-light" placeholder="e.g. dairy-bread-eggs"
-                   [(ngModel)]="form.slug" name="slug" />
-          </div>
-
-          <!-- ACTIVE SWITCH TOGGLE -->
-          <div class="form-check form-switch mb-3 ps-5">
-            <input class="form-check-input" type="checkbox" role="switch" id="catActiveSwitch" [(ngModel)]="form.is_active" name="is_active">
-            <label class="form-check-label fw-semibold text-dark fs-8" for="catActiveSwitch">Active Status</label>
-          </div>
-
-          <!-- BUTTONS -->
-          <div class="d-flex justify-content-end gap-2 mt-4 pt-2">
-            <button type="button" class="btn btn-light btn-sm rounded-pill px-3 fs-8 fw-semibold" (click)="close()">Cancel</button>
-            <button type="submit" class="btn btn-brand-green btn-sm rounded-pill px-4 fs-8 fw-bold" [disabled]="isSubmitting()">
-              @if (isSubmitting()) {
-                <span class="spinner-border spinner-border-sm me-1" role="status"></span> Saving...
-              } @else {
-                {{ categoryData ? 'Update Category' : 'Save Category' }}
-              }
-            </button>
-          </div>
-
-        </form>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon icon-orange"><i class="bi bi-check-circle"></i></div>
+      <div class="stat-data">
+        <span class="stat-label">Active</span>
+        <h5 class="stat-value">{{ activeCount() }}</h5>
+        <small class="stat-sub">Live on store</small>
       </div>
-
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon icon-red"><i class="bi bi-eye-slash"></i></div>
+      <div class="stat-data">
+        <span class="stat-label">Inactive</span>
+        <h5 class="stat-value">{{ inactiveCount() }}</h5>
+        <small class="stat-sub text-muted">Hidden from store</small>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon icon-purple"><i class="bi bi-lightning-charge"></i></div>
+      <div class="stat-data">
+        <span class="stat-label">Quick Commerce</span>
+        <h5 class="stat-value">Instant</h5>
+        <small class="stat-sub">10-Min Delivery</small>
+      </div>
     </div>
   </div>
+
+  <!-- FILTERS & SEARCH BAR -->
+  <div class="filters-card">
+    <div class="search-field">
+      <i class="bi bi-search"></i>
+      <input 
+        type="text" 
+        placeholder="Search category by name or slug..."
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+      />
+    </div>
+
+    <select class="filter-select" [ngModel]="selectedStatus()" (ngModelChange)="selectedStatus.set($event)">
+      <option value="All">All Status</option>
+      <option value="Active">Active</option>
+      <option value="Inactive">Inactive</option>
+    </select>
+
+    <button class="btn btn-filter"><i class="bi bi-sliders me-1"></i> Filters</button>
+  </div>
+
+  <!-- CATEGORIES TABLE CARD -->
+  <div class="table-card">
+    @if (isLoading()) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-success" role="status"></div>
+        <p class="text-muted fs-8 mt-2">Loading categories...</p>
+      </div>
+    } @else {
+      <div class="table-responsive">
+        <table class="table align-middle wireframe-table">
+          <thead>
+            <tr>
+              <th class="ps-3" style="width: 36px;"><input type="checkbox" class="form-check-input" /></th>
+              <th>Category</th>
+              <th>Slug</th>
+              <th>Status</th>
+              <th>Created On</th>
+              <th class="text-end pe-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (cat of filteredCategories(); track cat.id) {
+              <tr>
+                <td class="ps-3"><input type="checkbox" class="form-check-input" /></td>
+                
+                <td>
+                  <div class="category-cell">
+                    <div class="cat-img-box">
+                      <img 
+                        [src]="cat.image_url || 'https://placehold.co/80x80?text=Category'" 
+                        [alt]="cat.name"
+                        class="category-img"
+                        onerror="this.src='https://placehold.co/80x80?text=Cat'"
+                      />
+                    </div>
+                    <strong class="category-name">{{ cat.name }}</strong>
+                  </div>
+                </td>
+
+                <td>
+                  <span class="badge bg-light text-muted border fs-8">/{{ cat.slug }}</span>
+                </td>
+
+                <td>
+                  <span class="status-badge" [ngClass]="cat.is_active === false ? 'status-inactive' : 'status-active'">
+                    ● {{ cat.is_active === false ? 'Inactive' : 'Active' }}
+                  </span>
+                </td>
+
+                <td class="date-cell">
+                  <span class="date-main">{{ cat.created_at }}</span>
+                </td>
+
+                <td class="text-end pe-3">
+                  <div class="action-buttons">
+                    <button (click)="openEditModal(cat)" class="btn-action" title="Edit Category">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                    <button (click)="deleteCategory(cat.id, cat.name)" class="btn-action text-danger" title="Delete Category">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="text-center text-muted py-5">No categories found matching your filter.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
 </div>
+
+<!-- ADD / EDIT CATEGORY MODAL -->
+@if (isModalOpen()) {
+  <div class="modal-backdrop fade show"></div>
+  <div class="modal d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 border-0 shadow-lg p-2">
+        
+        <div class="modal-header border-bottom-0 pb-1">
+          <h6 class="modal-title fw-bold text-dark fs-6">
+            {{ isEditMode() ? 'Edit Category' : 'Add New Category' }}
+          </h6>
+          <button type="button" class="btn-close shadow-none" (click)="closeModal()"></button>
+        </div>
+
+        <div class="modal-body fs-8 pt-2">
+          <form (ngSubmit)="saveCategory()">
+            
+            <!-- IMAGE PICKER WITH PREVIEW -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold text-muted mb-1">Category Icon / Image</label>
+              @if (previewUrl()) {
+                <div class="image-preview-wrapper position-relative rounded-4 p-3 d-flex align-items-center justify-content-center">
+                  <img [src]="previewUrl()" alt="Preview" class="preview-thumbnail img-fluid" />
+                  <button type="button" class="btn btn-danger btn-sm rounded-circle btn-remove-img" (click)="removeImage()" title="Remove Image">
+                    <i class="bi bi-x-lg"></i>
+                  </button>
+                </div>
+              } @else {
+                <label class="upload-dropzone d-flex flex-column align-items-center justify-content-center rounded-4 p-4 text-center cursor-pointer">
+                  <i class="bi bi-cloud-arrow-up fs-2 text-brand-green mb-1"></i>
+                  <span class="fw-bold text-dark fs-8">Click or drag image to upload</span>
+                  <span class="text-muted fs-9 mt-1">PNG, JPG, WEBP or SVG up to 2MB</span>
+                  <input type="file" (change)="onFileSelected($event)" accept="image/*" class="d-none" />
+                </label>
+              }
+            </div>
+
+            <!-- NAME -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold text-muted mb-1">Category Name <span class="text-danger">*</span></label>
+              <input 
+                type="text" 
+                class="form-control form-control-sm rounded-3 shadow-none py-2" 
+                placeholder="e.g. Dairy, Bread & Eggs"
+                [ngModel]="categoryForm().name" 
+                (ngModelChange)="onNameChange($event)" 
+                name="name" 
+                required 
+              />
+            </div>
+
+            <!-- SLUG -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold text-muted mb-1">Slug</label>
+              <input 
+                type="text" 
+                class="form-control form-control-sm rounded-3 shadow-none py-2 bg-light" 
+                placeholder="e.g. dairy-bread-eggs"
+                [ngModel]="categoryForm().slug" 
+                (ngModelChange)="categoryForm().slug = $event" 
+                name="slug" 
+              />
+            </div>
+
+            <!-- ACTIVE TOGGLE -->
+            <div class="form-check form-switch mb-3 ps-5">
+              <input 
+                class="form-check-input" 
+                type="checkbox" 
+                role="switch" 
+                id="catActiveToggle"
+                [ngModel]="categoryForm().is_active" 
+                (ngModelChange)="categoryForm().is_active = $event" 
+                name="is_active"
+              >
+              <label class="form-check-label fw-semibold text-dark fs-8" for="catActiveToggle">Active Status</label>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="d-flex justify-content-end gap-2 mt-4 pt-2">
+              <button type="button" class="btn btn-light btn-sm rounded-pill px-3 fs-8 fw-semibold" (click)="closeModal()">Cancel</button>
+              <button type="submit" class="btn btn-brand-green btn-sm rounded-pill px-4 fs-8 fw-bold" [disabled]="isSubmitting()">
+                @if (isSubmitting()) {
+                  <span class="spinner-border spinner-border-sm me-1" role="status"></span> Saving...
+                } @else {
+                  {{ isEditMode() ? 'Update Category' : 'Save Category' }}
+                }
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+}

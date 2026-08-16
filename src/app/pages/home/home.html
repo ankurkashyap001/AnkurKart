@@ -15,7 +15,7 @@
           Fruits, Vegetables, Dairy, Snacks & more — everything you need, in a blink!
         </p>
         <div class="d-flex align-items-center gap-3">
-          <a href="#" class="btn btn-brand-orange px-4 py-2 rounded-pill fw-bold shadow-sm d-inline-flex align-items-center gap-2">
+          <a [routerLink]="['/products']" class="btn btn-brand-orange px-4 py-2 rounded-pill fw-bold shadow-sm d-inline-flex align-items-center gap-2">
             Shop Now <i class="bi bi-arrow-right"></i>
           </a>
         </div>
@@ -30,7 +30,7 @@
         <div>
           <h6 class="fw-bold mb-1">Grocery Essentials</h6>
           <small class="text-muted d-block mb-2 fs-8">Daily needs at your doorstep</small>
-          <button class="btn btn-dark btn-sm rounded-pill px-3 fs-8 fw-semibold">Order Now</button>
+          <a [routerLink]="['/products']" [queryParams]="{ category: 'dairy-bread-eggs' }" class="btn btn-dark btn-sm rounded-pill px-3 fs-8 fw-semibold text-decoration-none">Order Now</a>
         </div>
         <i class="bi bi-basket2 fs-1 text-success opacity-75"></i>
       </div>
@@ -41,7 +41,7 @@
         <div>
           <h6 class="fw-bold mb-1">Pharmacy Delivered</h6>
           <small class="text-muted d-block mb-2 fs-8">Medicines & health care</small>
-          <button class="btn btn-brand-orange btn-sm rounded-pill px-3 fs-8 fw-semibold">Order Now</button>
+          <a [routerLink]="['/products']" [queryParams]="{ category: 'personal-care' }" class="btn btn-brand-orange btn-sm rounded-pill px-3 fs-8 fw-semibold text-decoration-none">Order Now</a>
         </div>
         <i class="bi bi-capsule fs-1 text-brand-orange opacity-75"></i>
       </div>
@@ -52,7 +52,7 @@
         <div>
           <h6 class="fw-bold mb-1">Pet Care Supplies</h6>
           <small class="text-muted d-block mb-2 fs-8">Food, toys & more</small>
-          <button class="btn btn-primary btn-sm rounded-pill px-3 fs-8 fw-semibold">Order Now</button>
+          <a [routerLink]="['/products']" class="btn btn-primary btn-sm rounded-pill px-3 fs-8 fw-semibold text-decoration-none">Order Now</a>
         </div>
         <i class="bi bi-heart-pulse fs-1 text-primary opacity-75"></i>
       </div>
@@ -63,7 +63,7 @@
         <div>
           <h6 class="fw-bold mb-1">Baby Care Essentials</h6>
           <small class="text-muted d-block mb-2 fs-8">Everything for your baby</small>
-          <button class="btn btn-info btn-sm text-white rounded-pill px-3 fs-8 fw-semibold">Order Now</button>
+          <a [routerLink]="['/products']" class="btn btn-info btn-sm text-white rounded-pill px-3 fs-8 fw-semibold text-decoration-none">Order Now</a>
         </div>
         <i class="bi bi-emoji-smile fs-1 text-info opacity-75"></i>
       </div>
@@ -74,7 +74,7 @@
   <div class="mb-5">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h5 class="fw-bold text-dark mb-0">Shop by Category</h5>
-      <a href="#" class="text-success fw-semibold fs-7 text-decoration-none">
+      <a [routerLink]="['/products']" class="text-success fw-semibold fs-7 text-decoration-none">
         View All <i class="bi bi-arrow-right ms-1"></i>
       </a>
     </div>
@@ -98,20 +98,25 @@
       </div>
     }
 
-    <!-- Dynamic Categories -->
+    <!-- Dynamic Categories Grid -->
     @if (!isCategoriesLoading() && !categoriesError()) {
       <div class="category-grid-9">
-        @for (cat of categories(); track cat.category_id) {
-          <div class="ss1-category-card">
+        @for (cat of categories(); track (cat.id || cat.category_id)) {
+          <a 
+            [routerLink]="['/products']" 
+            [queryParams]="{ category: cat.slug || cat.name || cat.category_name }" 
+            class="ss1-category-card text-decoration-none"
+          >
             <div class="ss1-category-img-wrapper">
               <img 
-                [src]="cat.category_logo_url_web || cat.category_logo_url || defaultImage" 
-                [alt]="cat.category_name"
+                [src]="cat.image_url || cat.category_logo_url_web || cat.category_logo_url || cat.image || defaultImage" 
+                [alt]="cat.name || cat.category_name"
                 (error)="onImageError($event)"
+                loading="lazy"
               />
             </div>
-            <span class="ss1-category-label">{{ cat.category_name }}</span>
-          </div>
+            <span class="ss1-category-label">{{ cat.name || cat.category_name }}</span>
+          </a>
         } @empty {
           <div class="col-12 text-center py-4">
             <p class="text-muted mb-0">No categories found.</p>
@@ -125,7 +130,7 @@
   <div class="mb-5">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h5 class="fw-bold text-dark mb-0">Best Selling Products</h5>
-      <a href="#" class="text-brand-orange fw-bold fs-7 text-decoration-none">
+      <a [routerLink]="['/products']" class="text-brand-orange fw-bold fs-7 text-decoration-none">
         View All <i class="bi bi-chevron-right ms-1"></i>
       </a>
     </div>
@@ -197,7 +202,7 @@
                   </a>
                 </div>
 
-                <!-- Unit / Pack Label (Brand Green) -->
+                <!-- Unit / Pack Label -->
                 <span class="text-brand-green fs-8 fw-bold d-block mb-1">
                   {{ $any(prod).unit || $any(prod).weight || '1 pack' }}
                 </span>
@@ -249,5 +254,6 @@
         }
       </div>
     }
+  </div>
 
 </div>
