@@ -31,6 +31,7 @@ export class AdminProducts implements OnInit {
   // Image Upload State
   previewUrl = signal<string | null>(null);
   selectedFile: File | null = null;
+  existingImageUrl: string | null = null;
 
   // Form Data State
   productForm = signal({
@@ -116,6 +117,7 @@ export class AdminProducts implements OnInit {
     this.isEditMode.set(false);
     this.selectedProductId.set(null);
     this.selectedFile = null;
+    this.existingImageUrl = null;
     this.previewUrl.set(null);
 
     const defaultCatId = this.categories().length > 0 ? this.categories()[0].id : null;
@@ -137,12 +139,13 @@ export class AdminProducts implements OnInit {
     this.selectedProductId.set(product.id);
     this.selectedFile = null;
     
-    this.previewUrl.set(
-      product.image_url || 
+    const existingImg = product.image_url || 
       product.primary_image?.url || 
       product.primary_image || 
-      null
-    );
+      null;
+
+    this.existingImageUrl = existingImg;
+    this.previewUrl.set(existingImg);
 
     const prodCatId = Number(
       product.categories?.[0]?.id || 
@@ -200,6 +203,7 @@ export class AdminProducts implements OnInit {
 
   removeImage(): void {
     this.selectedFile = null;
+    this.existingImageUrl = null;
     this.previewUrl.set(null);
   }
 
@@ -223,7 +227,7 @@ export class AdminProducts implements OnInit {
     formData.append('description', data.description.trim() || data.title.trim());
     formData.append('price', String(Number(data.price)));
     
-    if (data.sale_price !== null && data.sale_price !== undefined) {
+    if (data.sale_price !== null && data.sale_price !== undefined && data.sale_price !== ('' as any)) {
       formData.append('sale_price', String(Number(data.sale_price)));
     }
     
@@ -232,8 +236,11 @@ export class AdminProducts implements OnInit {
     formData.append('category_ids[]', String(Number(data.category_id)));
     formData.append('is_active', data.is_active ? '1' : '0');
 
+    // Binary file or existing image URL fallback
     if (this.selectedFile instanceof File) {
       formData.append('image', this.selectedFile, this.selectedFile.name);
+    } else if (this.existingImageUrl) {
+      formData.append('image_url', this.existingImageUrl);
     }
 
     const productId = this.selectedProductId();
@@ -247,7 +254,8 @@ export class AdminProducts implements OnInit {
       },
       error: (err: any) => {
         this.isSubmitting.set(false);
-        this.toastService.error(err.error?.message || 'Failed to save product');
+        const errorMsg = err.error?.errors?.image?.[0] || err.error?.message || 'Failed to save product';
+        this.toastService.error(errorMsg);
       }
     });
   }

@@ -21,9 +21,8 @@ export class AdminService {
   private apiUrl = 'http://localhost:8000/api/admin';
 
   /**
-   * Helper to attach Authorization Token & Accept headers.
-   * Note: We don't set 'Content-Type' manually when sending FormData,
-   * as the browser will automatically set 'multipart/form-data' with boundaries.
+   * Generates authorization and accept headers without specifying 'Content-Type'.
+   * This allows the browser to automatically set 'multipart/form-data' with boundaries for FormData.
    */
   private getHeaders() {
     let token: string | null = null;
@@ -63,7 +62,6 @@ export class AdminService {
 
   saveCategory(formData: FormData, categoryId?: number | string | null): Observable<any> {
     if (categoryId) {
-      // POST with multipart/form-data for update
       return this.http.post<any>(`${this.apiUrl}/categories/${categoryId}`, formData, this.getHeaders());
     }
     return this.http.post<any>(`${this.apiUrl}/categories`, formData, this.getHeaders());
@@ -78,9 +76,6 @@ export class AdminService {
     return this.http.get<any>(`${this.apiUrl}/products`, this.getHeaders());
   }
 
-  /**
-   * Universal save method for Products supporting FormData (images) as well as JSON payloads
-   */
   saveProduct(data: FormData | any, productId?: number | string | null): Observable<any> {
     if (productId) {
       return this.http.post<any>(`${this.apiUrl}/products/${productId}`, data, this.getHeaders());

@@ -5,7 +5,6 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CategoryService } from '../../services/category.service';
 import { ProductService } from '../../services/product.service';
-import { Product } from '../../models/product.model';
 import { CartService } from '../../services/cart.service';
 import { WishlistService } from '../../services/wishlist.service';
 
@@ -24,13 +23,13 @@ export class Home implements OnInit {
   
   Math = Math;
 
-  // 🔴 Key Fix: Typed as any[] to support both legacy and new category response structures
+  // Category Signals
   categories = signal<any[]>([]);
   isCategoriesLoading = signal<boolean>(true);
   categoriesError = signal<string | null>(null);
 
   // Product Signals
-  products = signal<Product[]>([]);
+  products = signal<any[]>([]);
   isProductsLoading = signal<boolean>(true);
   productsError = signal<string | null>(null);
 
@@ -47,9 +46,20 @@ export class Home implements OnInit {
     this.categoriesError.set(null);
 
     this.categoryService.getCategories().subscribe({
-      next: (data: any) => {
-        const list = Array.isArray(data) ? data : (data?.sales_category || data?.data || []);
-        this.categories.set(list);
+      next: (res: any) => {
+        const rawList = res?.data?.sales_category || res?.data || (Array.isArray(res) ? res : []);
+        
+        const formattedCategories = rawList.map((cat: any) => {
+          const name = cat.name || cat.category_name || '';
+          return {
+            id: cat.id || cat.category_id,
+            name: name,
+            slug: cat.slug || name.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+            image_url: cat.image_url || cat.category_logo_url_web || cat.category_logo_url || cat.image || null
+          };
+        });
+
+        this.categories.set(formattedCategories);
         this.isCategoriesLoading.set(false);
       },
       error: (err: Error) => {
@@ -59,19 +69,14 @@ export class Home implements OnInit {
     });
   }
 
-  getCartQuantity(productId: number): number {
-    const cartItems = this.cartService.cart()?.items || [];
-    const item = cartItems.find((i: any) => i.product_id === productId);
-    return item ? item.quantity : 0;
-  }
-
   fetchProducts(): void {
     this.isProductsLoading.set(true);
     this.productsError.set(null);
 
     this.productService.getProducts().subscribe({
-      next: (data: Product[]) => {
-        this.products.set(data);
+      next: (res: any) => {
+        const list = Array.isArray(res) ? res : (res?.data || []);
+        this.products.set(list);
         this.isProductsLoading.set(false);
       },
       error: (err: Error) => {
@@ -79,6 +84,12 @@ export class Home implements OnInit {
         this.isProductsLoading.set(false);
       }
     });
+  }
+
+  getCartQuantity(productId: number): number {
+    const cartItems = this.cartService.cart()?.items || [];
+    const item = cartItems.find((i: any) => i.product_id === productId);
+    return item ? item.quantity : 0;
   }
 
   onImageError(event: Event): void {
