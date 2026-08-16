@@ -37,6 +37,6 @@ export class Navbar {
 
   logout() {
     this.authService.logout(); // AuthService se user token & state clear hoga
-    this.router.navigate(['/login']);
+    
   }
 }

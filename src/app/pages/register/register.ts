@@ -61,7 +61,7 @@ export class Register {
             'Registration Successful!',
             'Your account has been created. Please log in to continue.',
             () => {
-              this.router.navigate(['/login']);
+              
             }
           );
         },

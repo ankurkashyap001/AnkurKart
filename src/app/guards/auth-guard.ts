@@ -16,6 +16,6 @@ export const authGuard: CanActivateFn = (route, state) => {
   }
 
   // Token nahi mila to Login page par bhej do
-  router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+  router.navigate(['/home'], { queryParams: { returnUrl: state.url } });
   return false;
 };
